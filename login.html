@@ -124,7 +124,6 @@ form button:hover {
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('ログインが成功しました！');
                 window.location.href = 'member.html';
             } catch (error) {
                 alert(`エラー: ${error.message}`);

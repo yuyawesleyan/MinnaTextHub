@@ -5,106 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規会員登録</title>
     <link rel="stylesheet" href="styles/style.css">
-    <!-- Include Google Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <style>
-    /* General page styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-    }
+    /* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
 
-    header {
-        text-align: center;
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #007BFF;
-        color: white;
-        width: 100%;
-    }
+/* Header */
+header {
+    background-color: #007BFF;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
 
-    header h1 {
-        margin: 0;
-    }
+/* Main content */
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin-top: 80px; /* Space for the fixed header */
+    width: 100%;
+}
 
-    header p {
-        font-size: 1em;
-        margin-top: 10px;
-        line-height: 1.5;
-    }
+/* Register form */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
 
-    main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 30px;
-    }
+form h1 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #007BFF;
+}
 
-    form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 300px;
-    }
+form input {
+    margin: 10px 0;
+    padding: 15px;
+    width: 100%;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensures padding does not affect width */
+}
 
-    form input {
-        margin: 10px 0;
-        padding: 10px;
-        width: 100%;
-        font-size: 1em;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
+form button {
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 1.2em;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    form button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 1.2em;
-        border: none;
-        background-color: #007BFF;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    form button:hover {
-        background-color: #0056b3;
-    }
-
-    /* Google sign-in button */
-    #googleSignIn {
-        display: flex;
-        align-items: center;
-        background-color: #4285F4;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        border: none;
-        font-size: 1em;
-        margin-top: 20px;
-        font-weight: bold;
-    }
-
-    #googleSignIn:hover {
-        background-color: #357ae8;
-    }
-
-    #googleSignIn i {
-        margin-right: 10px;
-    }
+form button:hover {
+    background-color: #0056b3;
+}
 
 </style>
 <body>
@@ -122,12 +105,9 @@
             <input type="password" id="password" placeholder="パスワード" required>
             <button type="submit">登録</button>
         </form>
-        <button id="googleSignIn">
-            <i class="material-icons">google</i>Googleで登録
-        </button>
     </main>
     <script type="module">
-        import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
 
         const firebaseConfig = {
@@ -141,7 +121,6 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
 
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -158,18 +137,6 @@
                 alert(`エラー: ${error.message}`);
             }
         });
-
-        document.getElementById('googleSignIn').addEventListener('click', async () => {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                await updateProfile(user, { displayName: user.displayName || 'ユーザー' });
-                alert('Googleでの登録が成功しました！');
-                window.location.href = 'member.html';
-            } catch (error) {
-                alert(`エラー: ${error.message}`);
-            }
-        });
     </script>
 </body>
-</html>
+</html
