@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ログイン</title>
+    <style>
+        /* CSS for Admin Login Page */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle at top left, #6e8efb, #a777e3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 0.5rem;
+        }
+
+        #login {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #login input {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #login input:focus {
+            border-color: #6e8efb;
+            outline: none;
+        }
+
+        #login button {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #6e8efb;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #login button:hover {
+            background-color: #5a7dff;
+        }
+
+        #login button:active {
+            transform: scale(0.98);
+        }
+
+        #error-message {
+            color: #ff4d4d;
+            margin-top: 1rem;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .register-link {
+            margin-top: 1rem;
+            font-size: 16px;
+        }
+
+        .register-link a {
+            color: #6e8efb;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+    </style>
+    <script type="module" src="app.js" defer></script>
+</head>
+<body>
+    <h1>管理者ログイン</h1>
+    <p>みんなで翻刻のログイン・パスワードとは異なります。</p>
+    <p>管理者用のログイン・パスワードの入力をお願いします。</p>
+    <div id="login">
+        <input type="email" id="email" placeholder="メールアドレス" required>
+        <input type="password" id="password" placeholder="パスワード" required>
+        <button onclick="login()">ログイン</button>
+        <div id="error-message"></div>
+        <div class="register-link">
+            <a href="register.html" class="register-button">管理者新規登録</a>
+        </div>
+    </div>
+</body>
+</html>
