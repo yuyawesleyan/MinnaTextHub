@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなの翻刻広場（会員専用ページ）</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<style>
+    /* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background-color: #007BFF;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Main content */
+main {
+    margin-top: 80px; /* Space for the fixed header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* Logout button */
+button {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    background-color: #007BFF;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+</style>
+<body>
+    <header>
+        <h1>みんなの翻刻広場（会員専用ページ）</h1>
+    </header>
+    <main>
+        <p id="welcomeMessage">ようこそ、会員様！</p>
+        <button id="logout">ログアウト</button>
+    </main>
+    <script type="module">
+        import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+            }
+        });
+
+        document.getElementById('logout').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                alert('ログアウトしました！');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert(`ログアウト中にエラーが発生しました: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
