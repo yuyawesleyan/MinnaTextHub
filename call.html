@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<style>
+    /* styles/contact.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+header {
+    background-color: #343a40;
+    color: #ffffff;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+nav button:hover {
+    background-color: #0056b3;
+}
+
+main {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-info, .contact-form {
+    margin-bottom: 20px;
+}
+
+.contact-info h2, .contact-form h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+.contact-info p {
+    font-size: 1.2em;
+}
+
+.contact-info .email {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.contact-form button {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.contact-form button:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    text-align: center;
+    padding: 5px 0;
+    background-color: #343a40;
+    color: white;
+    width: 100%;
+}
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせ</title>
+    <link rel="stylesheet" href="styles/contact.css">
+</head>
+<body>
+    <header>
+        <h1>お問い合わせ</h1>
+        <nav>
+            <button onclick="location.href='about.html'">本サイトについて</button>
+            <button onclick="location.href='index.html'">トップページに戻る</button>
+        </nav>
+    </header>
+    <main>
+        <section class="contact-info">
+            <h2>お問い合わせ先</h2>
+            <p>以下のメールアドレスにお問い合わせください</p>
+            <p class="email">ea21002@wesleyan.ac.jp</p>
+        </section>
+        <section class="contact-info">
+            <h2>返信にかかる時間の目安</h2>
+            <p>お客様のお問合せに対する返信は１日〜３日の間の回答を目安としています</p>
+        </section>
+        <section class="contact-info">
+            <h2>管理者登録について</h2>
+            <p>「みんなの翻刻広場」管理者登録をご検討中の方は上記のメールアドレスへお問合せください。管理者への詳しい説明は下記のPDFをダウンドードしてください。必ずPDFの内容を見てメールでお問合せください。</p>
+            <a class="download-link" href="path/to/your/file.pdf" download="file.pdf">PDFをダウンロード</a>
+        </section>
+      
+    </main>
+    <footer>
+        <p>&copy; 2024 みんなの翻刻広場</p>
+    </footer>
+</body>
+</html>

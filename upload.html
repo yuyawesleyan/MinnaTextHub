@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像アップロード</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.upload-container {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 20px;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+input[type="file"],
+input[type="text"] {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    background-color: #00408d;
+}
+
+#message {
+    margin-top: 1rem;
+    font-size: 14px;
+    text-align: center;
+}
+
+#error-message {
+    color: #dc3545;
+}
+
+#success-message {
+    color: #28a745;
+}
+
+    </style>
+    <script type="module" src="upload.js"></script>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>画像アップロード</h1>
+        <input type="text" id="path" placeholder="保存先パス" required>
+        <input type="file" id="file" accept="image/*" required>
+        <button onclick="uploadFile()">アップロード</button>
+        <div id="message"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ページ</title>
+    <link rel="stylesheet" href="styles.css"> <!-- 外部CSSファイルをリンク -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        #logout-button {
+            background: #ff4d4d;
+            border: none;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #logout-button:hover {
+            background: #e03a3a;
+        }
+
+        main {
+            flex: 1;
+            margin-top: 1rem;
+        }
+
+        .notifications {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .notifications h2 {
+            margin: 0 0 1rem 0;
+        }
+
+        #notification-box {
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .link-button {
+            background: #007bff;
+            color: #fff;
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .link-button:hover {
+            background: #0056b3;
+        }
+
+        .form-section {
+            margin-top: 1rem;
+        }
+
+        .form-section h2 {
+            margin: 0 0 1rem 0;
+        }
+
+        .form-section form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-section textarea {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        .form-section button {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-section button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script type="module" src="admin.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>管理者ダッシュボード</h1>
+            <button id="logout-button">ログアウト</button>
+        </header>
+        <main>
+            <section class="notifications">
+                <h2>お知らせ</h2>
+                <div id="notification-box">
+                    <p>テスト運用中です完全なWEBサイトではありません。2024/8/5PM22:47</p>
+                </div>
+            </section>
+            <section class="links">
+                <h2>管理機能</h2>
+                <a href="upload.html" class="link-button">原稿投稿ページへ</a>
+            </section>
+            <section class="form-section">
+                <h2>お知らせの投稿</h2>
+                <form id="notification-form">
+                    <textarea id="notification-content" rows="4" placeholder="お知らせの内容を入力してください..." required></textarea>
+                    <button type="submit">お知らせを投稿</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
