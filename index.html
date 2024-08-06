@@ -146,19 +146,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function loadNotice() {
-            const docRef = doc(db, "notices", "latest");
-            try {
-                const docSnap = await getDoc(docRef);
-                const noticeContent = docSnap.exists() ? docSnap.data().content : "お知らせはありません。";
-                document.getElementById("notification-box").innerHTML = `<p>${noticeContent}</p>`;
-            } catch (error) {
-                console.error("お知らせの読み込みに失敗しました: ", error);
-                document.getElementById("notification-box").innerHTML = '<p>お知らせの読み込みに失敗しました。</p>';
-            }
-        }
-
-        loadNotice();
+       
     </script>
 </head>
 <body>
@@ -167,7 +155,7 @@
         <nav>
             <button class="nav-btn" onclick="location.href='//yuyawesleyan.github.io/archive-suzukieitarou/'">ホーム</button>
             <button class="nav-btn" onclick="location.href='call.html'">お問い合わせ</button>
-            <button class="nav-btn" onclick="location.href='public/index2.html'">管理者ログイン</button>
+            <button class="nav-btn" onclick="location.href='index2.html'">管理者ログイン</button>
         </nav>
     </header>
     <div class="auth-buttons">
