@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなの翻刻広場（会員専用ページ）</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f9f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #181818;
+            color: white;
+            width: 100%;
+            text-align: left;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right p {
+            margin: 0 20px 0 0;
+            font-size: 1em;
+        }
+
+        .header-right button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #007BFF;
+            transition: background-color 0.3s;
+        }
+
+        .header-right button:hover {
+            background-color: #0056b3;
+        }
+
+        .header-right button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Main content */
+        main {
+            margin-top: 80px; /* Adjust for header height */
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Section styles */
+        .section {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .section ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .section ul li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>みんなの翻刻広場（会員専用ページ）</h1>
+        <div class="header-right">
+            <p id="welcomeMessage">ようこそ、会員様！</p>
+            <button id="logout">ログアウト</button>
+        </div>
+    </header>
+    <main>
+        <div class="section announcement-box">
+            <h2>お知らせ</h2>
+            <ul id="announcement-list">
+                <!-- お知らせがここに表示される -->
+            </ul>
+        </div>
+        <div class="section timeline-box">
+            <h2>タイムライン</h2>
+            <ul id="timeline-list">
+                <!-- タイムラインがここに表示される -->
+            </ul>
+        </div>
+    </main>
+    <script type="module">
+        import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+
+                // お知らせの取得
+                try {
+                    const announcementList = document.getElementById('announcement-list');
+                    announcementList.innerHTML = ''; // 既存のリストをクリア
+                    const querySnapshot = await getDocs(collection(db, 'announcements'));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        announcementList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("データ取得エラー: ", error);
+                }
+
+                // タイムラインの取得（仮の処理）
+                try {
+                    const timelineList = document.getElementById('timeline-list');
+                    timelineList.innerHTML = ''; // 既存のリストをクリア
+                    const querySnapshot = await getDocs(collection(db, 'timeline'));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        timelineList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("データ取得エラー: ", error);
+                }
+            }
+        });
+
+        document.getElementById('logout').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                alert('ログアウトしました！');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert(`ログアウト中にエラーが発生しました: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
