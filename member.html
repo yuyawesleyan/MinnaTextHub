@@ -14,8 +14,6 @@
             background-color: #f3f9f9;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
 
@@ -25,22 +23,21 @@
             color: white;
             width: 100%;
             text-align: left;
-            padding: 20px 0;
+            padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 0;
-            left: 0px;
+            left: 0;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            box-sizing: border-box;
         }
 
         header h1 {
             margin: 0;
             font-size: 1.5em;
-            flex: 1;
         }
 
         .header-right {
@@ -54,7 +51,7 @@
         }
 
         .header-right button {
-            padding: 10px 50px;
+            padding: 10px 20px;
             font-size: 1em;
             border: none;
             border-radius: 5px;
@@ -62,12 +59,10 @@
             color: white;
             background-color: #007BFF;
             transition: background-color 0.3s;
-            margin-right: 50px;
-            
         }
 
         .header-right button:hover {
-            background-color: #f53131;
+            background-color: #0056b3;
         }
 
         .header-right button:focus {
@@ -75,53 +70,43 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
         }
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
+        /* Main content */
+        main {
+            margin-top: 80px; /* Adjust for header height */
+            padding: 20px;
+            width: 100%;
         }
 
-        p {
-            font-size: 1.2em;
+        /* Section styles */
+        .section {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
             margin-bottom: 20px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            box-sizing: border-box;
         }
 
-        .announcement-box {
-    background-color: #ffc9ba; /* Bright yellow background for high visibility */
-    color: #0b0b0b; /* Darker yellow text for contrast */
-    border: 2px solid #ffc9ba; /* Slightly lighter yellow border */
-    border-radius: 10px;
-    padding: 20px;
-    margin: 60px 0; /* Top and bottom margin for spacing */
-    width: 100%;
-    max-width: 90%; /* Full width of the container */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
-    font-family: 'Arial', sans-serif; /* Simple, clean font */
-    position: absolute; /* Positioning for fixed placement */
-    top: 20px; /* Space from the top */
-    left: 50px; /* Space from the left */
-    z-index: 100; /* Ensure it's on top of other content */
-    text-align: center; /* Center align the title */
-}
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #333;
+        }
 
-.announcement-box h2 {
-    margin-top: 0; /* Remove top margin for alignment with the border */
-    margin-bottom: 15px; /* Space between title and list */
-}
+        .section ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
 
-.announcement-box ul {
-    list-style-type: disc; /* Bullet points for list items */
-    padding-left: 20px; /* Padding to align bullet points */
-    text-align: left; /* Align text to the left */
-}
-
-.announcement-box ul li {
-    margin-bottom: 10px; /* Space between list items */
-}
-
-
-
-  
-
+        .section ul li {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -133,16 +118,22 @@
         </div>
     </header>
     <main>
-        <div class="announcement-box">
-            <h2>お知らせ</h2> 
-            <ul>
-                <li>このページは現在テスト運用中です</li>
+        <div class="section announcement-box">
+            <h2>お知らせ</h2>
+            <ul id="announcement-list">
+                <!-- お知らせがここに表示される -->
             </ul>
         </div>
-       
+        <div class="section timeline-box">
+            <h2>タイムライン</h2>
+            <ul id="timeline-list">
+                <!-- タイムラインがここに表示される -->
+            </ul>
+        </div>
     </main>
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
 
         const firebaseConfig = {
@@ -156,13 +147,44 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
             } else {
                 const welcomeMessage = document.getElementById('welcomeMessage');
                 welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+
+                // お知らせの取得
+                try {
+                    const announcementList = document.getElementById('announcement-list');
+                    announcementList.innerHTML = ''; // 既存のリストをクリア
+                    const querySnapshot = await getDocs(collection(db, 'announcements'));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        announcementList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("データ取得エラー: ", error);
+                }
+
+                // タイムラインの取得（仮の処理）
+                try {
+                    const timelineList = document.getElementById('timeline-list');
+                    timelineList.innerHTML = ''; // 既存のリストをクリア
+                    const querySnapshot = await getDocs(collection(db, 'timeline'));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        timelineList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("データ取得エラー: ", error);
+                }
             }
         });
 
