@@ -31,7 +31,7 @@ window.login = async function login() {
 
         if (docSnap.exists() && docSnap.data().isAdmin) {
             // 管理者認証成功
-            window.location.href = 'admin.html'; // ログイン後にupload.htmlにリダイレクト
+            window.location.href = 'admin.html'; 
         } else {
             document.getElementById('error-message').textContent = '管理者権限がありません';
         }

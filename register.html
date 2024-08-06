@@ -118,14 +118,14 @@ button:active {
 <body>
     <header class="header">
         <h1>管理者登録</h1>
-        <p>下記のフォームにメール・パスワード・管理者から指示がでた数字を入力してください</p>
+        <p>下記のフォームにメール・パスワード・運営から伝えられた数字を入力してください</p>
 
     </header>
     
     <div id="register">
         <input type="email" id="email" placeholder="メールアドレス" required>
         <input type="password" id="password" placeholder="パスワード" required>
-        <input type="password" id="adminKey" placeholder="管理者パスナンバー" required>
+        <input type="password" id="adminKey" placeholder="管理者招待ナンバー" required>
         <button onclick="register()">申請する</button>
         <div id="error-message"></div>
         <div id="success-message"></div>

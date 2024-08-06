@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン</title>
+    <title>新規会員登録</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <style>
@@ -44,7 +44,7 @@ main {
     width: 100%;
 }
 
-/* Login form */
+/* Register form */
 form {
     display: flex;
     flex-direction: column;
@@ -92,17 +92,22 @@ form button:hover {
 </style>
 <body>
     <header>
-        <h1>ログイン</h1>
+        <h1>新規会員登録</h1>
+        <p>新規会員ページにお越しいただき、ありがとうございます。ここでは、素晴らしいサービスのご提供を１番に考え運営しております。ぜひこの機会にご登録いただき、新しい体験を始めてみませんか？
+            登録は簡単で数秒で完了します。ご不明な点があればトップページの「お問い合わせ」よりお問い合わせ先を確認してお気軽にお問合せください！！
+            皆様のご参加を心よりお待ちしております！
+        </p>
     </header>
     <main>
-        <form id="loginForm">
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="ユーザー名" required>
             <input type="email" id="email" placeholder="メールアドレス" required>
             <input type="password" id="password" placeholder="パスワード" required>
-            <button type="submit">ログイン</button>
+            <button type="submit">登録</button>
         </form>
     </main>
     <script type="module">
-        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
 
         const firebaseConfig = {
@@ -117,13 +122,16 @@ form button:hover {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+            const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                alert('登録が成功しました！');
                 window.location.href = 'member.html';
             } catch (error) {
                 alert(`エラー: ${error.message}`);
@@ -131,4 +139,4 @@ form button:hover {
         });
     </script>
 </body>
-</html>
+</html
