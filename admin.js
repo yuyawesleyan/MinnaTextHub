@@ -1,8 +1,6 @@
-// admin.js
-
-import { getFirestore, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
-import { getAuth, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -16,6 +14,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// ユーザー名を取得して表示する関数
+function displayUserName(user) {
+    const userName = user.displayName || 'ユーザー';
+    document.querySelector('.user-info').textContent = `ようこそ、${userName}`;
+}
+
+// 認証状態の変更に対応
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        displayUserName(user);
+    } else {
+        document.querySelector('.user-info').textContent = 'ログインしていません';
+    }
+});
 
 document.getElementById('logout-button').addEventListener('click', async () => {
     try {
@@ -31,6 +44,11 @@ document.getElementById('notification-form').addEventListener('submit', async (e
     e.preventDefault();
     const notificationContent = document.getElementById('notification-content').value;
     
+    if (!notificationContent.trim()) {
+        alert('お知らせ内容が空です。');
+        return;
+    }
+
     try {
         await addDoc(collection(db, 'announcements'), {
             content: notificationContent,

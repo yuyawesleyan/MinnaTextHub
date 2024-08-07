@@ -21,7 +21,7 @@ onAuthStateChanged(auth, async (user) => {
         window.location.href = 'login.html';
     } else {
         const welcomeMessage = document.getElementById('welcomeMessage');
-        welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+        welcomeMessage.textContent = `ようこそ、${user.dsplay || '会員様'}さん！`;
 
        // お知らせの取得
 try {
