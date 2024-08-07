@@ -108,6 +108,34 @@
         .section ul li {
             margin-bottom: 10px;
         }
+        .join-project-box {
+            background: #007bff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .join-project-link {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .join-project-link:hover {
+            background: #007bff;
+            color: #e9ecef;
+        }
+
+        .join-project-text {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -119,17 +147,24 @@
         </div>
     </header>
     <main>
+        <div class="section join-project-box">
+            <a href="display.html" class="join-project-link">プロジェクトに参加する（活字化にチャレンジ！！）</a>
+        </div>
         <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
                 <!-- お知らせがここに表示される -->
             </ul>
         </div>
+
         <div class="section timeline-box">
             <h2>タイムライン</h2>
             <ul id="timeline-list">
                 <!-- タイムラインがここに表示される -->
             </ul>
+        </div>
+        <div class="timeline-container" id="timeline">
+            <!-- 投稿がここに表示されます -->
         </div>
     </main>
     <script type="module">
@@ -147,6 +182,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
@@ -155,39 +191,69 @@
                 window.location.href = 'login.html';
             } else {
                 const welcomeMessage = document.getElementById('welcomeMessage');
-                welcomeMessage.textContent = `ようこそ、${user.displayName||'会員様'}さん！`;
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+                }
 
                 // お知らせの取得
                 try {
                     const announcementList = document.getElementById('announcement-list');
-                    announcementList.innerHTML = ''; // 既存のリストをクリア
-                    const querySnapshot = await getDocs(collection(db, 'announcements'));
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const listItem = document.createElement('li');
-                        listItem.textContent = data.content;
-                        announcementList.appendChild(listItem);
-                    });
-                } catch (error) {
-                    console.error("データ取得エラー: ", error);
-                }
-
-                // タイムラインの取得（仮の処理）
-                try {
-                    const timelineList = document.getElementById('timeline-list');
-                    timelineList.innerHTML = ''; // 既存のリストをクリア
-                    const querySnapshot = await getDocs(collection(db, 'timeline'));
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const listItem = document.createElement('li');
-                        listItem.textContent = data.content;
-                        timelineList.appendChild(listItem);
-                    });
+                    if (announcementList) {
+                        announcementList.innerHTML = ''; // 既存のリストをクリア
+                        const querySnapshot = await getDocs(collection(db, 'announcements'));
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const listItem = document.createElement('li');
+                            listItem.textContent = data.content;
+                            announcementList.appendChild(listItem);
+                        });
+                    }
                 } catch (error) {
                     console.error("データ取得エラー: ", error);
                 }
             }
         });
+
+        window.onload = function() {
+            const timeline = document.getElementById('timeline');
+            const postsRef = ref(database, 'posts');
+
+            onValue(postsRef, (snapshot) => {
+                const data = snapshot.val();
+                timeline.innerHTML = ''; // Clear existing posts
+
+                if (data) {
+                    Object.values(data).forEach(post => {
+                        const postElement = document.createElement('div');
+                        postElement.className = 'post';
+
+                        const img = document.createElement('img');
+                        img.src = post.imageUrl;
+                        img.alt = '投稿画像';
+
+                        const user = document.createElement('p');
+                        user.className = 'user';
+                        user.textContent = `投稿者: ${post.userName}`;
+
+                        const timestamp = document.createElement('p');
+                        timestamp.className = 'timestamp';
+                        timestamp.textContent = `投稿日: ${new Date(post.timestamp).toLocaleString()}`;
+
+                        const text = document.createElement('p');
+                        text.textContent = post.text;
+
+                        postElement.appendChild(img);
+                        postElement.appendChild(user);
+                        postElement.appendChild(timestamp);
+                        postElement.appendChild(text);
+
+                        timeline.appendChild(postElement);
+                    });
+                } else {
+                    timeline.innerHTML = '<p>投稿がありません。</p>';
+                }
+            });
+        }
 
         document.getElementById('logout').addEventListener('click', async () => {
             try {

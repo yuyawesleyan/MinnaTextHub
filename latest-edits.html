@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最新の編集</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="latest-edits.js" defer></script>
+</head>
+<style>
+    /* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ヘッダーのスタイル */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.link-button {
+    display: inline-block;
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0; 
+    width: auto;
+    max-width: 200px;
+    text-align: center;
+}
+
+.link-button:hover {
+    background-color: #0056b3;
+}
+
+/* メインセクションのスタイル */
+main {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+#latest-edits {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fafafa;
+}
+
+.edit-item h2 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.edit-item p {
+    margin: 10px 0;
+}
+
+.edit-item img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.edit-item .edit-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-item .edit-details button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-item .edit-details button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<body>
+    <div class="container">
+        <header>
+            <h1>最新の編集を表示します</h1>
+            <a href="admin.html" class="link-button">管理者ページへ戻る</a>
+        </header>
+        <main>
+            <section id="latest-edits">
+                <!-- 最新の編集内容がここに表示される -->
+            </section>
+        </main>
+    </div>
+</body>
+</html>
