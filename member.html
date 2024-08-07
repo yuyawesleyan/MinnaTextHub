@@ -163,9 +163,6 @@
                 <!-- タイムラインがここに表示される -->
             </ul>
         </div>
-        <div class="timeline-container" id="timeline">
-            <!-- 投稿がここに表示されます -->
-        </div>
     </main>
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
@@ -182,7 +179,6 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
@@ -214,46 +210,43 @@
             }
         });
 
-        window.onload = function() {
-            const timeline = document.getElementById('timeline');
-            const postsRef = ref(database, 'posts');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const timelineList = document.getElementById('timeline-list');
+            if (!timelineList) return;
 
-            onValue(postsRef, (snapshot) => {
-                const data = snapshot.val();
-                timeline.innerHTML = ''; // Clear existing posts
+            try {
+                const querySnapshot = await getDocs(collection(db, 'posts'));
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
 
-                if (data) {
-                    Object.values(data).forEach(post => {
-                        const postElement = document.createElement('div');
-                        postElement.className = 'post';
+                    const listItem = document.createElement('li');
 
-                        const img = document.createElement('img');
-                        img.src = post.imageUrl;
-                        img.alt = '投稿画像';
+                    const img = document.createElement('img');
+                    img.src = data.imageUrl;
+                    img.alt = '投稿画像';
 
-                        const user = document.createElement('p');
-                        user.className = 'user';
-                        user.textContent = `投稿者: ${post.userName}`;
+                    const text = document.createElement('p');
+                    text.textContent = data.text;
 
-                        const timestamp = document.createElement('p');
-                        timestamp.className = 'timestamp';
-                        timestamp.textContent = `投稿日: ${new Date(post.timestamp).toLocaleString()}`;
+                    const user = document.createElement('p');
+                    user.className = 'user';
+                    user.textContent = `投稿者: ${data.userName}`;
 
-                        const text = document.createElement('p');
-                        text.textContent = post.text;
+                    const timestamp = document.createElement('p');
+                    timestamp.className = 'timestamp';
+                    timestamp.textContent = `投稿日: ${new Date(data.timestamp).toLocaleString()}`;
 
-                        postElement.appendChild(img);
-                        postElement.appendChild(user);
-                        postElement.appendChild(timestamp);
-                        postElement.appendChild(text);
+                    listItem.appendChild(img);
+                    listItem.appendChild(text);
+                    listItem.appendChild(user);
+                    listItem.appendChild(timestamp);
 
-                        timeline.appendChild(postElement);
-                    });
-                } else {
-                    timeline.innerHTML = '<p>投稿がありません。</p>';
-                }
-            });
-        }
+                    timelineList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("タイムライン取得エラー: ", error);
+            }
+        });
 
         document.getElementById('logout').addEventListener('click', async () => {
             try {
