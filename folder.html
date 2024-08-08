@@ -166,10 +166,11 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-        import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js';
-        import { getDatabase, ref as dbRef, push, set } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
-        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-storage.js';
+        import { getDatabase, ref as dbRef, set } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js';
+        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -183,6 +184,7 @@
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
         const database = getDatabase(app);
+        const firestore = getFirestore(app);
         const auth = getAuth(app);
 
         window.onload = function() {
@@ -253,35 +255,36 @@
             img.style.transform = `scale(${Math.max(currentScale - 0.1, 0.1)})`;
         }
 
-        function sendText() {
-    const textArea = document.getElementById('text-input');
-    const imageUrl = textArea.dataset.imageUrl;
-    const text = textArea.value.trim();
-
-    if (text && imageUrl) {
-        const user = auth.currentUser;
-        const userName = user ? user.displayName : '不明';
-
-        const timelineRef = dbRef(database, 'posts');
-        const newPostRef = push(timelineRef);
-        set(newPostRef, {
-            imageUrl: imageUrl,
-            text: text,
-            userName: userName,
-            timestamp: new Date().toISOString()
-        })
-        .then(() => {
-            console.log('投稿が成功しました。');
-            closeTextInput(); // 投稿が成功した後にモーダルを閉じる
-        })
-        .catch(error => {
-            console.error('投稿に失敗しました:', error);
-        });
-    } else {
-        alert('テキストを入力してください。');
-    }
-}
-
+        async function sendText() {
+            const textArea = document.getElementById('text-input');
+            const imageUrl = textArea.dataset.imageUrl;
+            const text = textArea.value.trim();
+            
+            if (text && imageUrl) {
+                try {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        alert('ログインしてください');
+                        return;
+                    }
+                    
+                    const timestamp = new Date().toISOString();
+                    await addDoc(collection(firestore, 'posts'), {
+                        imageUrl: imageUrl,
+                        text: text,
+                        userName: user.displayName || 'Unknown',
+                        timestamp: timestamp
+                    });
+                    
+                    alert('投稿が成功しました！');
+                    closeTextInput();
+                } catch (error) {
+                    console.error('投稿の保存に失敗しました:', error);
+                }
+            } else {
+                alert('テキストを入力してください');
+            }
+        }
 
         document.getElementById('send-button').addEventListener('click', sendText);
         document.getElementById('close-button').addEventListener('click', closeTextInput);

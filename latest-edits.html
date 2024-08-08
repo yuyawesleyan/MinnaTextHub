@@ -3,120 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最新の編集</title>
-    <link rel="stylesheet" href="styles.css">
-    <script type="module" src="latest-edits.js" defer></script>
+    <title>タイムライン</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        header button {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #dc3545;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        header button:hover {
+            background-color: #c82333;
+        }
+
+        header button:active {
+            background-color: #bd2130;
+        }
+
+        .section {
+            padding: 1rem;
+        }
+
+        .timeline-box {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-box ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .timeline-box li {
+            border-bottom: 1px solid #eee;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .timeline-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-box .user,
+        .timeline-box .timestamp {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .timeline-box .user {
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-box .timestamp {
+            margin-top: 0.25rem;
+        }
+
+        .comments-container {
+            margin-top: 1rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .comments-container h3 {
+            margin-top: 0;
+        }
+
+        .comments-container textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 0.5rem;
+        }
+
+        .comments-container button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .comments-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .comments-container button:active {
+            background-color: #00408d;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comment-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comment-list .author {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .comment-list .text {
+            color: #666;
+        }
+
+        #image-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        #full-image {
+            max-width: 90%;
+            max-height: 90%;
+            transition: transform 0.3s ease;
+            position: absolute;
+            transform-origin: center center;
+        }
+
+        .zoom-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .zoom-controls button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .zoom-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        .zoom-controls button:active {
+            background-color: #00408d;
+        }
+
+        #close-viewer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #close-viewer:hover {
+            background-color: #0056b3;
+        }
+
+        #close-viewer:active {
+            background-color: #00408d;
+        }
+    </style>
 </head>
-<style>
-    /* 全体のスタイル */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* ヘッダーのスタイル */
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 15px;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-}
-
-.link-button {
-    display: inline-block;
-    color: #fff;
-    background-color: #007bff;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    margin: 0; 
-    width: auto;
-    max-width: 200px;
-    text-align: center;
-}
-
-.link-button:hover {
-    background-color: #0056b3;
-}
-
-/* メインセクションのスタイル */
-main {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-}
-
-#latest-edits {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.edit-item {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #fafafa;
-}
-
-.edit-item h2 {
-    margin: 0;
-    font-size: 1.2em;
-}
-
-.edit-item p {
-    margin: 10px 0;
-}
-
-.edit-item img {
-    max-width: 100%;
-    border-radius: 5px;
-}
-
-.edit-item .edit-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.edit-item .edit-details button {
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.edit-item .edit-details button:hover {
-    background-color: #0056b3;
-}
-
-</style>
 <body>
-    <div class="container">
-        <header>
-            <h1>最新の編集を表示します</h1>
-            <a href="admin.html" class="link-button">管理者ページへ戻る</a>
-        </header>
-        <main>
-            <section id="latest-edits">
-                <!-- 最新の編集内容がここに表示される -->
-            </section>
-        </main>
+    <header>
+        <h1>管理者用タイムライン</h1>
+        <button id="logout-button">閉じる</button>
+    </header>
+    <main>
+        <div class="section timeline-box">
+            <h2>タイムライン一覧</h2>
+            <ul id="timeline-list">
+                <!-- タイムラインがここに表示されます -->
+            </ul>
+        </div>
+    </main>
+
+    <!-- Full-size image view -->
+    <div id="image-viewer" style="display: none;">
+        <img id="full-image" src="" alt="Full-size Image">
+        <div class="zoom-controls">
+            <button id="zoom-in">ズームイン</button>
+            <button id="zoom-out">ズームアウト</button>
+        </div>
+        <button id="close-viewer">閉じる</button>
     </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getAuth, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+        const auth = getAuth(app);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const timelineList = document.getElementById('timeline-list');
+            if (!timelineList) return;
+
+            try {
+                const querySnapshot = await getDocs(collection(firestore, 'posts'));
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const listItem = document.createElement('li');
+                    
+                    const img = document.createElement('img');
+                    img.src = data.imageUrl;
+                    img.alt = '投稿画像';
+                    img.style.maxWidth = '200px'; // Set initial image size
+                    img.style.cursor = 'pointer';
+
+                    img.addEventListener('click', () => {
+                        document.getElementById('full-image').src = data.imageUrl;
+                        document.getElementById('image-viewer').style.display = 'flex';
+                    });
+
+                    const text = document.createElement('p');
+                    text.textContent = data.text;
+
+                    const user = document.createElement('p');
+                    user.className = 'user';
+                    user.textContent = `投稿者: ${data.userName}`;
+
+                    const timestamp = document.createElement('p');
+                    timestamp.className = 'timestamp';
+                    timestamp.textContent = `投稿日: ${new Date(data.timestamp).toLocaleString()}`;
+
+                    const commentsContainer = document.createElement('div');
+                    commentsContainer.className = 'comments-container';
+                    commentsContainer.innerHTML = `
+                        <h3>コメント</h3>
+                        <textarea placeholder="コメントを入力..."></textarea>
+                        <button class="post-comment">コメントを投稿</button>
+                        <ul class="comment-list"></ul>
+                    `;
+
+                    const postCommentButton = commentsContainer.querySelector('.post-comment');
+                    const commentList = commentsContainer.querySelector('.comment-list');
+
+                    postCommentButton.addEventListener('click', async () => {
+                        const commentText = commentsContainer.querySelector('textarea').value.trim();
+                        if (commentText) {
+                            try {
+                                await addDoc(collection(firestore, 'posts', doc.id, 'comments'), {
+                                    text: commentText,
+                                    userName: auth.currentUser?.displayName || 'Anonymous',
+                                    timestamp: new Date(),
+                                });
+                                commentsContainer.querySelector('textarea').value = '';
+                                loadComments(doc.id, commentList);
+                            } catch (error) {
+                                console.error("コメント投稿エラー: ", error);
+                            }
+                        }
+                    });
+
+                    listItem.appendChild(img);
+                    listItem.appendChild(text);
+                    listItem.appendChild(user);
+                    listItem.appendChild(timestamp);
+                    listItem.appendChild(commentsContainer);
+
+                    timelineList.appendChild(listItem);
+
+                    loadComments(doc.id, commentList); // Load existing comments
+                });
+            } catch (error) {
+                console.error("タイムライン取得エラー: ", error);
+            }
+        });
+
+        function loadComments(postId, commentList) {
+            commentList.innerHTML = '';
+            getDocs(collection(firestore, 'posts', postId, 'comments'))
+                .then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <p class="author">${data.userName}</p>
+                            <p class="text">${data.text}</p>
+                        `;
+                        commentList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("コメント取得エラー: ", error);
+                });
+        }
+
+        document.getElementById('close-viewer').addEventListener('click', () => {
+            document.getElementById('image-viewer').style.display = 'none';
+            document.getElementById('full-image').style.transform = 'scale(1)'; // Reset zoom
+            document.getElementById('full-image').style.left = '0px'; // Reset position
+            document.getElementById('full-image').style.top = '0px'; // Reset position
+        });
+
+        // Zoom functionality
+        const zoomInButton = document.getElementById('zoom-in');
+        const zoomOutButton = document.getElementById('zoom-out');
+        const fullImage = document.getElementById('full-image');
+        let zoomLevel = 1;
+
+        zoomInButton.addEventListener('click', () => {
+            zoomLevel += 0.1;
+            fullImage.style.transform = `scale(${zoomLevel})`;
+        });
+
+        zoomOutButton.addEventListener('click', () => {
+            zoomLevel = Math.max(1, zoomLevel - 0.1); // Prevent zooming out below original size
+            fullImage.style.transform = `scale(${zoomLevel})`;
+        });
+
+        // Drag functionality
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        fullImage.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = fullImage.offsetLeft;
+            initialY = fullImage.offsetTop;
+            fullImage.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                // Constrain movement within the viewer
+                const viewerRect = document.getElementById('image-viewer').getBoundingClientRect();
+                const imgRect = fullImage.getBoundingClientRect();
+
+                let newLeft = Math.min(Math.max(initialX + dx, viewerRect.left - imgRect.left * zoomLevel + viewerRect.left), viewerRect.right - imgRect.right * zoomLevel + viewerRect.left);
+                let newTop = Math.min(Math.max(initialY + dy, viewerRect.top - imgRect.top * zoomLevel + viewerRect.top), viewerRect.bottom - imgRect.bottom * zoomLevel + viewerRect.top);
+
+                fullImage.style.left = `${newLeft}px`;
+                fullImage.style.top = `${newTop}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            fullImage.style.cursor = 'grab';
+        });
+
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                // Sign-out successful.
+                window.location.href = 'login.html'; // Redirect to login page or wherever appropriate
+            }).catch((error) => {
+                console.error('ログアウトエラー: ', error);
+            });
+        });
+    </script>
 </body>
 </html>
