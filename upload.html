@@ -25,17 +25,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
-        h1 {
+        .upload-container h1 {
             font-size: 20px;
             margin-bottom: 1rem;
             color: #333;
         }
 
-        input[type="text"],
-        input[type="file"],
-        select {
+        .upload-container input[type="text"],
+        .upload-container input[type="file"],
+        .upload-container select {
             margin-bottom: 1rem;
             padding: 0.5rem;
             border: 1px solid #ccc;
@@ -44,7 +45,7 @@
             box-sizing: border-box;
         }
 
-        button {
+        .upload-container button {
             padding: 0.75rem;
             border: none;
             border-radius: 4px;
@@ -57,11 +58,11 @@
             box-sizing: border-box;
         }
 
-        button:hover {
+        .upload-container button:hover {
             background-color: #0056b3;
         }
 
-        button:active {
+        .upload-container button:active {
             background-color: #00408d;
         }
 
@@ -78,6 +79,8 @@
         #success-message {
             color: #28a745;
         }
+
+      
     </style>
     <script type="module" src="upload.js"></script>
 </head>
@@ -91,6 +94,15 @@
         <input type="file" id="file" accept="image/*" required>
         <button onclick="uploadFile()">アップロード</button>
         <div id="message"></div>
+        <button class="close-button" onclick="closeContainer();">&times;</button>
     </div>
+    
+    <script>
+        function closeContainer() {
+            window.location.href = "admin.html"; 
+        }
+    </script>
+
+
 </body>
 </html>

@@ -100,6 +100,7 @@
         main {
             flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
@@ -107,7 +108,6 @@
             padding: 1rem;
         }
 
-        /* Add CSS for the notice box */
         .notice-box {
             background: #fff;
             border: 1px solid #ddd;
@@ -125,6 +125,70 @@
         }
 
         .notice-box p {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .image-diagonal {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 1rem 0;
+        }
+
+        .image-diagonal img {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-diagonal img:nth-child(1) {
+            top: 0;
+            left: 0;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+
+        .image-diagonal img:nth-child(2) {
+            top: 0;
+            right: 0;
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        .text-box-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .text-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .text-box img {
+            width: 100%;
+            height: auto;
+            max-width: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .text-box h3 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .text-box p {
             font-size: 16px;
             margin: 0;
         }
@@ -146,7 +210,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-       
     </script>
 </head>
 <body>
@@ -162,6 +225,30 @@
         <button class="register-btn" onclick="location.href='register2.html'">新規会員登録</button>
         <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
     </div>
- 
+    <main>
+        <div class="image-diagonal">
+            <img src="２２２２.png" alt="説明1">
+            <img src="one.png" alt="説明2">
+        </div>
+        <h1>〜さまざまな歴史資料を読み解こう！！〜</h1>
+        <p>このWEBサイトでは、管理者が日々歴史資料を公開しています。その価値ある歴史資料で気になるものや興味のある人物の書物を見つけて活字化作業に取り組んでください！
+            活字化するのにWordなどのファイル提出は必要なく画像をクリックするだけで、使いやすいデザインを採用した入力ボックスが表示されます。ぜひ、このプロジェクトに取り組んで
+            活字化の楽しさを味わってみてください！！
+        </p>
+        <div class="text-box-container">
+            <div class="text-box">
+                <h3>活字化にチャレンジしよう！</h3>
+                <img src="lsss.png" alt="説明3">
+                <p>このWEBサイトでは、わざわざWordなどのファイル提出もなく画像をクリックするだけで必要なツールが表示されます！手書きの記録を活字化することで、貴重な歴史遺産を次世代へと継承する取り組みに参加しませんか？
+
+                </p>
+            </div>
+            <div class="text-box">
+                <h3>他のユーザーとのコミュニティ</h3>
+                <img src="fpp.png" alt="説明4">
+                <p>自分で作成した活字化がメンバーページのタイムラインに表示され、コメント機能により他のユーザーから修正点などのコメントができる一種のコミュニティとなっています。わからないところを🔳で表示して他のユーザと助け合い、一緒に活字化を完成させましょう！！</p>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

@@ -78,3 +78,6 @@ window.onload = function() {
             console.error('フォルダーリスト取得失敗:', error);
         });
 }
+function closeContainer() {
+    document.getElementById('uploadContainer').classList.add('hidden');
+}
