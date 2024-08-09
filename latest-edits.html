@@ -408,15 +408,11 @@
             fullImage.style.cursor = 'grab';
         });
 
-        // Logout functionality
-        document.getElementById('logout-button').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                // Sign-out successful.
-                window.location.href = 'login.html'; // Redirect to login page or wherever appropriate
-            }).catch((error) => {
-                console.error('ログアウトエラー: ', error);
-            });
-        });
+       // Redirect to admin.html without logging out
+document.getElementById('logout-button').addEventListener('click', () => {
+    window.location.href = 'admin.html'; // Redirect to admin.html without signing out
+});
+
     </script>
 </body>
 </html>
