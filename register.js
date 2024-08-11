@@ -47,3 +47,4 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         document.getElementById('error-message').textContent = '認証失敗: ' + error.message;
     }
 });
+

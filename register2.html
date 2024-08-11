@@ -5,91 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規会員登録</title>
     <link rel="stylesheet" href="styles/style.css">
+    <!-- Google Sign-In Meta Tag -->
+    <meta name="google-signin-client_id" content="278534691346-tkatov6nh6kb7vbipcveh5votg958g01.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #007BFF;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Main content */
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            margin-top: 80px; /* Space for the fixed header */
+            width: 100%;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* Register form */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        form h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+
+        form input {
+            margin: 10px 0;
+            padding: 15px;
+            width: 100%;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding does not affect width */
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-<style>
-    /* General styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-/* Header */
-header {
-    background-color: #007BFF;
-    color: white;
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-}
-
-/* Main content */
-main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    margin-top: 80px; /* Space for the fixed header */
-    width: 100%;
-}
-
-/* Register form */
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-}
-
-form h1 {
-    font-size: 1.8em;
-    margin-bottom: 20px;
-    color: #007BFF;
-}
-
-form input {
-    margin: 10px 0;
-    padding: 15px;
-    width: 100%;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box; /* Ensures padding does not affect width */
-}
-
-form button {
-    margin-top: 20px;
-    padding: 15px;
-    font-size: 1.2em;
-    border: none;
-    background-color: #007BFF;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-form button:hover {
-    background-color: #0056b3;
-}
-
-</style>
 <body>
     <header>
         <h1>新規会員登録</h1>
@@ -105,9 +109,12 @@ form button:hover {
             <input type="password" id="password" placeholder="パスワード" required>
             <button type="submit">登録</button>
         </form>
+
+        <!-- Google Sign-In Button -->
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </main>
     <script type="module">
-        import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+        import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithCredential, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
 
         const firebaseConfig = {
@@ -121,6 +128,7 @@ form button:hover {
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -137,6 +145,19 @@ form button:hover {
                 alert(`エラー: ${error.message}`);
             }
         });
+
+        window.onSignIn = async (googleUser) => {
+            try {
+                const credential = GoogleAuthProvider.credentialFromResult(googleUser);
+                const userCredential = await signInWithCredential(auth, credential);
+                const name = userCredential.user.displayName;
+                alert(`Google認証が成功しました！\nようこそ、${name}さん`);
+                window.location.href = 'https://yuyawesleyan.github.io/honkoku-member/member.html';
+            } catch (error) {
+                console.error("Sign-in error: ", error);
+                alert(`エラー: ${error.message}`);
+            }
+        };
     </script>
 </body>
-</html
+</html>
