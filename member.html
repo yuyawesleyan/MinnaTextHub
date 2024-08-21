@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>みんなの翻刻広場（会員専用ページ）</title>
+    <title>みんなの活字化広場（会員専用ページ）</title>
     <link rel="stylesheet" href="styles/style.css">
     <style>
         /* General styles */
@@ -128,7 +128,31 @@
         }
 
         .join-project-link:hover {
-            background: #0056b3;
+            background:#007bff ;
+            color: #e9ecef;
+        }
+
+        .upload-link{
+            background: #007bff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .upload-link{
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .upload-link{
+            background: #007bff;
             color: #e9ecef;
         }
 
@@ -297,17 +321,21 @@
         <div class="section join-project-box">
             <a href="display.html" class="join-project-link">プロジェクトに参加する（活字化にチャレンジ！！）</a>
         </div>
+        <div class="section upload-box">
+            <a href="upload.html" class="upload-link">画像をアップロードする</a>
+        </div>
+
         <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
-                <!-- お知らせがここに表示される -->
+                <!-- お知らせがここに表示-->
             </ul>
         </div>
 
         <div class="section timeline-box">
             <h2>タイムライン</h2>
             <ul id="timeline-list">
-                <!-- タイムラインがここに表示される -->
+                <!-- タイムラインがここに表示 -->
             </ul>
         </div>
     </main>

@@ -6,7 +6,7 @@
     <title>新規会員登録</title>
     <link rel="stylesheet" href="styles/style.css">
     <!-- Google Sign-In Meta Tag -->
-    <meta name="google-signin-client_id" content="278534691346-tkatov6nh6kb7vbipcveh5votg958g01.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="909469448032-9h4c3cuurfc3m1qonogamd1a97nj93cg.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <style>
         /* General styles */
@@ -152,7 +152,7 @@
                 const userCredential = await signInWithCredential(auth, credential);
                 const name = userCredential.user.displayName;
                 alert(`Google認証が成功しました！\nようこそ、${name}さん`);
-                window.location.href = 'https://yuyawesleyan.github.io/honkoku-member/member.html';
+                window.location.href = 'member.html';
             } catch (error) {
                 console.error("Sign-in error: ", error);
                 alert(`エラー: ${error.message}`);

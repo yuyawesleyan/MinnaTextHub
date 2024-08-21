@@ -17,50 +17,59 @@ const auth = getAuth(app);
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.href = "admin.html";
+        window.location.href = "login.html"; // 非認証ユーザーをログインページにリダイレクト
     }
 });
 
 window.uploadFile = function () {
-    const file = document.getElementById('file').files[0];
+    const files = document.getElementById('file').files;
     const folderName = document.getElementById('folderName').value.trim();
     const selectedFolder = document.getElementById('folderSelect').value;
 
-    if (!file) {
-        document.getElementById('message').innerText = "ファイルを選択してください。";
-        document.getElementById('message').className = "error-message";
+    if (files.length === 0) {
+        displayMessage("ファイルを選択してください。", "error-message");
         return;
     }
 
     const folderPath = folderName || selectedFolder;
 
     if (!folderPath) {
-        document.getElementById('message').innerText = "フォルダーを選択または新規作成してください。";
-        document.getElementById('message').className = "error-message";
+        displayMessage("フォルダーを選択または新規作成してください。", "error-message");
         return;
     }
 
-    const storageRef = ref(storage, `uploads/${folderPath}/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    let uploadedFiles = 0;
+    const totalFiles = files.length;
 
-    uploadTask.on('state_changed',
-        (snapshot) => {
-            // 進行中の状態
-        },
-        (error) => {
-            document.getElementById('message').innerText = "アップロードに失敗しました: " + error.message;
-            document.getElementById('message').className = "error-message";
-        },
-        () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                document.getElementById('message').innerText = "アップロードに成功しました: " ;
-                document.getElementById('message').className = "success-message";
-            });
-        }
-    );
+    Array.from(files).forEach((file) => {
+        const storageRef = ref(storage, `uploads/${folderPath}/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // 進捗表示が必要な場合はここにコードを追加
+            },
+            (error) => {
+                displayMessage("アップロードに失敗しました: " + error.message, "error-message");
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then(() => {
+                    uploadedFiles++;
+                    if (uploadedFiles === totalFiles) {
+                        displayMessage("すべてのファイルがアップロードされました。", "success-message");
+                    }
+                });
+            }
+        );
+    });
 }
 
-// フォルダー一覧の取得と表示
+function displayMessage(message, className) {
+    const messageElement = document.getElementById('message');
+    messageElement.innerText = message;
+    messageElement.className = className;
+}
+
 window.onload = function() {
     const folderSelect = document.getElementById('folderSelect');
 
@@ -78,6 +87,10 @@ window.onload = function() {
             console.error('フォルダーリスト取得失敗:', error);
         });
 }
+
 function closeContainer() {
     document.getElementById('uploadContainer').classList.add('hidden');
+}
+function goBack() {
+    window.history.back(); // ブラウザの履歴を一つ戻る
 }
