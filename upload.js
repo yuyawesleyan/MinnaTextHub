@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
+// Firebaseの設定
 const firebaseConfig = {
     apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
     authDomain: "honkoku-hiroba-21400.firebaseapp.com",
@@ -11,16 +12,22 @@ const firebaseConfig = {
     appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
 };
 
+// Firebaseの初期化
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const auth = getAuth(app);
 
+// ユーザーの認証状態を監視
+let userRole = "";
 onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html"; // 非認証ユーザーをログインページにリダイレクト
+    if (user) {
+        userRole = user.email === "admin@example.com" ? "admin" : "user"; // 役割設定
+    } else {
+        window.location.href = "login.html"; // 未認証ユーザーをログインページにリダイレクト
     }
 });
 
+// ファイルアップロード処理
 window.uploadFile = function () {
     const files = document.getElementById('file').files;
     const folderName = document.getElementById('folderName').value.trim();
@@ -64,12 +71,14 @@ window.uploadFile = function () {
     });
 }
 
+// メッセージ表示
 function displayMessage(message, className) {
     const messageElement = document.getElementById('message');
     messageElement.innerText = message;
     messageElement.className = className;
 }
 
+// ページ読み込み時にフォルダーのリストを取得
 window.onload = function() {
     const folderSelect = document.getElementById('folderSelect');
 
@@ -88,9 +97,18 @@ window.onload = function() {
         });
 }
 
+// コンテナを閉じる
 function closeContainer() {
     document.getElementById('uploadContainer').classList.add('hidden');
 }
+
+// 戻るボタンの処理
 function goBack() {
-    window.history.back(); // ブラウザの履歴を一つ戻る
+    if (userRole === "admin") {
+        window.location.href = "admin.html";
+    } else if (userRole === "user") {
+        window.location.href = "user.html";
+    } else {
+        window.history.back(); // 役割が不明な場合はブラウザの履歴を一つ戻る
+    }
 }
