@@ -56,12 +56,26 @@
             background-color: #fff;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
-        #text-input-wrapper img {
+        #zoom-image-container {
             width: 60%;
             height: 100%;
-            object-fit: contain;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #zoom-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensures the image fits within the container */
+            cursor: grab;
+            transform-origin: center center;
+            transition: transform 0.3s ease-in-out;
         }
 
         #text-input-content {
@@ -70,19 +84,24 @@
             box-sizing: border-box;
         }
 
-        #text-input-content textarea {
+        #text-input-content textarea,
+        #bibliography-content input {
             width: 100%;
-            height: 70%;
             margin-bottom: 1rem;
             padding: 0.75rem;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
-            resize: vertical;
             font-size: 16px;
         }
 
-        #text-input-content button {
+        #text-input-content textarea {
+            height: 70%;
+            resize: vertical;
+        }
+
+        #text-input-content button,
+        #bibliography-content button {
             padding: 0.75rem;
             border: none;
             border-radius: 4px;
@@ -95,15 +114,18 @@
             box-sizing: border-box;
         }
 
-        #send-button {
+        #send-button,
+        #send-bibliography {
             background-color: #007bff;
         }
 
-        #send-button:hover {
+        #send-button:hover,
+        #send-bibliography:hover {
             background-color: #0056b3;
         }
 
-        #send-button:active {
+        #send-button:active,
+        #send-bibliography:active {
             background-color: #00408d;
         }
 
@@ -143,6 +165,67 @@
         .zoom-controls button:active {
             background-color: #00408d;
         }
+
+        /* Tab styles */
+        .tabs {
+            display: flex;
+            background-color: #007bff;
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            background-color: #007bff;
+            transition: background-color 0.3s;
+        }
+
+        .tab.active {
+            background-color: #0056b3;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #bibliography-content input {
+            margin-bottom: 0.5rem;
+        }
+
+        #bibliography-content button {
+            background-color: #28a745;
+        }
+
+        #bibliography-content button:hover {
+            background-color: #218838;
+        }
+
+        #bibliography-content button:active {
+            background-color: #1e7e34;
+        }
+
+        #history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -152,14 +235,35 @@
 
     <div id="text-input-container">
         <div id="text-input-wrapper">
-            <img id="zoom-image" src="" alt="ズーム画像">
+            <div id="zoom-image-container">
+                <img id="zoom-image" src="" alt="ズーム画像">
+            </div>
             <div id="text-input-content">
-                <textarea id="text-input" placeholder="ここにテキストを入力..."></textarea>
-                <div class="zoom-controls">
-                    <button id="zoom-in-button">ズームイン</button>
-                    <button id="zoom-out-button">ズームアウト</button>
+                <div class="tabs">
+                    <div class="tab active" data-tab="text-input">活字化入力</div>
+                    <div class="tab" data-tab="bibliography">書誌情報</div>
+                    <div class="tab" data-tab="editor-history">編集者履歴</div>
                 </div>
-                <button id="send-button">送信</button>
+                <div id="text-input" class="tab-content active">
+                    <textarea placeholder="ここにテキストを入力..."></textarea>
+                    <div class="zoom-controls">
+                        <button id="zoom-in-button">ズームイン</button>
+                        <button id="zoom-out-button">ズームアウト</button>
+                    </div>
+                    <button id="send-button">送信</button>
+                </div>
+                <div id="bibliography" class="tab-content">
+                    <input type="text" id="bibliography-title" placeholder="資料名">
+                    <input type="text" id="bibliography-subtitle" placeholder="タイトル">
+                    <input type="text" id="bibliography-publication-date" placeholder="Publication Date">
+                    <input type="text" id="bibliography-related-materials" placeholder="参考文献・関連資料">
+                    <button id="send-bibliography">送信</button>
+                </div>
+                <div id="editor-history" class="tab-content">
+                    <div id="history-list">
+                        <!-- Editor history will be displayed here -->
+                    </div>
+                </div>
                 <button id="close-button">閉じる</button>
             </div>
         </div>
@@ -168,8 +272,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
         import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-storage.js';
-        import { getDatabase, ref as dbRef, set } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js';
-        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
         import { getAuth } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
 
         const firebaseConfig = {
@@ -183,7 +286,6 @@
 
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
-        const database = getDatabase(app);
         const firestore = getFirestore(app);
         const auth = getAuth(app);
 
@@ -227,69 +329,132 @@
             } else {
                 gallery.innerHTML = '<p>フォルダーのパスが指定されていません。</p>';
             }
-        }
+        };
 
         function openTextInput(imageUrl) {
             const container = document.getElementById('text-input-container');
             container.style.display = 'flex';
+
             const img = document.getElementById('zoom-image');
             img.src = imageUrl;
             img.style.transform = 'scale(1)'; // Reset zoom scale
-            document.getElementById('text-input').dataset.imageUrl = imageUrl;
-        }
 
-        function closeTextInput() {
-            const container = document.getElementById('text-input-container');
-            container.style.display = 'none';
-        }
+            img.onmousedown = function(e) {
+                img.style.cursor = 'grabbing';
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startLeft = parseFloat(getComputedStyle(img).left) || 0;
+                const startTop = parseFloat(getComputedStyle(img).top) || 0;
 
-        function zoomIn() {
-            const img = document.getElementById('zoom-image');
-            const currentScale = parseFloat(img.style.transform.replace('scale(', '').replace(')', '')) || 1;
-            img.style.transform = `scale(${currentScale + 0.1})`;
-        }
-
-        function zoomOut() {
-            const img = document.getElementById('zoom-image');
-            const currentScale = parseFloat(img.style.transform.replace('scale(', '').replace(')', '')) || 1;
-            img.style.transform = `scale(${Math.max(currentScale - 0.1, 0.1)})`;
-        }
-
-        async function sendText() {
-            const textArea = document.getElementById('text-input');
-            const imageUrl = textArea.dataset.imageUrl;
-            const text = textArea.value.trim();
-            
-            if (text && imageUrl) {
-                try {
-                    const user = auth.currentUser;
-                    if (!user) {
-                        alert('ログインしてください');
-                        return;
-                    }
-                    
-                    const timestamp = new Date().toISOString();
-                    await addDoc(collection(firestore, 'posts'), {
-                        imageUrl: imageUrl,
-                        text: text,
-                        userName: user.displayName || 'Unknown',
-                        timestamp: timestamp
-                    });
-                    
-                    alert('投稿が成功しました！');
-                    closeTextInput();
-                } catch (error) {
-                    console.error('投稿の保存に失敗しました:', error);
+                function onMouseMove(e) {
+                    img.style.left = `${startLeft + e.clientX - startX}px`;
+                    img.style.top = `${startTop + e.clientY - startY}px`;
                 }
-            } else {
-                alert('テキストを入力してください');
-            }
+
+                function onMouseUp() {
+                    img.style.cursor = 'grab';
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            };
+
+            document.getElementById('zoom-in-button').onclick = function() {
+                const scale = parseFloat(getComputedStyle(img).transform.split('(')[1].split(')')[0].split(',')[0]) || 1;
+                img.style.transform = `scale(${Math.min(scale * 1.2, 5)})`;
+            };
+
+            document.getElementById('zoom-out-button').onclick = function() {
+                const scale = parseFloat(getComputedStyle(img).transform.split('(')[1].split(')')[0].split(',')[0]) || 1;
+                img.style.transform = `scale(${Math.max(scale * 0.8, 1)})`;
+            };
+
+            document.getElementById('close-button').onclick = function() {
+                container.style.display = 'none';
+            };
+
+            handleTabs();
+            loadEditorHistory();
         }
 
-        document.getElementById('send-button').addEventListener('click', sendText);
-        document.getElementById('close-button').addEventListener('click', closeTextInput);
-        document.getElementById('zoom-in-button').addEventListener('click', zoomIn);
-        document.getElementById('zoom-out-button').addEventListener('click', zoomOut);
+        function handleTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+        }
+
+        function loadEditorHistory() {
+            const historyList = document.getElementById('history-list');
+            const historyQuery = query(collection(firestore, 'editorHistory'), orderBy('timestamp', 'desc'));
+
+            onSnapshot(historyQuery, (snapshot) => {
+                historyList.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.textContent = `${data.username} - ${data.timestamp.toDate().toLocaleString()}`;
+                    historyList.appendChild(historyItem);
+                });
+            });
+        }
+
+        document.getElementById('send-button').onclick = function() {
+            // Handle sending the text input
+            const textarea = document.querySelector('#text-input textarea');
+            const textInput = textarea.value;
+            const timestamp = new Date();
+
+            // Add text input to Firestore
+            addDoc(collection(firestore, 'textInputs'), {
+                text: textInput,
+                timestamp: timestamp
+            }).then(() => {
+                textarea.value = '';
+                console.log('Text input sent successfully.');
+            }).catch(error => {
+                console.error('Error sending text input:', error);
+            });
+        };
+
+        document.getElementById('send-bibliography').onclick = function() {
+            // Handle sending bibliography
+            const title = document.getElementById('bibliography-title').value;
+            const subtitle = document.getElementById('bibliography-subtitle').value;
+            const publicationDate = document.getElementById('bibliography-publication-date').value;
+            const relatedMaterials = document.getElementById('bibliography-related-materials').value;
+
+            const timestamp = new Date();
+
+            // Add bibliography to Firestore
+            addDoc(collection(firestore, 'bibliographies'), {
+                title: title,
+                subtitle: subtitle,
+                publicationDate: publicationDate,
+                relatedMaterials: relatedMaterials,
+                timestamp: timestamp
+            }).then(() => {
+                console.log('Bibliography sent successfully.');
+                // Optionally, clear input fields
+                document.getElementById('bibliography-title').value = '';
+                document.getElementById('bibliography-subtitle').value = '';
+                document.getElementById('bibliography-publication-date').value = '';
+                document.getElementById('bibliography-related-materials').value = '';
+            }).catch(error => {
+                console.error('Error sending bibliography:', error);
+            });
+        };
     </script>
 </body>
 </html>
