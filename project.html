@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロジェクト一覧</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #444;
+            text-align: center;
+        }
+
+        .gallery, #image-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .folder-card, .image-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            width: calc(25% - 15px);
+            max-width: 220px;
+            position: relative;
+        }
+
+        .folder-card:hover, .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .folder-image, .image-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .folder-name {
+            padding: 15px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        .image-list-header {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 初期表示時にボタンを隠す */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>プロジェクト一覧</h1>
+    <div class="gallery" id="gallery"></div>
+    <div id="image-list" style="display: none;">
+        <div class="image-list-header" id="folder-header"></div>
+    </div>
+
+    <div class="button-container">
+        <button class="button hidden" id="back-button">プロジェクト一覧に戻る</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        const gallery = document.getElementById('gallery');
+        const imageList = document.getElementById('image-list');
+        const folderHeader = document.getElementById('folder-header');
+        const backButton = document.getElementById('back-button');
+
+        async function loadProjects() {
+            const rootRef = ref(storage, '');
+            const folders = await listAll(rootRef);
+
+            for (const folder of folders.prefixes) {
+                const imagesRef = ref(storage, folder.fullPath);
+                const images = await listAll(imagesRef);
+
+                if (images.items.length > 0) {
+                    const firstImageRef = images.items[0];
+                    const imageURL = await getDownloadURL(firstImageRef);
+                    const folderName = folder.name;
+
+                    createFolderCard(imageURL, folderName, images.items);
+                }
+            }
+        }
+
+        function createFolderCard(imageURL, folderName, images) {
+            const card = document.createElement('div');
+            card.className = 'folder-card';
+
+            const img = document.createElement('img');
+            img.src = imageURL;
+            img.alt = folderName;
+            img.className = 'folder-image';
+
+            const name = document.createElement('div');
+            name.className = 'folder-name';
+            name.textContent = folderName;
+
+            card.appendChild(img);
+            card.appendChild(name);
+            gallery.appendChild(card);
+
+            card.addEventListener('click', () => {
+                displayImageList(folderName, images);
+            });
+        }
+
+        async function displayImageList(folderName, images) {
+            gallery.style.display = 'none';
+            backButton.classList.remove('hidden');
+            imageList.style.display = 'flex';
+
+            folderHeader.textContent = folderName;
+            imageList.innerHTML = ''; // 既存の内容をクリア
+
+            const imageURLs = await Promise.all(images.map(image => getDownloadURL(image)));
+            imageURLs.forEach((url, index) => {
+                const imageCard = document.createElement('div');
+                imageCard.className = 'image-card';
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `Image ${index + 1}`;
+
+                imageCard.appendChild(img);
+                imageList.appendChild(imageCard);
+
+                imageCard.addEventListener('click', () => {
+                    window.location.href = `text_entry_page.html?image=${encodeURIComponent(url)}`;
+                });
+            });
+        }
+
+        backButton.addEventListener('click', () => {
+            gallery.style.display = 'flex';
+            backButton.classList.add('hidden');
+            imageList.style.display = 'none';
+        });
+
+        loadProjects();
+    </script>
+     <button onclick="location.href='member.html'">メンバーページに戻る</button>
+</body>
+</html>

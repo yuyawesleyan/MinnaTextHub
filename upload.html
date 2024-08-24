@@ -6,116 +6,123 @@
     <title>画像アップロード</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
-        .upload-container {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            width: 100%;
+        .container {
             max-width: 500px;
+            width: 100%;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 24px;
+            font-size: 24px;
+            color: #444;
+            text-align: center;
+        }
+
+        .folder-options {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            position: relative;
+            margin-bottom: 24px;
         }
 
-        .upload-container h1 {
-            font-size: 20px;
-            margin-bottom: 1rem;
-            color: #333;
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
         }
 
-        .upload-container input[type="text"],
-        .upload-container input[type="file"],
-        .upload-container select {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .upload-container button {
-            padding: 0.75rem;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: #fff;
+        select, input[type="text"] {
+            padding: 12px;
             font-size: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 1rem;
+            margin-bottom: 12px;
         }
 
-        .upload-container button:hover {
+        button:hover {
             background-color: #0056b3;
         }
 
-        .upload-container button:active {
-            background-color: #00408d;
-        }
-
-        #message {
-            margin-top: 1rem;
+        #upload-status {
+            margin-top: 16px;
             font-size: 14px;
             text-align: center;
         }
 
-        #message.error-message {
-            color: #dc3545;
+        #back-button {
+            background-color: #6c757d;
         }
 
-        #message.success-message {
-            color: #28a745;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 20rem;
-            right: 0rem;
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #333;
-            transition: color 0.3s;
-        }
-
-        .close-button:hover {
-            color: #007bff;
+        #back-button:hover {
+            background-color: #5a6268;
         }
     </style>
 </head>
 <body>
-    <div class="upload-container">
-        <button class="close-button" onclick="goBack();">&larr; 戻る</button>
+    <div class="container">
         <h1>画像アップロード</h1>
-        <input type="text" id="folderName" placeholder="新規フォルダー名 (任意)">
-        <select id="folderSelect">
-            <option value="">フォルダーを選択</option>
-        </select>
-        <input type="file" id="file" accept="image/*" multiple required>
-        <button onclick="uploadFile()">アップロード</button>
-        <div id="message"></div>
-    </div>
-    
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
+        <div class="folder-options">
+            <label for="existing-folder">既存フォルダを選択</label>
+            <select id="existing-folder">
+                <option value="">既存フォルダを選択</option>
+                <!-- フォルダのオプションがここに追加されます -->
+            </select>
+
+            <label for="new-folder-input">新規フォルダ名を入力</label>
+            <input type="text" id="new-folder-input" placeholder="新規フォルダ名">
+            <button id="new-folder">新規フォルダ作成</button>
+        </div>
+
+        <div class="upload-section">
+            <input type="file" id="file-upload" multiple>
+            <button id="upload-button">アップロード</button>
+            <p id="upload-status"></p>
+        </div>
+
+        <button id="back-button">戻る</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebaseモジュールのインポート
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
+
+        // Firebaseの設定情報
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
             authDomain: "honkoku-hiroba-21400.firebaseapp.com",
@@ -125,97 +132,70 @@
             appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
         };
 
+        // Firebaseの初期化
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
-        const auth = getAuth(app);
 
-        let userRole = ""; // ユーザーの役割を格納する変数
+        document.getElementById('upload-button').addEventListener('click', async function() {
+            const files = document.getElementById('file-upload').files;
+            const status = document.getElementById('upload-status');
+            const newFolderName = document.getElementById('new-folder-input').value.trim();
+            const folder = newFolderName || document.getElementById('existing-folder').value || "default-folder";
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // ここでユーザーの役割を取得する処理を追加する
-                // 例: userRole = getUserRole(user);
-                // 今回は仮に管理者と一般ユーザーの役割を設定
-                userRole = user.email === "admin@example.com" ? "admin" : "user";
-            } else {
-                window.location.href = "login.html";
+            if (files.length === 0) {
+                status.textContent = "画像が選択されていません。";
+                status.style.color = "red";
+                return;
+            }
+
+            status.textContent = "アップロード中...";
+            status.style.color = "blue";
+
+            try {
+                const uploadPromises = Array.from(files).map(file => {
+                    const storageRef = ref(storage, `${folder}/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+
+                    return new Promise((resolve, reject) => {
+                        uploadTask.on('state_changed', 
+                            (snapshot) => {
+                                // 進行状況をモニタリングするための処理があれば追加できます
+                            }, 
+                            (error) => reject(error), 
+                            () => getDownloadURL(uploadTask.snapshot.ref).then(resolve)
+                        );
+                    });
+                });
+
+                const urls = await Promise.all(uploadPromises);
+                status.textContent = "アップロードが完了しました！";
+                status.style.color = "green";
+                console.log("Uploaded files:", urls);
+            } catch (error) {
+                status.textContent = `エラーが発生しました: ${error.message}`;
+                status.style.color = "red";
+                console.error("Upload error:", error);
             }
         });
 
-        window.uploadFile = function () {
-            const files = document.getElementById('file').files;
-            const folderName = document.getElementById('folderName').value.trim();
-            const selectedFolder = document.getElementById('folderSelect').value;
-
-            if (files.length === 0) {
-                displayMessage("ファイルを選択してください。", "error-message");
-                return;
+        document.getElementById('new-folder').addEventListener('click', function() {
+            const newFolderInput = document.getElementById('new-folder-input');
+            const newFolder = newFolderInput.value.trim();
+            if (newFolder) {
+                const option = document.createElement("option");
+                option.value = newFolder;
+                option.textContent = newFolder;
+                document.getElementById('existing-folder').appendChild(option);
+                document.getElementById('existing-folder').value = newFolder;
+                newFolderInput.value = ""; // フィールドをクリア
+            } else {
+                alert("新規フォルダ名を入力してください。");
             }
+        });
 
-            const folderPath = folderName || selectedFolder;
-
-            if (!folderPath) {
-                displayMessage("フォルダーを選択または新規作成してください。", "error-message");
-                return;
-            }
-
-            let uploadedFiles = 0;
-            const totalFiles = files.length;
-
-            Array.from(files).forEach((file) => {
-                const storageRef = ref(storage, `uploads/${folderPath}/${file.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, file);
-
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        // 進捗表示が必要な場合はここにコードを追加
-                    },
-                    (error) => {
-                        displayMessage("アップロードに失敗しました: " + error.message, "error-message");
-                    },
-                    () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then(() => {
-                            uploadedFiles++;
-                            if (uploadedFiles === totalFiles) {
-                                displayMessage("すべてのファイルがアップロードされました。", "success-message");
-                            }
-                        });
-                    }
-                );
-            });
-        }
-
-        function displayMessage(message, className) {
-            const messageElement = document.getElementById('message');
-            messageElement.innerText = message;
-            messageElement.className = className;
-        }
-
-        window.onload = function() {
-            const folderSelect = document.getElementById('folderSelect');
-
-            const listRef = ref(storage, 'uploads/');
-            listAll(listRef)
-                .then((res) => {
-                    res.prefixes.forEach((folderRef) => {
-                        const option = document.createElement('option');
-                        option.value = folderRef.name;
-                        option.textContent = folderRef.name;
-                        folderSelect.appendChild(option);
-                    });
-                })
-                .catch((error) => {
-                    console.error('フォルダーリスト取得失敗:', error);
-                });
-        }
-
-        function goBack() {
-            if (userRole === "admin") {
-                window.location.href = "admin.html";
-            } else if (userRole === "user") {
-                window.location.href = "user.html";
-            }
-        }
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.history.back();
+        });
     </script>
 </body>
 </html>

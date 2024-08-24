@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サイトについて</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: #e0f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background: #80deea;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            border-bottom: 5px solid #00bcd4;
+        }
+        nav {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #ffab40;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 18px;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+            background-color: #ffa000;
+            transform: scale(1.05);
+        }
+        .content {
+            display: none;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            text-align: left;
+            border: 2px solid #00bcd4;
+        }
+        .active {
+            display: block;
+        }
+        h2 {
+            color: #00bcd4;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .nav-btn {
+            background-color:#ffab40 ;
+        }
+        .nav-btn:hover {
+            background-color:#ffab40 ;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        本WEBサイトについて
+    </header>
+    
+    <nav>
+        <button onclick="showContent('greeting')">ごあいさつ</button>
+        <button onclick="showContent('guidelines')">活字化ガイドライン</button>
+        <button onclick="showContent('credit')">クレジット</button>
+        <button class="nav-btn" onclick="location.href='call.html'">お問い合わせ</button>
+    </nav>
+    
+    <div id="greeting" class="content active">
+        <h2>ごあいさつ</h2>
+        <p>こんにちは！このサイトにようこそ。私たちは楽しく、そしてみんながリラックスできるコンテンツを提供することを目指しています。気軽に楽しんでくださいね！
+            2024年11月1日　みんなの活字化広場
+        </p>
+    </div>
+    
+    <div id="guidelines" class="content">
+        <h2>活字化ガイドライン</h2>
+        <p>古い原稿には、たくさんの特殊な文字などが使われています。これらを活字化するには、一定のルールを決めておく必要があります。</p>
+
+        <h3>活字化のサンプル</h3>
+        <p>準備中</p>
+        <h3>基本方針</h3>
+        <p>「みんなの活字化広場」では、次の方針を原則とします。</p>
+        <h4>「見たままの歴史を未来へ」</h4>
+        <p>よくわからない文字や部分があっても、できるだけ活字化に挑戦してみてください。その後、他の人が修正してくれるかもしれません！誰でも参加できる活字化プロジェクトは、気軽に参加できるのが魅力です。ぜひ気軽にご参加ください！</p>
+        <p>以下では、わからない文字などの記入方法の方針を説明します。</p>
+        <h4>不明文字の扱い</h4>
+        <p>原稿を活字化するにつれて、古い文字や紙の劣化により文字が判読できない箇所は「⬜︎」マークで表してください。</p>
+    </div>
+    
+    <div id="credit" class="content">
+        <h2>クレジット（２０２４年度時点）</h2>
+        <p>「みんなの活字化広場」は、長崎鎮西学院大学、吉野ゼミを中心に開発・運営されています。</p>
+        <h3>監修</h3>
+        <p>吉野浩司（長崎鎮西学院大学　教授）</p>
+        <h3>設計・開発</h3>
+        <p>池田悠耶（長崎鎮西学院大学　４年生）</p>
+    </div>
+
+    <button onclick="location.href='index.html'">トップページに戻る</button>
+
+    <script>
+        function showContent(id) {
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>

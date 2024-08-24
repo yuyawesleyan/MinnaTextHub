@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像テキスト入力</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .text-entry {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        .image-container {
+            flex: 2;
+            position: relative;
+            overflow: hidden;
+            background-color: #ddd;
+            border-radius: 8px;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            position: absolute;
+            cursor: grab;
+            transition: transform 0.3s;
+            max-width: none;
+            max-height: none;
+            width: auto;
+            height: auto;
+        }
+
+        .image-container img:active {
+            cursor: grabbing;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 2px solid #007bff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>画像テキスト入力</h1>
+    <div class="container">
+        <div class="text-entry">
+            <div class="tabs">
+                <div class="tab active" data-tab="text-entry">活字化入力</div>
+                <div class="tab" data-tab="bibliography">書誌情報</div>
+                <div class="tab" data-tab="history">編集者履歴</div>
+                <div class="tab" data-tab="legend">凡例</div>
+            </div>
+            <div id="text-entry" class="tab-content active">
+                <div class="input-group">
+                    <label for="text-input">入力内容:</label>
+                    <textarea id="text-input" placeholder="ここにテキストを入力してください"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="request-correction">
+                        <input id="request-correction" type="checkbox">
+                        添削希望
+                    </label>
+                </div>
+                <button class="button" id="save-text-entry">保存</button>
+            </div>
+            <div id="bibliography" class="tab-content">
+                <div class="input-group">
+                    <label for="material-name">資料名:</label>
+                    <input id="material-name" type="text" placeholder="資料名を入力してください">
+                </div>
+                <div class="input-group">
+                    <label for="collection">所蔵:</label>
+                    <input id="collection" type="text" placeholder="所蔵を入力してください">
+                </div>
+                <div class="input-group">
+                    <label for="title">Title:</label>
+                    <input id="title" type="text" placeholder="Titleを入力してください">
+                </div>
+                <div class="input-group">
+                    <label for="date">Date:</label>
+                    <input id="date" type="text" placeholder="Dateを入力してください">
+                </div>
+                <button class="button" id="save-bibliography">保存</button>
+            </div>
+            <div id="history" class="tab-content">
+                <!-- 編集者履歴がここに表示される -->
+            </div>
+            <div id="legend" class="tab-content">
+                <div class="input-group">
+                    <label for="legend-input">凡例:</label>
+                    <textarea id="legend-input" placeholder="凡例を入力してください"></textarea>
+                </div>
+                <button class="button" id="save-legend">保存</button>
+            </div>
+        </div>
+        <div class="image-container">
+            <img id="image" src="" alt="Selected Image">
+        </div>
+    </div>
+
+    <script>
+        const image = document.getElementById('image');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let scale = 1;
+
+        // ユーザー名の取得
+        const username = localStorage.getItem('username') || 'ゲスト';
+
+        image.addEventListener('load', () => {
+            image.style.transform = 'translate(0, 0) scale(1)';
+            scale = 1;
+
+            const container = image.parentElement;
+            const containerRatio = container.clientWidth / container.clientHeight;
+            const imageRatio = image.naturalWidth / image.naturalHeight;
+
+            if (imageRatio > containerRatio) {
+                image.style.width = '100%';
+                image.style.height = 'auto';
+            } else {
+                image.style.width = 'auto';
+                image.style.height = '100%';
+            }
+        });
+
+        image.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = image.getBoundingClientRect();
+            initialLeft = rect.left + window.scrollX;
+            initialTop = rect.top + window.scrollY;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const offsetX = e.clientX - startX;
+                const offsetY = e.clientY - startY;
+                image.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        image.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const scaleFactor = Math.exp(e.deltaY * -0.01);
+            scale *= scaleFactor;
+            scale = Math.min(Math.max(0.5, scale), 4);
+            image.style.transform = `translate(0px, 0px) scale(${scale})`;
+        });
+
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.toggle('active', content.id === targetTab);
+                });
+                tabs.forEach(t => {
+                    t.classList.toggle('active', t === tab);
+                });
+            });
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const imageURL = urlParams.get('image');
+        if (imageURL) {
+            image.src = imageURL;
+
+            const savedData = JSON.parse(localStorage.getItem(imageURL)) || {};
+            document.getElementById('text-input').value = savedData.textInput || '';
+            document.getElementById('material-name').value = savedData.materialName || '';
+            document.getElementById('collection').value = savedData.collection || '';
+            document.getElementById('title').value = savedData.title || '';
+            document.getElementById('date').value = savedData.date || '';
+            document.getElementById('legend-input').value = savedData.legendInput || '';
+            document.getElementById('request-correction').checked = savedData.requestCorrection || false;
+
+            // 編集者履歴の表示
+            const historyContainer = document.getElementById('history');
+            if (savedData.history && savedData.history.length > 0) {
+                historyContainer.innerHTML = savedData.history.map(entry => `
+                    <div>
+                        <strong>${entry.username}</strong>: ${entry.text} (日時: ${new Date(entry.timestamp).toLocaleString()})
+                    </div>
+                `).join('');
+            }
+        }
+
+        const saveData = () => {
+            const textInput = document.getElementById('text-input').value;
+            const materialName = document.getElementById('material-name').value;
+            const collection = document.getElementById('collection').value;
+            const title = document.getElementById('title').value;
+            const date = document.getElementById('date').value;
+            const legendInput = document.getElementById('legend-input').value;
+            const requestCorrection = document.getElementById('request-correction').checked || false;
+
+            const historyEntry = {
+                username,
+                text: textInput,
+                timestamp: Date.now()
+            };
+
+            const existingData = JSON.parse(localStorage.getItem(imageURL)) || {};
+            existingData.textInput = textInput;
+            existingData.materialName = materialName;
+            existingData.collection = collection;
+            existingData.title = title;
+            existingData.date = date;
+            existingData.legendInput = legendInput;
+            existingData.requestCorrection = requestCorrection;
+            existingData.history = existingData.history || [];
+            existingData.history.push(historyEntry);
+
+            localStorage.setItem(imageURL, JSON.stringify(existingData));
+            alert('内容が保存されました。');
+            updateHistory();
+        };
+
+        const updateHistory = () => {
+            const savedData = JSON.parse(localStorage.getItem(imageURL)) || {};
+            const historyContainer = document.getElementById('history');
+            if (savedData.history && savedData.history.length > 0) {
+                historyContainer.innerHTML = savedData.history.map(entry => `
+                    <div>
+                        <strong>${entry.username}</strong>: ${entry.text} (日時: ${new Date(entry.timestamp).toLocaleString()})
+                    </div>
+                `).join('');
+            }
+        };
+
+        document.getElementById('save-text-entry').addEventListener('click', saveData);
+        document.getElementById('save-bibliography').addEventListener('click', saveData);
+        document.getElementById('save-legend').addEventListener('click', saveData);
+    </script>
+</body>
+</html>
