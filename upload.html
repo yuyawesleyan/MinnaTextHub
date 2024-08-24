@@ -99,7 +99,6 @@
             <label for="existing-folder">既存フォルダを選択</label>
             <select id="existing-folder">
                 <option value="">既存フォルダを選択</option>
-                <!-- フォルダのオプションがここに追加されます -->
             </select>
 
             <label for="new-folder-input">新規フォルダ名を入力</label>
@@ -118,11 +117,9 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // Firebaseモジュールのインポート
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
 
-        // Firebaseの設定情報
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
             authDomain: "honkoku-hiroba-21400.firebaseapp.com",
@@ -132,9 +129,27 @@
             appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
         };
 
-        // Firebaseの初期化
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
+
+        // 既存フォルダを取得して表示
+        const existingFolderSelect = document.getElementById('existing-folder');
+        const listFolders = async () => {
+            const rootRef = ref(storage);
+            try {
+                const result = await listAll(rootRef);
+                result.prefixes.forEach((folderRef) => {
+                    const option = document.createElement('option');
+                    option.value = folderRef.name;
+                    option.textContent = folderRef.name;
+                    existingFolderSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error listing folders:", error);
+            }
+        };
+
+        listFolders();
 
         document.getElementById('upload-button').addEventListener('click', async function() {
             const files = document.getElementById('file-upload').files;
@@ -158,9 +173,7 @@
 
                     return new Promise((resolve, reject) => {
                         uploadTask.on('state_changed', 
-                            (snapshot) => {
-                                // 進行状況をモニタリングするための処理があれば追加できます
-                            }, 
+                            null, 
                             (error) => reject(error), 
                             () => getDownloadURL(uploadTask.snapshot.ref).then(resolve)
                         );
@@ -187,7 +200,7 @@
                 option.textContent = newFolder;
                 document.getElementById('existing-folder').appendChild(option);
                 document.getElementById('existing-folder').value = newFolder;
-                newFolderInput.value = ""; // フィールドをクリア
+                newFolderInput.value = "";
             } else {
                 alert("新規フォルダ名を入力してください。");
             }
