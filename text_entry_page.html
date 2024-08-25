@@ -5,28 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>画像テキスト入力</title>
     <style>
-        /* 既存のスタイル */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; overflow: hidden; }
-        .container { display: flex; flex-direction: row; gap: 20px; }
-        .text-entry { flex: 1; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px; max-width: 600px; }
-        .image-container { flex: 2; position: relative; overflow: hidden; background-color: #ddd; border-radius: 8px; height: 80vh; display: flex; justify-content: center; align-items: center; }
-        .image-container img { position: absolute; cursor: grab; transition: transform 0.3s; max-width: none; max-height: none; width: auto; height: auto; }
-        .image-container img:active { cursor: grabbing; }
-        .tabs { display: flex; justify-content: space-between; border-bottom: 2px solid #ddd; margin-bottom: 10px; }
-        .tab { padding: 10px; cursor: pointer; flex: 1; text-align: center; border: 1px solid #ddd; border-bottom: none; background-color: #f8f9fa; transition: background-color 0.3s; }
-        .tab.active { background-color: #fff; border-bottom: 2px solid #007bff; font-weight: bold; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-group input, .input-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-        .input-group textarea { resize: vertical; height: 100px; }
-        .button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 4px; color: #fff; background-color: #007bff; transition: background-color 0.3s; }
-        .button:hover { background-color: #0056b3; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .text-entry {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        .image-container {
+            flex: 2;
+            position: relative;
+            overflow: hidden;
+            background-color: #ddd;
+            border-radius: 8px;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center;
+            position: absolute;
+        }
+
+        .image-container img:active {
+            cursor: grabbing;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 2px solid #007bff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .input-group-checkbox {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-checkbox label {
+            margin-left: 8px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-link {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .button-link:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
-    <h1>画像テキスト入力</h1>
+    <h1>活字化テキスト入力</h1>
+    <p>原稿で不明文字や劣化してわからない文字は「⬜︎」と入力してください。詳しくはホーム画面の「本WEBサイトについて」活字化ガイドラインをお読みください。</p>
     <div class="container">
         <div class="text-entry">
             <div class="tabs">
@@ -40,13 +157,12 @@
                     <label for="text-input">入力内容:</label>
                     <textarea id="text-input" placeholder="ここにテキストを入力してください"></textarea>
                 </div>
-                <div class="input-group">
-                    <label for="request-correction">
-                        <input id="request-correction" type="checkbox">
-                        添削希望
-                    </label>
+                <div class="input-group-checkbox">
+                    <input id="request-correction" type="checkbox">
+                    <label for="request-correction">添削希望</label>
                 </div>
                 <button class="button" id="save-text-entry">保存</button>
+                <button class="button button-link" id="back-to-project">Project.htmlに戻る</button>
             </div>
             <div id="bibliography" class="tab-content">
                 <div class="input-group">
@@ -87,8 +203,8 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 
-        // Firebaseの設定情報
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
             authDomain: "honkoku-hiroba-21400.firebaseapp.com",
@@ -98,111 +214,20 @@
             appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
         };
 
-        // Firebaseの初期化
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         const image = document.getElementById('image');
-        const urlParams = new URLSearchParams(window.location.search);
-        const imageURL = urlParams.get('image');
-        let isDragging = false;
-        let startX, startY, initialLeft, initialTop;
-        let scale = 1;
-
-        image.addEventListener('load', () => {
-            image.style.transform = 'translate(0, 0) scale(1)';
-            scale = 1;
-
-            const container = image.parentElement;
-            const containerRatio = container.clientWidth / container.clientHeight;
-            const imageRatio = image.naturalWidth / image.naturalHeight;
-
-            if (imageRatio > containerRatio) {
-                image.style.width = '100%';
-                image.style.height = 'auto';
-            } else {
-                image.style.width = 'auto';
-                image.style.height = '100%';
-            }
-        });
-
-        image.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            const rect = image.getBoundingClientRect();
-            initialLeft = rect.left + window.scrollX;
-            initialTop = rect.top + window.scrollY;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const offsetX = e.clientX - startX;
-                const offsetY = e.clientY - startY;
-                image.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        image.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const scaleFactor = Math.exp(e.deltaY * -0.01);
-            scale *= scaleFactor;
-            scale = Math.min(Math.max(0.5, scale), 4);
-            image.style.transform = `translate(0px, 0px) scale(${scale})`;
-        });
-
         const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTab = tab.getAttribute('data-tab');
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.toggle('active', content.id === targetTab);
-                });
-                tabs.forEach(t => {
-                    t.classList.toggle('active', t === tab);
-                });
-            });
-        });
+        const imageURL = new URLSearchParams(window.location.search).get('image');
 
-        const saveData = async () => {
-            const textInput = document.getElementById('text-input').value;
-            const materialName = document.getElementById('material-name').value;
-            const collection = document.getElementById('collection').value;
-            const title = document.getElementById('title').value;
-            const date = document.getElementById('date').value;
-            const legendInput = document.getElementById('legend-input').value;
-            const requestCorrection = document.getElementById('request-correction').checked || false;
+        let currentUser = null;
 
-            const historyEntry = {
-                username: "ゲスト",
-                text: textInput,
-                timestamp: Date.now()
-            };
+        const getDocumentId = (imageURL) => encodeURIComponent(imageURL);
 
-            const docRef = doc(db, "imageTextData", imageURL);
-
-            const docData = {
-                textInput,
-                materialName,
-                collection,
-                title,
-                date,
-                legendInput,
-                requestCorrection,
-                history: historyEntry,
-            };
-
-            await setDoc(docRef, docData, { merge: true });
-            alert('内容が保存されました。');
-            loadHistory();
-        };
-
-        const loadHistory = async () => {
-            const docRef = doc(db, "imageTextData", imageURL);
+        const loadData = async () => {
+            const docRef = doc(db, "images", getDocumentId(imageURL));
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
@@ -214,24 +239,138 @@
                 document.getElementById('date').value = data.date || '';
                 document.getElementById('legend-input').value = data.legendInput || '';
                 document.getElementById('request-correction').checked = data.requestCorrection || false;
-
-                const historyContainer = document.getElementById('history');
-                historyContainer.innerHTML = `
-                    <div>
-                        <strong>${data.history.username}</strong>: ${data.history.text} (日時: ${new Date(data.history.timestamp).toLocaleString()})
-                    </div>
-                `;
+                updateHistory(data.history || []);
             }
         };
 
-        if (imageURL) {
-            image.src = imageURL;
-            loadHistory();
-        }
+        const saveData = async () => {
+            if (!currentUser) {
+                alert('ユーザーが認証されていません。');
+                return;
+            }
+
+            const docRef = doc(db, "images", getDocumentId
+            (imageURL));
+            const docSnap = await getDoc(docRef);
+            const existingData = docSnap.exists() ? docSnap.data() : {};
+            const history = existingData.history || [];
+
+            history.push({ 
+                username: currentUser ? currentUser.displayName || 'ゲスト' : 'ゲスト', 
+                text: document.getElementById('text-input').value, 
+                timestamp: Date.now() 
+            });
+
+            const data = {
+                textInput: document.getElementById('text-input').value,
+                materialName: document.getElementById('material-name').value,
+                collection: document.getElementById('collection').value,
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                legendInput: document.getElementById('legend-input').value,
+                requestCorrection: document.getElementById('request-correction').checked || false,
+                history: history
+            };
+
+            await setDoc(docRef, data, { merge: true });
+            alert('内容が保存されました。');
+        };
+
+        const updateHistory = (history) => {
+            const historyContainer = document.getElementById('history');
+            historyContainer.innerHTML = history.map(entry => `
+                <div>
+                    <strong>${entry.username}</strong>: ${entry.text} (日時: ${new Date(entry.timestamp).toLocaleString()})
+                </div>
+            `).join('');
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelector('.tab.active').classList.remove('active');
+                tab.classList.add('active');
+
+                document.querySelector('.tab-content.active').classList.remove('active');
+                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+            });
+        });
 
         document.getElementById('save-text-entry').addEventListener('click', saveData);
         document.getElementById('save-bibliography').addEventListener('click', saveData);
         document.getElementById('save-legend').addEventListener('click', saveData);
+
+        document.getElementById('back-to-project').addEventListener('click', () => {
+            window.location.href = 'Project.html';
+        });
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUser = user;
+                console.log('ログイン中のユーザー:', currentUser.displayName || 'ゲスト');
+            } else {
+                signInAnonymously(auth)
+                    .then(() => {
+                        console.log('ゲストとしてログインしました。');
+                    })
+                    .catch((error) => {
+                        console.error('ログインエラー:', error);
+                    });
+            }
+        });
+
+        if (imageURL) {
+            image.src = imageURL;
+            loadData();
+        }
+
+        // Zoom and drag functionality
+        const imageElement = document.getElementById('image');
+        let scale = 1;
+        let startX, startY, initialX, initialY;
+        let isDragging = false;
+
+        // Set initial scale and position
+        imageElement.style.transform = `scale(${scale})`;
+        imageElement.style.left = '0px';
+        imageElement.style.top = '0px';
+
+        imageElement.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            const zoomFactor = 0.1;
+            scale += event.deltaY * -zoomFactor;
+            scale = Math.min(Math.max(0.5, scale), 4); // Min scale 0.5x, max scale 4x
+            imageElement.style.transform = `scale(${scale})`;
+        });
+
+        imageElement.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            startX = event.clientX;
+            startY = event.clientY;
+            initialX = imageElement.offsetLeft;
+            initialY = imageElement.offsetTop;
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                document.removeEventListener('mousemove', handleDrag);
+            });
+        });
+
+        function handleDrag(event) {
+            if (!isDragging) return;
+            const dx = event.clientX - startX;
+            const dy = event.clientY - startY;
+            imageElement.style.left = `${initialX + dx}px`;
+            imageElement.style.top = `${initialY + dy}px`;
+        }
+
+        // Ensure image is centered initially
+        const adjustImagePosition = () => {
+            imageElement.style.left = `calc(50% - ${imageElement.offsetWidth / 2}px)`;
+            imageElement.style.top = `calc(50% - ${imageElement.offsetHeight / 2}px)`;
+        };
+
+        imageElement.onload = adjustImagePosition;
+        window.addEventListener('resize', adjustImagePosition);
     </script>
 </body>
 </html>
