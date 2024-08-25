@@ -5,51 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タイムライン</title>
     <style>
-        /* Your CSS styles */
-        .timeline-entry {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .post {
             background-color: #fff;
-            border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .post img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .post-content {
+            margin-top: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            color: #888;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <h1>タイムライン</h1>
-    <div id="timeline-container"></div>
+    <div class="container">
+        <h1>タイムライン</h1>
+        <div id="timeline"></div>
+    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-    <script>
-        // Initialize Firebase and load timeline data
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+
         const firebaseConfig = {
-            // Your Firebase config
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        const loadTimeline = async () => {
-            const timelineContainer = document.getElementById('timeline-container');
-            try {
-                const snapshot = await db.collection('timeline').orderBy('timestamp', 'desc').get();
-                snapshot.forEach(doc => {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const timelineContainer = document.getElementById('timeline');
+
+        const loadTimeline = () => {
+            const q = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snapshot) => {
+                timelineContainer.innerHTML = snapshot.docs.map(doc => {
                     const data = doc.data();
-                    const entryDiv = document.createElement('div');
-                    entryDiv.className = 'timeline-entry';
-                    entryDiv.innerHTML = `
-                        <p><strong>${data.username}</strong></p>
-                        <p>${data.textInput}</p>
-                        <p><small>${data.timestamp.toDate().toLocaleString()}</small></p>
+                    return `
+                        <div class="post">
+                            <div class="username">${data.username || 'ゲスト'}</div>
+                            <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
+                            <img src="${data.imageURL}" alt="Image">
+                            <div class="post-content">${data.textInput}</div>
+                        </div>
                     `;
-                    timelineContainer.appendChild(entryDiv);
-                });
-            } catch (error) {
-                console.error("Error loading timeline: ", error);
-            }
+                }).join('');
+            });
         };
 
-        window.onload = loadTimeline;
+        loadTimeline();
     </script>
 </body>
 </html>

@@ -139,6 +139,30 @@
         .button-link:hover {
             background-color: #218838;
         }
+
+        .timeline-entry {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-entry img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .timeline-entry .username {
+            font-weight: bold;
+        }
+
+        .timeline-entry .timestamp {
+            color: #888;
+            font-size: 0.9em;
+        }
+
     </style>
 </head>
 <body>
@@ -199,10 +223,15 @@
         </div>
     </div>
 
+    <h2>タイムライン</h2>
+    <div id="timeline">
+        <!-- タイムラインの投稿がここに表示される -->
+    </div>
+
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
-        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
         import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 
         const firebaseConfig = {
@@ -219,6 +248,7 @@
         const auth = getAuth(app);
 
         const image = document.getElementById('image');
+        const timeline = document.getElementById('timeline');
         const tabs = document.querySelectorAll('.tab');
         const imageURL = new URLSearchParams(window.location.search).get('image');
 
@@ -249,8 +279,7 @@
                 return;
             }
 
-            const docRef = doc(db, "images", getDocumentId
-            (imageURL));
+            const docRef = doc(db, "images", getDocumentId(imageURL));
             const docSnap = await getDoc(docRef);
             const existingData = docSnap.exists() ? docSnap.data() : {};
             const history = existingData.history || [];
@@ -273,7 +302,35 @@
             };
 
             await setDoc(docRef, data, { merge: true });
-            alert('内容が保存されました。');
+            await saveTimelineEntry({
+                username: currentUser ? currentUser.displayName || 'ゲスト' : 'ゲスト',
+                text: document.getElementById('text-input').value,
+                image: imageURL,
+                timestamp: Date.now()
+            });
+            alert('内容が保存され、タイムラインに投稿されました。');
+        };
+
+        const saveTimelineEntry = async (data) => {
+            const docRef = doc(collection(db, "timeline"));
+            await setDoc(docRef, data);
+        };
+
+        const loadTimeline = () => {
+            const q = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
+            onSnapshot(q, (querySnapshot) => {
+                timeline.innerHTML = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return `
+                        <div class="timeline-entry">
+                            <div class="username">${data.username}</div>
+                            <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
+                            ${data.image ? `<img src="${data.image}" alt="Timeline Image">` : ''}
+                            <div>${data.text}</div>
+                        </div>
+                    `;
+                }).join('');
+            });
         };
 
         const updateHistory = (history) => {
@@ -371,6 +428,8 @@
 
         imageElement.onload = adjustImagePosition;
         window.addEventListener('resize', adjustImagePosition);
+
+        loadTimeline();
     </script>
 </body>
 </html>
