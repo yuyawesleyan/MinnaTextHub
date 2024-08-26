@@ -163,11 +163,24 @@
             font-size: 0.9em;
         }
 
+
+#text-input {
+        writing-mode: vertical-rl; /* 縦書きに設定 */
+        height: 350px; /* ボックスの高さを縦長に設定 */
+        width: 100%; /* 幅は100%に */
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: none; /* リサイズを無効化 */
+        overflow-y: auto; /* 縦スクロールを有効化 */
+    }
+       
+
     </style>
 </head>
 <body>
     <h1>活字化テキスト入力</h1>
-    <p>原稿で不明文字や劣化してわからない文字は「⬜︎」と入力してください。詳しくはホーム画面の「本WEBサイトについて」活字化ガイドラインをお読みください。</p>
+    <p>原稿で不明文字や原稿の劣化によりわからない文字は「⬜︎」と入力してください。詳しくはホーム画面の「本WEBサイトについて」活字化ガイドラインをお読みください。</p>
     <div class="container">
         <div class="text-entry">
             <div class="tabs">
@@ -186,7 +199,7 @@
                     <label for="request-correction">添削希望</label>
                 </div>
                 <button class="button" id="save-text-entry">保存</button>
-                <button class="button button-link" id="back-to-project">Project.htmlに戻る</button>
+                <button class="button button-link" id="back-to-project">プロジェクト一覧に戻る</button>
             </div>
             <div id="bibliography" class="tab-content">
                 <div class="input-group">
