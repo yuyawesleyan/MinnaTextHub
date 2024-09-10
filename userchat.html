@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザーページ</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+        main {
+            padding: 20px;
+        }
+        #chat {
+            margin-bottom: 20px;
+        }
+        #chat-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+        }
+        button {
+            padding: 10px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ユーザーページ</h1>
+        <button onclick="logout()">ログアウト</button>
+    </header>
+    <main>
+        <section id="chat">
+            <h2>管理者とのチャット</h2>
+            <div id="chat-box"></div>
+            <input type="text" id="message-input" placeholder="メッセージを入力">
+            <button onclick="sendMessage()">送信</button>
+        </section>
+    </main>
+    <script>
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ログアウト関数
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+
+        // チャットをロードする関数
+        function loadChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = ''; // チャットボックスをクリア
+
+            db.collection('chats').where('users', 'array-contains', auth.currentUser.uid).get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    const chat = doc.data();
+                    if (chat.users.includes('ADMIN_USER_ID')) {
+                        chat.messages.forEach((message) => {
+                            const p = document.createElement('p');
+                            p.textContent = message;
+                            chatBox.appendChild(p);
+                        });
+                    }
+                });
+            }).catch((error) => {
+                console.error('チャットの取得に失敗しました: ', error);
+            });
+        }
+
+        // メッセージを送信する関数
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            if (message) {
+                db.collection('chats').add({
+                    users: [auth.currentUser.uid, 'ADMIN_USER_ID'],
+                    messages: [message]
+                }).then(() => {
+                    messageInput.value = '';
+                    loadChat();
+                }).catch((error) => {
+                    console.error('メッセージの送信に失敗しました: ', error);
+                });
+            } else {
+                console.warn('メッセージが不足しています');
+            }
+        }
+
+        // ページロード時にチャットをロード
+        window.onload = loadChat;
+    </script>
+</body>
+</html>

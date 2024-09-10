@@ -12,48 +12,108 @@
             padding: 20px;
         }
 
-        .container {
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             max-width: 800px;
             margin: 0 auto;
         }
 
-        .post {
+        .timeline-entry {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .post img {
+        .timeline-entry img {
             max-width: 100%;
+            height: auto;
             border-radius: 8px;
         }
 
-        .post-content {
+        .timeline-entry .username {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .timeline-entry .timestamp {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .timeline-entry .text {
+            font-size: 1em;
+        }
+
+        .comment-section {
             margin-top: 10px;
         }
 
-        .username {
+        .comment-section h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .comment-section .comment {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #ccc;
+        }
+
+        .comment-section .comment .comment-username {
             font-weight: bold;
         }
 
-        .timestamp {
+        .comment-section .comment .comment-timestamp {
             color: #888;
-            font-size: 0.9em;
+            font-size: 0.8em;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-form input[type="text"] {
+            flex: 1;
+            padding: 5px;
+            font-size: 1em;
+        }
+
+        .comment-form button {
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            #timeline {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>タイムライン</h1>
-        <div id="timeline"></div>
-    </div>
+
+    <h1>タイムライン</h1>
+    <div id="timeline"></div>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
-        import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+        import { getFirestore, collection, query, orderBy, onSnapshot, doc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -66,27 +126,101 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        let currentUser = null;
 
-        const timelineContainer = document.getElementById('timeline');
+        
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                console.log("ログイン中のユーザー:", user.displayName);
+            } else {
+                console.log("ユーザーがログインしていません");
+            }
+        });
 
+        const timeline = document.getElementById('timeline');
+
+        // タイムラインをロードする関数
         const loadTimeline = () => {
-            const q = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
-            onSnapshot(q, (snapshot) => {
-                timelineContainer.innerHTML = snapshot.docs.map(doc => {
+            const timelineQuery = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
+            onSnapshot(timelineQuery, (snapshot) => {
+                timeline.innerHTML = "";
+                snapshot.forEach((doc) => {
                     const data = doc.data();
-                    return `
-                        <div class="post">
-                            <div class="username">${data.username || 'ゲスト'}</div>
-                            <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
-                            <img src="${data.imageURL}" alt="Image">
-                            <div class="post-content">${data.textInput}</div>
+                    const entry = document.createElement('div');
+                    entry.className = 'timeline-entry';
+                    entry.innerHTML = `
+                        <div class="username">${data.username}</div>
+                        <img src="${data.image}" alt="Image">
+                        <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
+                        <div class="text">${data.text}</div>
+                        <div class="comment-section">
+                            <h3>コメント</h3>
+                            <div class="comments" id="comments-${doc.id}"></div>
+                            <form class="comment-form" onsubmit="return submitComment(event, '${doc.id}')">
+                                <input type="text" id="comment-input-${doc.id}" placeholder="コメントを入力">
+                                <button type="submit">送信</button>
+                            </form>
                         </div>
                     `;
-                }).join('');
+                    timeline.appendChild(entry);
+
+                    // コメントをロード
+                    loadComments(doc.id);
+                });
             });
         };
+
+       // コメントをロードする関数
+const loadComments = (timelineId) => {
+    const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+    const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
+
+    onSnapshot(commentsQuery, (snapshot) => {
+        const commentsElement = document.getElementById(`comments-${timelineId}`);
+        commentsElement.innerHTML = "";
+
+        snapshot.forEach((commentDoc) => {
+            const commentData = commentDoc.data();
+            
+            // タイムスタンプが存在するか確認し、正しく表示
+            const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
+
+            const commentEntry = document.createElement('div');
+            commentEntry.className = 'comment';
+            commentEntry.innerHTML = `
+                <div class="comment-username">${commentData.username}</div>
+                <div class="comment-timestamp">${timestamp ? timestamp.toLocaleString() : "タイムスタンプなし"}</div>
+                <div class="comment-text">${commentData.text}</div>
+            `;
+            commentsElement.appendChild(commentEntry);
+        });
+    });
+};
+
+        // コメントを送信する関数
+window.submitComment = async (event, timelineId) => {
+    event.preventDefault();
+    const commentInput = document.getElementById(`comment-input-${timelineId}`);
+    const commentText = commentInput.value;
+
+    if (commentText.trim() !== "") {
+        const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+        
+        // currentUserのdisplayNameを使用してコメントを保存
+        await addDoc(commentsRef, {
+            username: currentUser ? currentUser.displayName : "ゲスト", // ログインしている場合はユーザー名を使用
+            text: commentText,
+            timestamp: serverTimestamp() // サーバータイムスタンプを保存
+        });
+        commentInput.value = "";
+    }
+};
 
         loadTimeline();
     </script>
 </body>
 </html>
+
