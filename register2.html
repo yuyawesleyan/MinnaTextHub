@@ -110,8 +110,7 @@
             <button type="submit">登録</button>
         </form>
 
-        <!-- Google Sign-In Button -->
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
     </main>
     <script type="module">
         import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithCredential, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
@@ -146,18 +145,7 @@
             }
         });
 
-        window.onSignIn = async (googleUser) => {
-            try {
-                const credential = GoogleAuthProvider.credentialFromResult(googleUser);
-                const userCredential = await signInWithCredential(auth, credential);
-                const name = userCredential.user.displayName;
-                alert(`Google認証が成功しました！\nようこそ、${name}さん`);
-                window.location.href = 'member.html';
-            } catch (error) {
-                console.error("Sign-in error: ", error);
-                alert(`エラー: ${error.message}`);
-            }
-        };
+     
 
 
     </script>
