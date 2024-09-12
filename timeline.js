@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getDatabase, ref as dbRef, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -11,37 +11,30 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const db = getFirestore(app);
 
-window.onload = function() {
-    const timeline = document.getElementById('timeline');
-    const timelineRef = dbRef(database, 'timeline');
-
-    onValue(timelineRef, (snapshot) => {
-        timeline.innerHTML = ''; // Clear existing timeline items
-        snapshot.forEach((childSnapshot) => {
-            const data = childSnapshot.val();
-            const div = document.createElement('div');
-            div.className = 'timeline-item';
-
-            const img = document.createElement('img');
-            img.src = data.imageUrl;
-            img.alt = 'Timeline Image';
-            img.onclick = function() {
-                openZoomedImage(data.imageUrl, data.text);
-            };
-
-            const p = document.createElement('p');
-            p.textContent = data.text;
-
-            div.appendChild(img);
-            div.appendChild(p);
-            timeline.appendChild(div);
-        });
-    });
+async function loadTimeline() {
+    try {
+        const timelineContainer = document.getElementById('timeline');
+        if (timelineContainer) {
+            const querySnapshot = await getDocs(collection(db, 'timeline'));
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('timeline-entry');
+                entryDiv.innerHTML = `
+                    <div class="timeline-content">
+                        <div class="timeline-title">${data.title}</div>
+                        <div class="timeline-date">${data.date}</div>
+                        <div class="timeline-description">${data.description}</div>
+                    </div>
+                `;
+                timelineContainer.appendChild(entryDiv);
+            });
+        }
+    } catch (error) {
+        console.error("データ取得エラー: ", error);
+    }
 }
 
-function openZoomedImage(imageUrl, text) {
-    const win = window.open("", "ZoomedImage", "width=800,height=600");
-    win.document.write(`<html><body><img src="${imageUrl}" style="width: 100%; height: auto;"><p>${text}</p></body></html>`);
-}
+loadTimeline();

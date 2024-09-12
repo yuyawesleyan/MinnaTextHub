@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなの活字化広場</title>
-    <link rel="stylesheet" href="styles/style.css">
     <style>
-  body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -15,10 +14,23 @@
             flex-direction: column;
             min-height: 100vh;
         }
+        body {
+             background-color: #F5F5DC; /* ベージュ */
+            }
+            
+            .header, .footer {
+                background-color: #D2B48C; /* ブラウン */
+            }
+            
+            .timeline-entry {
+                 background-color: #FFFFF0; /* アイボリー */
+                  border: 1px solid #8B4513; /* ダークブラウン */
+                }
+
 
         /* Header */
         header {
-            background-color:#e9e0c5;
+            background-color: #e9e0c5;
             color: #333;
             width: 100%;
             text-align: left;
@@ -64,20 +76,15 @@
         }
 
         .header-right button:hover {
-             background-color: #6c4f3d;
-             color: #f5f5f5;
-             transform: scale(1.05);
-            }
-            
-            .header-right button:focus {
-                outline: none;
-                 box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-                
-                }
+            background-color: #6c4f3d;
+            color: #f5f5f5;
+            transform: scale(1.05);
+        }
 
-        
-
-       
+        .header-right button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+        }
 
         /* Main content */
         main {
@@ -122,7 +129,7 @@
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-            width: 100% ;
+            width: 100%;
             text-align: center;
         }
 
@@ -138,11 +145,11 @@
         }
 
         .join-project-link:hover {
-            background:#007bff ;
+            background: #007bff;
             color: #e9ecef;
         }
 
-        .upload-link{
+        .upload-link {
             background: #007bff;
             padding: 1rem;
             border-radius: 8px;
@@ -150,7 +157,7 @@
             text-align: center;
         }
 
-        .upload-link{
+        .upload-link {
             display: block;
             color: #fff;
             text-decoration: none;
@@ -158,27 +165,60 @@
             font-weight: bold;
             padding: 1rem;
             border-radius: 8px;
-           
         }
 
-        .upload-link{
+        .upload-link {
             background: #007bff;
             color: #e9ecef;
         }
 
-       
-  </style>
+        /* Ensure the timeline container uses grid layout */
+#timeline {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 16px; /* Space between items */
+    padding: 16px;
+}
 
+/* Style each timeline entry */
+.timeline-entry {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Style for image and text alignment */
+.timeline-entry img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+.timeline-entry .text {
+    margin: 8px 0;
+}
+
+.timeline-entry .comment-section {
+    margin-top: 16px;
+}
+
+
+    </style>
 </head>
 <body>
     <header>
-        <h1>みんなの活字化広場</h1>
+        <h1>みんなの活字化広場　version24.1🚀</h1>
         <div class="header-right">
             <p id="welcomeMessage">ようこそ、会員様！</p>
             <button id="logout">ログアウト</button>
         </div>
     </header>
     <main>
+        <!-- Index Section -->
         <div class="section join-project-box">
             <a href="project.html" class="join-project-link">プロジェクトに参加する（活字化にチャレンジ！！）</a>
         </div>
@@ -189,21 +229,22 @@
         <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
-                <!-- お知らせがここに表示-->
+                <!-- お知らせがここに表示 -->
             </ul>
         </div>
 
-        <div class="section-chatbox">
-            <a href="" class="upload-link">チャットをする(開発中のため利用不可）</a>
+        <!-- Timeline Section -->
+        <h2>タイムライン</h2>
+        <div id="timeline">
+            <!-- Timeline entries will be injected here by JavaScript -->
         </div>
     </main>
 
-   
-
     <script type="module">
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
-        import { getFirestore, collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        // Firebase configuration
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -215,48 +256,151 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
+        // Load Announcements
+        async function loadAnnouncements() {
+            try {
+                const announcementList = document.getElementById('announcement-list');
+                if (announcementList) {
+                    announcementList.innerHTML = ''; // Clear existing list
+                    const querySnapshot = await getDocs(collection(db, 'announcements'));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        announcementList.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error("データ取得エラー: ", error);
+            }
+        }
+
+     
+        let currentUser = null;
+
+        
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                console.log("ログイン中のユーザー:", user.displayName);
             } else {
-                const welcomeMessage = document.getElementById('welcomeMessage');
-                if (welcomeMessage) {
-                    welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
-                }
-
-                // お知らせの取得
-                try {
-                    const announcementList = document.getElementById('announcement-list');
-                    if (announcementList) {
-                        announcementList.innerHTML = ''; // 既存のリストをクリア
-                        const querySnapshot = await getDocs(collection(db, 'announcements'));
-                        querySnapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const listItem = document.createElement('li');
-                            listItem.textContent = data.content;
-                            announcementList.appendChild(listItem);
-                        });
-                    }
-                } catch (error) {
-                    console.error("データ取得エラー: ", error);
-                }
+                console.log("ユーザーがログインしていません");
             }
         });
 
-       
-    
+        const timeline = document.getElementById('timeline');
 
-        document.getElementById('logout').addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                alert('ログアウトしました！');
-                window.location.href = 'index.html';
-            } catch (error) {
-                alert(`ログアウト中にエラーが発生しました: ${error.message}`);
+        // タイムラインをロードする関数
+        const loadTimeline = () => {
+            const timelineQuery = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
+            onSnapshot(timelineQuery, (snapshot) => {
+                timeline.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const entry = document.createElement('div');
+                    entry.className = 'timeline-entry';
+                    entry.innerHTML = `
+                        <div class="username">${data.username}</div>
+                        <img src="${data.image}" alt="Image">
+                        <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
+                        <div class="text">${data.text}</div>
+                        <div class="comment-section">
+                            <h3>コメント</h3>
+                            <div class="comments" id="comments-${doc.id}"></div>
+                            <form class="comment-form" onsubmit="return submitComment(event, '${doc.id}')">
+                                <input type="text" id="comment-input-${doc.id}" placeholder="コメントを入力">
+                                <button type="submit">送信</button>
+                            </form>
+                        </div>
+                    `;
+                    timeline.appendChild(entry);
+
+                    // コメントをロード
+                    loadComments(doc.id);
+                });
+            });
+        };
+
+       // コメントをロードする関数
+const loadComments = (timelineId) => {
+    const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+    const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
+
+    onSnapshot(commentsQuery, (snapshot) => {
+        const commentsElement = document.getElementById(`comments-${timelineId}`);
+        commentsElement.innerHTML = "";
+
+        snapshot.forEach((commentDoc) => {
+            const commentData = commentDoc.data();
+            
+            // タイムスタンプが存在するか確認し、正しく表示
+            const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
+
+            const commentEntry = document.createElement('div');
+            commentEntry.className = 'comment';
+            commentEntry.innerHTML = `
+                <div class="comment-username">${commentData.username}</div>
+                <div class="comment-timestamp">${timestamp ? timestamp.toLocaleString() : "タイムスタンプなし"}</div>
+                <div class="comment-text">${commentData.text}</div>
+            `;
+            commentsElement.appendChild(commentEntry);
+        });
+    });
+};
+
+        // コメントを送信する関数
+window.submitComment = async (event, timelineId) => {
+    event.preventDefault();
+    const commentInput = document.getElementById(`comment-input-${timelineId}`);
+    const commentText = commentInput.value;
+
+    if (commentText.trim() !== "") {
+        const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+        
+        // currentUserのdisplayNameを使用してコメントを保存
+        await addDoc(commentsRef, {
+            username: currentUser ? currentUser.displayName : "ゲスト", // ログインしている場合はユーザー名を使用
+            text: commentText,
+            timestamp: serverTimestamp() // サーバータイムスタンプを保存
+        });
+        commentInput.value = "";
+    }
+};
+
+        loadTimeline();
+
+
+
+      
+
+        // Authentication and Logout
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logout');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async () => {
+                    try {
+                        await signOut(auth);
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error("ログアウトエラー: ", error);
+                    }
+                });
             }
+
+            onAuthStateChanged(auth, (user) => {
+                if (!user) {
+                    window.location.href = 'login.html';
+                } else {
+                    const welcomeMessage = document.getElementById('welcomeMessage');
+                    welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+                }
+                loadAnnouncements();
+                loadTimeline();
+            });
         });
     </script>
 </body>

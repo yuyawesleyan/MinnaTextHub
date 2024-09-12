@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出力ページ</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            width: 40%;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .text-container {
+            width: 55%;
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+            box-sizing: border-box;
+        }
+
+        .text-container h2 {
+            margin-top: 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .bibliography {
+            margin-top: 20px;
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
+            font-size: 14px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img id="output-image" src="" alt="Output Image">
+        </div>
+        <div class="text-container">
+            <h2 id="output-text">活字化内容がここに表示されます。</h2>
+            <div class="bibliography" id="output-bibliography">
+                <strong>書誌情報:</strong>
+                <p>書誌情報がここに表示されます。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="button" id="download-pdf">PDFとして保存</button>
+        <button class="button" id="print-page">印刷</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+        import { jsPDF } from 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.6.0/jspdf.umd.min.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const firestore = getFirestore(app);
+
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const imageURL = params.get('image');
+        const docId = params.get('docId');
+
+        const outputImage = document.getElementById('output-image');
+        const outputText = document.getElementById('output-text');
+        const outputBibliography = document.getElementById('output-bibliography');
+
+        async function loadContent() {
+            if (!imageURL || !docId) {
+                console.error('URLパラメータが不足しています。');
+                return;
+            }
+
+            outputImage.src = imageURL;
+
+            const docRef = doc(firestore, 'documents', docId);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    outputText.textContent = data.textContent || '活字化内容がありません。';
+                    outputBibliography.innerHTML = `<strong>書誌情報:</strong><p>${data.bibliography || '書誌情報がありません。'}</p>`;
+                } else {
+                    console.error('ドキュメントが存在しません。');
+                }
+            } catch (error) {
+                console.error('データの取得に失敗しました:', error);
+            }
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'pt', 'a4');
+
+            doc.addImage(outputImage.src, 'JPEG', 15, 40, 120, 120);
+
+            doc.setFontSize(12);
+            doc.text(outputText.textContent, 150, 40, { maxWidth: 120 });
+
+            doc.text(outputBibliography.innerText, 150, 80, { maxWidth: 120 });
+
+            doc.save('output.pdf');
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        document.getElementById('download-pdf').addEventListener('click', generatePDF);
+        document.getElementById('print-page').addEventListener('click', printPage);
+
+        // Load content when page is ready
+        window.addEventListener('load', loadContent);
+    </script>
+</body>
+</html>
