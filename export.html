@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データエクスポート</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        p {
+            text-align: center;
+        }
+        #data-container {
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .thumbnail {
+            width: 80px;
+            height: auto;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+        .thumbnail:hover {
+            transform: scale(1.1);
+        }
+        .image-preview {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: opacity 0.3s ease;
+        }
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+        .image-preview button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        #export-button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 25px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        #export-button:hover {
+            background-color: #1f4f7a;
+        }
+        #back-button {
+            display: block;
+            margin: 20px;
+            padding: 15px 25px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        #back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1>エクスポートページへようこそ📖</h1>
+    <p>Excelへのみデータエクスポートが可能です。また、複数選択に対応しています。</p>
+    <button id="back-button" onclick="goBack()">戻る</button>
+    <div id="data-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>選択</th>
+                    <th>資料名</th>
+                    <th>活字化入力</th>
+                    <th>所蔵</th>
+                    <th>日付</th>
+                    <th>画像</th>
+                </tr>
+            </thead>
+            <tbody id="data-rows">
+                <!-- データの行がここに挿入される -->
+            </tbody>
+        </table>
+    </div>
+    <button id="export-button">選択された項目をエクスポート</button>
+
+    <div class="image-preview">
+        <button>&times;</button>
+        <img src="" alt="Large Image Preview">
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const dataRows = document.getElementById('data-rows');
+        const exportButton = document.getElementById('export-button');
+        const previewContainer = document.querySelector('.image-preview');
+        const previewImage = previewContainer.querySelector('img');
+        let selectedData = [];
+
+        // Firebaseからデータを取得してテーブルに表示
+        const loadData = async () => {
+            const querySnapshot = await getDocs(collection(db, 'images'));
+            dataRows.innerHTML = querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return `
+                    <tr>
+                        <td><input type="checkbox" class="export-checkbox" value="${doc.id}"></td>
+                        <td>${data.materialName || '不明'}</td>
+                        <td>${data.textInput || '未入力'}</td>
+                        <td>${data.collection || '不明'}</td>
+                        <td>${data.date || '不明'}</td>
+                        <td><img class="thumbnail" src="${data.image || ''}" alt="Image Preview"></td>
+                    </tr>
+                `;
+            }).join('');
+
+            // 画像プレビューの表示を設定
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', () => {
+                    previewImage.src = thumbnail.src;
+                    previewContainer.style.display = 'block';
+                    previewContainer.style.opacity = '1';
+                });
+            });
+
+            // 画像プレビューを閉じる機能
+            const closeButton = previewContainer.querySelector('button');
+            closeButton.addEventListener('click', () => {
+                previewContainer.style.opacity = '0';
+                setTimeout(() => {
+                    previewContainer.style.display = 'none';
+                }, 300); // Matching transition duration
+            });
+        };
+
+        // 選択されたデータをエクセル形式でエクスポート
+        const exportToExcel = () => {
+            const checkboxes = document.querySelectorAll('.export-checkbox:checked');
+            selectedData = [];
+
+            checkboxes.forEach(checkbox => {
+                const entryElement = checkbox.closest('tr');
+                const data = {
+                    '資料名': entryElement.children[1].textContent.trim(),
+                    '活字化入力': entryElement.children[2].textContent.trim(),
+                    '所蔵': entryElement.children[3].textContent.trim(),
+                    '日付': entryElement.children[4].textContent.trim(),
+                    '画像URL': entryElement.children[5].querySelector('img.thumbnail').src
+                };
+                selectedData.push(data);
+            });
+
+            if (selectedData.length === 0) {
+                alert('エクスポートする項目を選択してください。');
+                return;
+            }
+
+            // Create a worksheet with headers and correct data
+            const worksheet = XLSX.utils.json_to_sheet(selectedData);
+
+            // Create a new workbook and append the worksheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Exported Data');
+
+            // Set custom column widths for readability
+            worksheet['!cols'] = [
+                { wch: 20 },  // 資料名 column width
+                { wch: 30 },  // 活字化入力 column width
+                { wch: 20 },  // 所蔵 column width
+                { wch: 15 },  // 日付 column width
+                { wch: 50 },  // 画像URL column width (longer for URL)
+            ];
+
+            // Save the Excel file
+            XLSX.writeFile(workbook, 'exported_data.xlsx');
+        };
+
+        exportButton.addEventListener('click', exportToExcel);
+        loadData();
+
+        // 戻るボタンの動作を定義
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
+
+
+
