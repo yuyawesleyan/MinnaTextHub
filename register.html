@@ -46,14 +46,14 @@ body {
     max-width: 360px;
     padding: 2rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     text-align: center;
 }
 
 #register {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
 }
 
@@ -125,11 +125,11 @@ button:active {
     
     <div id="register">
         <form id="registerForm">
-            <input type="text" id="name" name="name" placeholder="ユーザー名" required>
-            <input type="email" id="email" name="email" placeholder="メールアドレス" required>
-            <input type="password" id="password" name="password" placeholder="パスワード" required>
-            <input type="password" id="adminKey" name="adminKey" placeholder="管理者招待コード" required>
-            <button type="submit">認証</button>
+            <input type="text" id="name" name="name" placeholder="性・名 or Last,First" required>
+            <input type="email" id="email" name="email" placeholder="メールアドレス（Email Address）" required>
+            <input type="password" id="password" name="password" placeholder="パスワード（Password）" required>
+            <input type="password" id="adminKey" name="adminKey" placeholder="管理者招待コード（Admin Invitation Code）" required>
+            <button type="submit">認証（Verify）</button>
             <div id="error-message"></div>
             <div id="success-message"></div>
         </form>
