@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バージョン情報</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    header {
+        background-color: #ebcdcd;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #007BFF;
+        text-align: center;
+    }
+
+    .version-history {
+        list-style: none;
+        padding: 0;
+    }
+
+    .version-history li {
+        margin-bottom: 30px;
+    }
+
+    .version-title {
+        font-size: 1.8em;
+        color: #007BFF;
+        margin-bottom: 10px;
+    }
+
+    .version-date {
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .version-desc {
+        font-size: 1.1em;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .back-button {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2em;
+        display: block;
+        text-align: center;
+        margin: 30px auto;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #5a6268;
+    }
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+</style>
+<body>
+    <header>
+        <h1>バージョン情報</h1>
+    </header>
+
+    <div class="container">
+        <h1>バージョン履歴</h1>
+        <ul class="version-history">
+             <li>
+                <div class="version-title">version24.1🚀</div>
+                <div class="version-date">2024年9月10日</div>
+                <div class="version-desc">
+                    - お問い合わせページをリニューアル<br>
+                    - ユーザー体験の向上のためのナビゲーションメニューを改善<br>
+                    - ユーザー体験の向上のためのデザインを改善<br>
+                    - タイムライン機能・コメント機能の追加<br>
+                    - 画像登録を一般ユーザー向けに公開<br>
+                    - 管理者専用ページの追加
+                </div>
+            </li>
+            <li>
+                <div class="version-title">version24.0🚀</div>
+                <div class="version-date">2024年7月1日</div>
+                <div class="version-desc">
+                    - 初回リリース<br>
+                    - メイン機能としてユーザー認証とデータ保存機能を導入<br>
+                    - 基本的なページレイアウトとデザインを実装
+                </div>
+            </li>
+        </ul>
+
+        
+        <button class="back-button" onclick="goBack()">前のページに戻る</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 バージョン情報 - by Yuya.I</p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

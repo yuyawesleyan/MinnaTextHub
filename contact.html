@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #f9f4f4;
+    }
+
+    header {
+        background-color: #d9c9c9;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #007BFF;
+    }
+
+    p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+        color: #555;
+    }
+
+    .contact-info {
+        font-size: 1.5em;
+        margin-bottom: 40px;
+        color: #007BFF;
+    }
+
+    .contact-info span {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .back-button {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2em;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #5a6268;
+    }
+
+    footer {
+        background-color: #f6d3d3;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+</style>
+<body>
+    <header>
+        <h1>お問い合わせ</h1>
+    </header>
+
+    <div class="container">
+        <h1>お問い合わせ情報</h1>
+        <p>以下の情報からお気軽にお問い合わせください。</p>
+
+        <div class="contact-info">
+            <span>メール: ea21002@wesleyan.ac.jp</span>
+            <span>電話番号(直通): 現在利用不可</span>
+        </div>
+
+        
+        <button class="back-button" onclick="goBack()">前のページに戻る</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 サポートセンター - by Yuya.I<p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

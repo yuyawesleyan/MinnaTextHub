@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サイト説明ページ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #e9ecef;
+        color: #333;
+    }
+
+    header {
+        background-color: #007BFF;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    section {
+        padding: 40px 20px;
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    section h2 {
+        color: #007BFF;
+        margin-bottom: 10px;
+    }
+
+    section p {
+        margin-bottom: 30px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    }
+
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .button-container button {
+        background-color: #007BFF;
+        color: white;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        flex: 1 1 calc(50% - 10px); /* 2列配置 */
+        transition: background-color 0.3s ease;
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #f8f9fa;
+        margin-top: 40px;
+    }
+
+    footer button {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    footer button:hover {
+        background-color: #5a6268;
+    }
+
+    /* モバイル対応 */
+    @media (max-width: 600px) {
+        .button-container button {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+<body>
+    <header>
+        <h1>WEBサイトとQuestion</h1>
+    </header>
+
+    <section>
+         <h2>ご希望のカテゴリを選択してください</h2>
+
+        <div class="button-container">
+            <button onclick="location.href='page1.html'">WEBサイト運営について</button>
+            <button onclick="location.href='page2.html'">WEBサイトご利用案内（準備中）</button>
+            <button onclick="location.href='FAQ.html'">FAQページ</button>
+            <button onclick="location.href='support.html'">サポートセンター</button>
+            <button onclick="location.href='page5.html'">利用規約・プライバシーの暗示（準備中）</button>
+            <button onclick="location.href='vvinformation.html'">version詳細</button>
+        </div>
+    </section>
+
+    <footer>
+        <button onclick="goBack()">ホームに戻る</button>
+        <p>2024 Created by Yuya.I</p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+
+</body>
+</html>

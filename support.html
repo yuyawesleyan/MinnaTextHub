@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サポートセンター</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    header {
+        background-color: #333;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        color: #007BFF;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .card {
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        flex: 1 1 calc(33.333% - 20px);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card h3 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        color: #007BFF;
+    }
+
+    .card p {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        color: #555;
+    }
+
+    .card button {
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1em;
+    }
+
+    .card button:hover {
+        background-color: #0056b3;
+    }
+
+    .back-button {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        margin: 30px auto;
+        display: block;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #5a6268;
+    }
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            flex: 1 1 calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .card {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+<body>
+    <header>
+        <h1>サポートセンター</h1>
+    </header>
+
+    <div class="container">
+        <h1>お困りですか？サポートをお任せください</h1>
+
+        <div class="card-container">
+            <div class="card">
+                <h3>よくある質問</h3>
+                <p>サポートが必要な場合、まずはよくある質問（FAQ）をご覧ください。</p>
+                <button onclick="location.href='faq.html'">FAQを見る（現在利用不可）</button>
+            </div>
+
+            <div class="card">
+                <h3>お問い合わせ</h3>
+                <p>問題が解決しない場合、お気軽にお問い合わせください。迅速に対応いたします。</p>
+                <button onclick="location.href='contact.html'">お問い合わせ</button>
+            </div>
+
+            
+        </div>
+
+        
+        <button class="back-button" onclick="goBack()">前のページに戻る</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 サポートセンター - by Yuya.I</p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
