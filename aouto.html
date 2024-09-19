@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推奨環境</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #333;
+    }
+
+    header {
+        background-color: #343a40;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #007BFF;
+        text-align: center;
+    }
+
+    .requirements {
+        margin-top: 30px;
+    }
+
+    .requirements h2 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        color: #343a40;
+    }
+
+    .requirements ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .requirements li {
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 15px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .requirements li::before {
+        content: "✔";
+        color: #28a745;
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 1.5em;
+    }
+
+    .back-button {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2em;
+        display: block;
+        text-align: center;
+        margin: 30px auto;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+        background-color: #5a6268;
+    }
+
+    footer {
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+</style>
+<body>
+
+    <div class="container">
+        <h1>推奨環境</h1>
+        <p>このサイトを快適にご利用いただくためには、以下の環境を推奨します。スマートフォンは非対応です。</p>
+
+        <div class="requirements">
+            <h2>対応ブラウザ</h2>
+            <ul>
+                <li>Google Chrome 最新版</li>
+                <li>Mozilla Firefox 最新版</li>
+                <li>Safari 最新版</li>
+                <li>Microsoft Edge 最新版</li>
+            </ul>
+        </div>
+
+        <div class="requirements">
+            <h2>推奨OS</h2>
+            <ul>
+                <li>Windows 10 以上</li>
+                <li>macOS 10.13 以上</li>
+            </ul>
+        </div>
+
+        <div class="requirements">
+            <h2>インターネット接続</h2>
+            <ul>
+                <li>ブロードバンドインターネット接続（10Mbps 以上）</li>
+            </ul>
+        </div>
+
+        
+        <button class="back-button" onclick="goBack()">前のページに戻る</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Created by Yuya.I</p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
