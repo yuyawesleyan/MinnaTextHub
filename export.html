@@ -130,7 +130,7 @@
 </head>
 <body>
     <h1>エクスポートページへようこそ📖</h1>
-    <p>Excelへのみデータエクスポートが可能です。また、複数選択に対応しています。</p>
+    <p>Excelへのみデータエクスポートが可能です。※複数選択に対応しています。</p>
     <button id="back-button" onclick="goBack()">戻る</button>
     <div id="data-container">
         <table>
@@ -260,10 +260,11 @@
         exportButton.addEventListener('click', exportToExcel);
         loadData();
 
-        // 戻るボタンの動作を定義
+    
         function goBack() {
             window.history.back();
         }
+
     </script>
 </body>
 </html>
