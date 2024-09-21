@@ -96,7 +96,7 @@
             cursor: pointer;
         }
 
-        /* Responsive design */
+        
         @media (max-width: 600px) {
             #timeline {
                 padding: 10px;
@@ -109,7 +109,7 @@
     <h1>タイムライン</h1>
     <div id="timeline"></div>
 
-    <!-- Firebase SDK -->
+    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getFirestore, collection, query, orderBy, onSnapshot, doc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
@@ -142,7 +142,7 @@
 
         const timeline = document.getElementById('timeline');
 
-        // タイムラインをロードする関数
+        
         const loadTimeline = () => {
             const timelineQuery = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
             onSnapshot(timelineQuery, (snapshot) => {
@@ -167,13 +167,13 @@
                     `;
                     timeline.appendChild(entry);
 
-                    // コメントをロード
+                    
                     loadComments(doc.id);
                 });
             });
         };
 
-       // コメントをロードする関数
+       
 const loadComments = (timelineId) => {
     const commentsRef = collection(db, `timeline/${timelineId}/comments`);
     const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
@@ -185,7 +185,7 @@ const loadComments = (timelineId) => {
         snapshot.forEach((commentDoc) => {
             const commentData = commentDoc.data();
             
-            // タイムスタンプが存在するか確認し、正しく表示
+            
             const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
 
             const commentEntry = document.createElement('div');
@@ -200,7 +200,7 @@ const loadComments = (timelineId) => {
     });
 };
 
-        // コメントを送信する関数
+        
 window.submitComment = async (event, timelineId) => {
     event.preventDefault();
     const commentInput = document.getElementById(`comment-input-${timelineId}`);
@@ -209,11 +209,11 @@ window.submitComment = async (event, timelineId) => {
     if (commentText.trim() !== "") {
         const commentsRef = collection(db, `timeline/${timelineId}/comments`);
         
-        // currentUserのdisplayNameを使用してコメントを保存
+        
         await addDoc(commentsRef, {
-            username: currentUser ? currentUser.displayName : "ゲスト", // ログインしている場合はユーザー名を使用
+            username: currentUser ? currentUser.displayName : "ゲスト", 
             text: commentText,
-            timestamp: serverTimestamp() // サーバータイムスタンプを保存
+            timestamp: serverTimestamp() 
         });
         commentInput.value = "";
     }

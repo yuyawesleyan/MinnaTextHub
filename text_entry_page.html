@@ -223,7 +223,7 @@
                 <button class="button" id="save-bibliography">保存</button>
             </div>
             <div id="history" class="tab-content">
-                <!-- 編集者履歴がここに表示される -->
+                
             </div>
             <div id="legend" class="tab-content">
                 <div class="input-group">
@@ -240,7 +240,7 @@
 
     
 
-    <!-- Firebase SDK -->
+    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
@@ -392,13 +392,13 @@
             loadData();
         }
 
-        // Zoom and drag functionality
+        
         const imageElement = document.getElementById('image');
         let scale = 1;
         let startX, startY, initialX, initialY;
         let isDragging = false;
 
-        // Set initial scale and position
+        
         imageElement.style.transform = `scale(${scale})`;
         imageElement.style.left = '0px';
         imageElement.style.top = '0px';
@@ -407,7 +407,7 @@
             event.preventDefault();
             const zoomFactor = 0.1;
             scale += event.deltaY * -zoomFactor;
-            scale = Math.min(Math.max(0.5, scale), 4); // Min scale 0.5x, max scale 4x
+            scale = Math.min(Math.max(0.5, scale), 4); 
             imageElement.style.transform = `scale(${scale})`;
         });
 
@@ -432,7 +432,7 @@
             imageElement.style.top = `${initialY + dy}px`;
         }
 
-        // Ensure image is centered initially
+       
         const adjustImagePosition = () => {
             imageElement.style.left = `calc(50% - ${imageElement.offsetWidth / 2}px)`;
             imageElement.style.top = `calc(50% - ${imageElement.offsetHeight / 2}px)`;

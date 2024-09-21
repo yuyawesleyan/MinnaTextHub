@@ -15,20 +15,20 @@
             min-height: 100vh;
         }
         body {
-             background-color: #f1f1e2; /* ベージュ */
+             background-color: #f1f1e2; 
             }
             
             .header, .footer {
-                background-color: #cfad80; /* ブラウン */
+                background-color: #cfad80; 
             }
             
             .timeline-entry {
-                 background-color: #FFFFF0; /* アイボリー */
-                  border: 1px solid #8B4513; /* ダークブラウン */
+                 background-color: #FFFFF0; 
+                  border: 1px solid #8B4513; 
                 }
 
 
-        /* Header */
+        
         header {
             background-color: #e9e0c5;
             color: #333;
@@ -88,7 +88,7 @@
 
         /* Main content */
         main {
-            margin-top: 80px; /* Adjust for header height */
+            margin-top: 80px; 
             padding: 20px;
             width: 96%;
         }
@@ -149,12 +149,12 @@
      
         #timeline {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    gap: 16px; /* Space between items */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 16px; 
     padding: 16px;
 }
 
-/* Style each timeline entry */
+
 .timeline-entry {
     display: flex;
     flex-direction: column;
@@ -165,7 +165,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Style for image and text alignment */
+
 .timeline-entry img {
     max-width: 100%;
     height: auto;
@@ -179,48 +179,48 @@
     line-height: 1.6;
 }
 
-/* Comment section styling to mimic Facebook */
+
 .timeline-entry .comment-section {
     margin-top: 16px;
 }
 
-/* Input area styling similar to Facebook */
+
 .comment-input {
     display: flex;
     align-items: flex-start;
     border: 1px solid #ddd;
     border-radius: 24px;
-    padding: 12px; /* Increased padding for more space */
+    padding: 12px; 
     background-color: #f0f2f5;
     margin-bottom: 16px;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-    width: 100%; /* Parent container's width */
-    box-sizing: border-box; /* Includes padding and border in the width calculation */
+    width: 100%; 
+    box-sizing: border-box; 
 }
 
 .comment-input textarea {
     border: none;
     background: transparent;
-    width: 100%; /* Full width of the parent container */
-    height: 80px; /* Fixed height for a larger input area */
+    width: 100%; 
+    height: 80px; 
     resize: none;
     outline: none;
-    font-size: 1rem; /* Slightly larger font size */
-    line-height: 1.5; /* Increased line-height for better readability */
+    font-size: 1rem; 
+    line-height: 1.5; 
     padding: 8px;
-    box-sizing: border-box; /* Includes padding and border in the width calculation */
+    box-sizing: border-box; 
 }
 
 .vertical-links {
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* ボタンを横に伸ばす */
-  position: absolute; /* 親要素を絶対位置に */
-  left: 50%; /* 画面の中央からスタート */
-  width: 100%; /* 画面の右半分までボタンを広げる */
-  max-width: 300px; /* 親要素の最大幅を設定 */
-  box-sizing: border-box; /* パディングを幅に含める */
-  padding: 20px 0; /* 余白を調整 */
+  align-items: stretch; 
+  position: absolute; 
+  left: 50%; 
+  width: 100%; 
+  max-width: 300px; 
+  box-sizing: border-box;
+  padding: 20px 0; 
 }
 
 .button {
@@ -232,7 +232,7 @@
   text-decoration: none;
   border-radius: 5px;
   text-align: center;
-  width: 230%; /* ボタンを親要素の幅いっぱいに */
+  width: 230%; 
   font-family: 'Georgia', serif; 
 }
 
@@ -241,7 +241,7 @@
 </head>
 <body>
     <header>
-        <h1>みんなの活字化広場　version24.1🚀</h1>
+        <h1>みんなの活字化広場　version24.2🚀</h1>
         <div class="header-right">
             <p id="welcomeMessage">ようこそ、会員様！</p>
             <button id="logout">ログアウト</button>
@@ -256,7 +256,8 @@
         <div class="vertical-links">
             <a href="upload.html" class="button">画像データをアップロードする</a>
             <a href="#link2" class="button">フィードバックを送る（開発中）</a>
-            <a href="version.html" class="button">WEBサイトについて for Question</a>
+            <a href="version.html" class="button">WEBサイトについて for Question（サポートセンター）</a>
+            <a href="webusing.html" class="button">ご利用案内（各種操作方法）</a>
           </div>
           
      
@@ -265,20 +266,19 @@
         <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
-                <!-- お知らせがここに表示 -->
+               
             </ul>
         </div>
 
-        <!-- Timeline Section -->
+       
         <h2>最近の編集者</h2>
         <div id="timeline">
-            <!-- Timeline entries will be injected here by JavaScript -->
+           
         </div>
 
     </main>
 
     <script type="module">
-        // Firebase configuration
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
         import { getFirestore, collection, getDocs, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
@@ -300,8 +300,8 @@
     try {
         const announcementList = document.getElementById('announcement-list');
         if (announcementList) {
-            announcementList.innerHTML = ''; // Clear existing list
-            // Modify query to sort by 'timestamp' field in descending order
+            announcementList.innerHTML = ''; 
+           
             const querySnapshot = await getDocs(
                 query(
                     collection(db, 'announcements'),
@@ -336,7 +336,7 @@
 
         const timeline = document.getElementById('timeline');
 
-        // タイムラインをロードする関数
+        
         const loadTimeline = () => {
             const timelineQuery = query(collection(db, "timeline"), orderBy("timestamp", "desc"));
             onSnapshot(timelineQuery, (snapshot) => {
@@ -361,13 +361,13 @@
                     `;
                     timeline.appendChild(entry);
 
-                    // コメントをロード
+                    
                     loadComments(doc.id);
                 });
             });
         };
 
-       // コメントをロードする関数
+       
 const loadComments = (timelineId) => {
     const commentsRef = collection(db, `timeline/${timelineId}/comments`);
     const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
@@ -379,7 +379,7 @@ const loadComments = (timelineId) => {
         snapshot.forEach((commentDoc) => {
             const commentData = commentDoc.data();
             
-            // タイムスタンプが存在するか確認し、正しく表示
+            
             const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
 
             const commentEntry = document.createElement('div');
@@ -394,7 +394,7 @@ const loadComments = (timelineId) => {
     });
 };
 
-        // コメントを送信する関数
+        
 window.submitComment = async (event, timelineId) => {
     event.preventDefault();
     const commentInput = document.getElementById(`comment-input-${timelineId}`);
@@ -403,11 +403,11 @@ window.submitComment = async (event, timelineId) => {
     if (commentText.trim() !== "") {
         const commentsRef = collection(db, `timeline/${timelineId}/comments`);
         
-        // currentUserのdisplayNameを使用してコメントを保存
+       
         await addDoc(commentsRef, {
-            username: currentUser ? currentUser.displayName : "ゲスト", // ログインしている場合はユーザー名を使用
+            username: currentUser ? currentUser.displayName : "ゲスト", 
             text: commentText,
-            timestamp: serverTimestamp() // サーバータイムスタンプを保存
+            timestamp: serverTimestamp() 
         });
         commentInput.value = "";
     }
@@ -419,7 +419,7 @@ window.submitComment = async (event, timelineId) => {
 
       
 
-        // Authentication and Logout
+        
         document.addEventListener('DOMContentLoaded', () => {
             const logoutButton = document.getElementById('logout');
             if (logoutButton) {

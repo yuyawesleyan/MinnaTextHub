@@ -88,7 +88,7 @@
             background-color: #0056b3;
         }
 
-        /* 初期表示時にボタンを隠す */
+        
         .hidden {
             display: none;
         }
@@ -105,7 +105,7 @@
         <button class="button hidden" id="back-button">プロジェクト一覧に戻る</button>
     </div>
 
-    <!-- Firebase SDK -->
+    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
@@ -173,7 +173,7 @@
             imageList.style.display = 'flex';
 
             folderHeader.textContent = folderName;
-            imageList.innerHTML = ''; // 既存の内容をクリア
+            imageList.innerHTML = ''; 
 
             const imageURLs = await Promise.all(images.map(image => getDownloadURL(image)));
             imageURLs.forEach((url, index) => {
@@ -204,3 +204,4 @@
      <button onclick="location.href='member.html'">メンバーページに戻る</button>
 </body>
 </html>
+
