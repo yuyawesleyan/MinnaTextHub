@@ -178,30 +178,14 @@
         const previewImage = previewContainer.querySelector('img');
         let selectedData = [];
 
-       
+        
         const loadData = async () => {
             const querySnapshot = await getDocs(collection(db, 'images'));
-            
-            const latestData = {}; 
-
-            querySnapshot.docs.forEach(doc => {
+            dataRows.innerHTML = querySnapshot.docs.map(doc => {
                 const data = doc.data();
-                const materialName = data.materialName || '不明';
-
-               
-                if (!latestData[materialName] || new Date(data.date) > new Date(latestData[materialName].date)) {
-                    latestData[materialName] = {
-                        id: doc.id,
-                        ...data
-                    };
-                }
-            });
-
-            
-            dataRows.innerHTML = Object.values(latestData).map(data => {
                 return `
                     <tr>
-                        <td><input type="checkbox" class="export-checkbox" value="${data.id}"></td>
+                        <td><input type="checkbox" class="export-checkbox" value="${doc.id}"></td>
                         <td>${data.materialName || '不明'}</td>
                         <td>${data.textInput || '未入力'}</td>
                         <td>${data.collection || '不明'}</td>
@@ -211,6 +195,7 @@
                 `;
             }).join('');
 
+            
             const thumbnails = document.querySelectorAll('.thumbnail');
             thumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', () => {
@@ -220,7 +205,7 @@
                 });
             });
 
-            
+           
             const closeButton = previewContainer.querySelector('button');
             closeButton.addEventListener('click', () => {
                 previewContainer.style.opacity = '0';
@@ -248,25 +233,45 @@
             });
 
             if (selectedData.length === 0) {
-                alert("エクスポートするデータを選択してください。");
+                alert('エクスポートする項目を選択してください。');
                 return;
             }
 
-            const ws = XLSX.utils.json_to_sheet(selectedData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "データ");
-            XLSX.writeFile(wb, "みんなの活字化広場・エクスポート.xlsx");
-        };
+           
+            const worksheet = XLSX.utils.json_to_sheet(selectedData);
 
-        // 戻るボタンの関数
-        const goBack = () => {
-            window.location.href = 'index.html'; // 戻りたいページのURLに変更
+            
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Exported Data');
+
+            
+            worksheet['!cols'] = [
+                { wch: 20 },  
+                { wch: 30 },  
+                { wch: 20 },  
+                { wch: 15 },  
+                { wch: 50 },  
+            ];
+
+            
+            XLSX.writeFile(workbook, 'exported_data.xlsx');
         };
 
         exportButton.addEventListener('click', exportToExcel);
-
-        // データをロードして表示
         loadData();
+
+    
+        
+
+    </script>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
     </script>
 </body>
 </html>
+
+
+
