@@ -5,103 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タイムライン</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        #timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+#timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3列のグリッド */
+    gap: 15px;
+    max-width: 900px; /* 幅を広げて調整 */
+    margin: 0 auto;
+}
 
-        .timeline-entry {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+.timeline-entry {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s;
+}
 
-        .timeline-entry img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
+.timeline-entry:hover {
+    transform: translateY(-2px);
+}
 
-        .timeline-entry .username {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
+.timeline-entry img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
 
-        .timeline-entry .timestamp {
-            color: #888;
-            font-size: 0.9em;
-        }
+.timeline-entry .username {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #333;
+}
 
-        .timeline-entry .text {
-            font-size: 1em;
-        }
+.timeline-entry .timestamp {
+    color: #888;
+    font-size: 0.8em;
+}
 
-        .comment-section {
-            margin-top: 10px;
-        }
+.timeline-entry .text {
+    font-size: 0.9em;
+    line-height: 1.4;
+}
 
-        .comment-section h3 {
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
+.comment-section {
+    margin-top: 8px;
+}
 
-        .comment-section .comment {
-            margin-bottom: 10px;
-            padding-left: 10px;
-            border-left: 2px solid #ccc;
-        }
+.comment-section h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #333;
+}
 
-        .comment-section .comment .comment-username {
-            font-weight: bold;
-        }
+.comment-section .comment {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-left: 3px solid #007bff;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
 
-        .comment-section .comment .comment-timestamp {
-            color: #888;
-            font-size: 0.8em;
-        }
+.comment-section .comment .comment-username {
+    font-weight: bold;
+    color: #007bff;
+}
 
-        .comment-form {
-            display: flex;
-            gap: 10px;
-        }
+.comment-section .comment .comment-timestamp {
+    color: #888;
+    font-size: 0.7em;
+}
 
-        .comment-form input[type="text"] {
-            flex: 1;
-            padding: 5px;
-            font-size: 1em;
-        }
+.comment-form {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+}
 
-        .comment-form button {
-            padding: 5px 10px;
-            font-size: 1em;
-            cursor: pointer;
-        }
+.comment-form input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 
-        
-        @media (max-width: 600px) {
-            #timeline {
-                padding: 10px;
-            }
-        }
+.comment-form button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.comment-form button:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 900px) {
+    #timeline {
+        grid-template-columns: repeat(2, 1fr); /* 画面幅が狭くなったら2列に */
+    }
+}
+
+@media (max-width: 600px) {
+    #timeline {
+        grid-template-columns: 1fr; /* さらに狭くなったら1列に */
+    }
+}
+
+
     </style>
 </head>
 <body>

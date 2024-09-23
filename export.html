@@ -258,15 +258,17 @@
             XLSX.writeFile(wb, "みんなの活字化広場・エクスポート.xlsx");
         };
 
-        // 戻るボタンの関数
-        const goBack = () => {
-            window.location.href = 'index.html'; // 戻りたいページのURLに変更
-        };
+        
 
         exportButton.addEventListener('click', exportToExcel);
 
         // データをロードして表示
         loadData();
     </script>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+       </script>
 </body>
 </html>

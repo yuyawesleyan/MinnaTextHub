@@ -89,6 +89,33 @@ form button:hover {
     background-color: #0056b3;
 }
 
+.nav-btn1 {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #ff7675;
+    border-radius: 10px;
+    background-color: #d63031;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn1:hover {
+    background-color: #ff7675;
+    border-color: #d63031;
+}
+
+.nav-btn1:active {
+    transform: scale(0.95);
+}
+
+.nav-btn1:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 118, 117, 0.6);
+}
+
 </style>
 <body>
     <header>
@@ -100,6 +127,7 @@ form button:hover {
             <input type="password" id="password" placeholder="パスワード" required>
             <button type="submit">ログイン</button>
             <button class="nav-btn" onclick="location.href='index2.html'">管理者ログイン</button>
+            <button class="nav-btn1" onclick="location.href='support.html'">私はパスワードを忘れました</button>
         </form>
         
     </main>
