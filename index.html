@@ -6,195 +6,200 @@
     <title>みんなの活字化広場</title>
     <link rel="stylesheet" href="styles/style.css">
     <style>
-        
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #d3d59f;
-        }
-
-        header {
-            background-color: #f3e1ad;
-            color: rgb(14, 15, 14);
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column; 
-            align-items: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-
-        nav {
-            margin-top: 20px; 
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; 
-        }
-
-        nav button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        nav .nav-btn {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        nav .nav-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .auth-buttons {
-            display: flex;
-            justify-content: flex-end; 
-            position: absolute;
-            top: 80px; 
-            right: 20px; 
-            width: calc(100% - 40px); 
-        }
-
-        .auth-buttons button {
-            margin: 0 5px; 
-            padding: 10px 20px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .auth-buttons .register-btn {
-            background-color: #f07491;
-            color: rgb(13, 12, 12);
-        }
-
-        .auth-buttons .register-btn:hover {
-            background-color: #f07491;
-        }
-
-        .auth-buttons .login-btn {
-            background-color:#f07491 ;
-            color: rgb(17, 15, 15);
-        }
-
-        .auth-buttons .login-btn:hover {
-            background-color: #f07491;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 1200px;
-            padding: 1rem;
-        }
-
-        .notice-box {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            width: 50%;
-            max-width: 100px;
-            margin: 1rem;
-        }
-
-        .notice-box h2 {
-            font-size: 24px;
-            margin-bottom: 0.5rem;
-        }
-
-        .notice-box p {
-            font-size: 16px;
-            margin: 0;
-        }
-
-        .image-diagonal {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: 400px;
-            margin: 1rem 0;
-        }
-
-        .image-diagonal img {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-diagonal img:nth-child(1) {
-            top: 0;
-            left: 0;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-
-        .image-diagonal img:nth-child(2) {
-            top: 0;
-            right: 0;
-            clip-path: polygon(100% 0, 100% 100%, 0 100%);
-        }
-
-        .text-box-container {
-    width: 100%;
-    max-width: 1000px; 
-    margin: 1rem 0;
+      body {
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
     display: flex;
-    flex-direction: row; 
-    gap: 1rem;
-    flex-wrap: wrap; 
-    justify-content: center; 
+    flex-direction: column;
+    align-items: center;
+    background-color: #f5f3e6;
+    color: #333;
 }
 
+header {
+    background-color: #3d3d3d;
+    color: #f4f4f4;
+    width: 100%;
+    text-align: center;
+    padding: 30px 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border-bottom: 3px solid #d4af37;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    position: relative;
+}
 
-        .text-box {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+header h1 {
+    margin: 0;
+    font-size: 3em;
+    letter-spacing: 1px;
+    
+}
 
-        .text-box img {
-            width: 100%;
-            height: auto;
-            max-width: 300px;
-            margin-bottom: 1rem;
-        }
+nav {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    background-color: #d4af37;
+    width: 100%;
+}
 
-        .text-box h3 {
-            font-size: 20px;
-            margin-top: 0;
-        }
+nav button {
+    margin: 0 15px;
+    padding: 20px 25px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #8dd957;
+    color: rgb(15, 15, 15);
+    font-family: 'Palatino Linotype', serif;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
 
-        .text-box p {
-            font-size: 16px;
-            margin: 0;
-        }
+nav button:hover {
+    background-color: #f5e278;
+    transform: scale(1.05);
+}
+
+.auth-buttons {
+    position: absolute;
+    top: 10%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons button {
+    padding: 12px 5px;
+    font-size: 1em;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-color: #ef735a;
+    color: #333;
+    font-family: 'Georgia', serif;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.auth-buttons button:hover {
+    background-color: #ee5757;
+    border-color: #f2605b;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    background-color: #fafafa;
+}
+
+.notice-box {
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem;
+    font-family: 'Georgia', serif;
+}
+
+.notice-box h2 {
+    font-size: 28px;
+    margin-bottom: 1rem;
+    color: #3d3d3d;
+}
+
+.notice-box p {
+    font-size: 18px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.image-diagonal {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    height: 500px;
+    margin: 2rem 0;
+    border: 2px solid #d4af37;
+}
+
+.image-diagonal img {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-diagonal img:nth-child(1) {
+    top: 0;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.image-diagonal img:nth-child(2) {
+    top: 0;
+    right: 0;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.text-box-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: -15rem 0 10rem 0;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.text-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    font-family: 'Georgia', serif;
+}
+
+.text-box img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1.5rem;
+    border: 2px solid #d4af37;
+}
+
+.text-box h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 0;
+    color: #3d3d3d;
+}
+
+.text-box p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+}
+
+   
+
     </style>
     
     <script type="module">
@@ -220,7 +225,7 @@
         <h1>ようこそ！！みんなの活字化広場へ</h1>
         <nav>
             <button class="nav-btn" onclick="location.href='//yuyawesleyan.github.io/archive-suzukieitarou/'">ホーム</button>
-            <button class="nav-btn" onclick="location.href='call.html'">お問い合わせ</button>
+            <button class="nav-btn" onclick="location.href='support.html'">お問い合わせ</button>
             <button class="nav-btn" onclick="location.href='itsweb.html'">本WEBサイトについて</button>
             <button class="nav-btn" onclick="location.href='guide.html'">ご登録案内</button>
         </nav>
