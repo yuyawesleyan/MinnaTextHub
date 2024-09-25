@@ -167,14 +167,14 @@
 
 #text-input {
     font-size: 20px;
-        writing-mode: vertical-rl; /* 縦書きに設定 */
-        height: 400px; /* ボックスの高さを縦長に設定 */
-        width: 100%; /* 幅は100%に */
+        writing-mode: vertical-rl; 
+        height: 400px; 
+        width: 100%; 
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        resize: none; /* リサイズを無効化 */
-        overflow-y: auto; /* 縦スクロールを有効化 */
+        resize: none; 
+        overflow-y: auto;
     }
        
 
@@ -182,7 +182,8 @@
 </head>
 <body>
     <h1>活字化テキスト入力</h1>
-    <p>原稿で不明文字や原稿の劣化によりわからない文字は「⬜︎」と入力してください。詳しくはホーム画面の「本WEBサイトについて」活字化ガイドラインをお読みください。</p>
+    <p>原稿で不明文字や原稿の劣化によりわからない文字は「⬜︎」と入力してください。
+    ※資料名は必ず入力してください</p>
     <div class="container">
         <div class="text-entry">
             <div class="tabs">
@@ -205,7 +206,7 @@
             </div>
             <div id="bibliography" class="tab-content">
                 <div class="input-group">
-                    <label for="material-name">資料名:</label>
+                    <label for="material-name">資料名（必須）:</label>
                     <input id="material-name" type="text" placeholder="資料名を入力してください">
                 </div>
                 <div class="input-group">
