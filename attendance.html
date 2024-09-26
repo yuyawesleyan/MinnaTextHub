@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出席管理者ページ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>出席管理者ページ</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ユーザー名</th>
+            <th>出席ボタンを押した時間</th>
+            <th>ログイン時間</th>
+            <th>滞在時間（秒）</th>
+        </tr>
+    </thead>
+    <tbody id="attendance-list">
+        <!-- 出席データがここに追加される -->
+    </tbody>
+</table>
+
+<!-- Firebase SDKの読み込み -->
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+
+<!-- Firebase構成 -->
+<script>
+  // Firebaseの設定
+  const firebaseConfig = {
+    apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+  };
+
+  // Firebaseの初期化
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Firestoreから出席データを取得して表示
+  function loadAttendanceData() {
+    db.collection('attendance').get()
+      .then(snapshot => {
+        const attendanceList = document.getElementById('attendance-list');
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+            <td>${data.name}</td>
+            <td>${data.attendanceTime}</td>
+            <td>${data.loginTime}</td>
+            <td>${data.duration}</td>
+          `;
+          attendanceList.appendChild(newRow);
+        });
+      })
+      .catch(error => {
+        console.error('出席データの取得に失敗しました:', error);
+      });
+  }
+
+  // ページ読み込み時に出席データを読み込む
+  window.onload = function() {
+    loadAttendanceData();
+  };
+</script>
+
+</body>
+</html>

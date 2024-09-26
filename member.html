@@ -86,14 +86,14 @@
             box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
         }
 
-        /* Main content */
+        
         main {
             margin-top: 80px; 
             padding: 20px;
             width: 96%;
         }
 
-        /* Section styles */
+        
         .section {
             background-color: #ffffff;
             color: #333;
@@ -258,6 +258,59 @@
   width: 230%; 
   font-family: 'Georgia', serif; 
 }
+
+.button3{
+    display: block;
+  padding: 10px 10px;
+  margin: 5px 0;
+  background-color: #e8800a;
+  color: rgb(14, 13, 13);
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  width: 230%; 
+  font-family: 'Georgia', serif; 
+  top: 1px;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .header-right {
+        margin-top: 10px;
+    }
+
+    .section {
+        width: 100%;
+    }
+
+    #timeline {
+        grid-template-columns: 1fr; 
+        padding: 8px;
+        margin: 10px;
+    }
+
+    .join-project-box {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+    }
+
+    .button {
+        width: 100%;
+    }
+
+    .button3 {
+        width: 100%; 
+}
+}
 </style>
 </head>
 <body>
@@ -280,9 +333,6 @@
             <a href="version.html" class="button">WEBサイトについて for Question（サポートセンター）</a>
             <a href="webusing.html" class="button">ご利用案内（各種操作方法）</a>
           </div>
-          
-     
-
 
         <div class="section announcement-box">
             <h2>お知らせ</h2>

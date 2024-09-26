@@ -69,6 +69,51 @@
         .nav-btn:hover {
             background-color:#ffab40 ;
         }
+
+        @media (max-width: 768px) {
+    header {
+        font-size: 1.5em; 
+    }
+
+    button {
+        font-size: 16px; 
+        padding: 12px 24px; 
+    }
+
+    h2 {
+        font-size: 1.2em; 
+    }
+
+    p {
+        font-size: 14px; 
+    }
+
+    .content {
+        padding: 15px; 
+        margin: 10px; 
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        font-size: 1.2em; 
+    }
+
+    button {
+        padding: 10px 20px;
+    }
+
+    h2 {
+        font-size: 1em; 
+    }
+
+    p {
+        font-size: 12px; 
+
+    .content {
+        margin: 5px; 
+    }
+}
     </style>
 </head>
 <body>
@@ -80,7 +125,7 @@
         <button onclick="showContent('greeting')">ごあいさつ</button>
         <button onclick="showContent('guidelines')">活字化ガイドライン</button>
         <button onclick="showContent('credit')">クレジット</button>
-        <button class="nav-btn" onclick="location.href='call.html'">お問い合わせ</button>
+        <button class="nav-btn" onclick="location.href='support.html'">お問い合わせ</button>
     </nav>
     
     <div id="greeting" class="content active">
