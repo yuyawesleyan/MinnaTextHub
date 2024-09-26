@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン履歴管理システム</title>
+    <style>
+         body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #212529;
+        }
+
+        h1 {
+            color: #343a40;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        input[type="date"] {
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        
+        #logins-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #logins-list li {
+            background-color: #f1f3f5;
+            border: 1px solid #ced4da;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #logins-list li:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        
+        .meta-info {
+            font-size: 14px;
+            color: #868e96;
+        }
+
+    
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy, where } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const loadLogins = async (date) => {
+            const loginsList = document.getElementById('logins-list');
+            loginsList.innerHTML = '';  
+
+            const selectedDate = new Date(date).toISOString().split('T')[0];  
+
+            const loginsQuery = query(
+                collection(db, 'logins'),
+                orderBy('timestamp', 'desc')
+            );
+
+            const querySnapshot = await getDocs(loginsQuery);
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const loginDate = data.timestamp.toDate().toISOString().split('T')[0];  
+
+                if (loginDate === selectedDate) {  
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `ユーザーネーム: ${data.username}, ログイン時刻: ${data.timestamp.toDate().toLocaleString()}`;
+                    loginsList.appendChild(listItem);
+                }
+            });
+        };
+
+        const loadDefaultLogins = async () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-picker').value = today;
+            await loadLogins(today);
+        };
+
+        document.addEventListener('DOMContentLoaded', loadDefaultLogins);
+
+        document.getElementById('date-picker').addEventListener('change', async (event) => {
+            const selectedDate = event.target.value;
+            await loadLogins(selectedDate);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>ログイン履歴管理システム</h1>
+        <label for="date-picker">日付を選択</label>
+        <input type="date" id="date-picker" max="">
+        <ul id="logins-list"></ul>
+
+        <button class="back-button" onclick="goBack()">戻る</button>
+    </div>
+   
+</html>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

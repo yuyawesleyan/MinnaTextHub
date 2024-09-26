@@ -53,6 +53,25 @@
             color: #666;
         }
 
+        .btn-back {
+    position: fixed; 
+    bottom: 420px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    background-color: #ff5252;
+    color: white;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+   
+}
+
+
         @media (max-width: 768px) {
     body {
         padding: 20px; 
@@ -88,7 +107,14 @@
         <a class="contact-button" href="https://mail.google.com/mail/?view=cm&fs=1&to=ea21002@wesleyan.ac.jp,yoshino@wesleyan.ac.jp&su=お問い合わせ&body=【お名前】%0A【メールアドレス】%0A【お問い合わせ内容】%0A%0A以下にお問い合わせ内容を記入してください。">
             お問い合わせメールを送る
         </a>
+        <button class="btn-back" onclick="goBackTwoSteps()">戻る</button>
     </div>
+
+    <script>
+        function goBackTwoSteps() {
+            window.history.go(-2);
+        }
+    </script>
 
     <footer>
         © 2024 Created by Yuya.I
