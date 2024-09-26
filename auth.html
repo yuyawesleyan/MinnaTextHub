@@ -113,8 +113,8 @@
     </style>
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, orderBy, where } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
-
+        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+    
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
             authDomain: "honkoku-hiroba-21400.firebaseapp.com",
@@ -123,47 +123,51 @@
             messagingSenderId: "909469448032",
             appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
         };
-
+    
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
+    
         const loadLogins = async (date) => {
             const loginsList = document.getElementById('logins-list');
             loginsList.innerHTML = '';  
-
+    
             const selectedDate = new Date(date).toISOString().split('T')[0];  
-
+    
             const loginsQuery = query(
                 collection(db, 'logins'),
-                orderBy('timestamp', 'desc')
+                orderBy('timestamp', 'asc')  
             );
-
+    
             const querySnapshot = await getDocs(loginsQuery);
+            const addedUsernames = new Set();  
+    
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 const loginDate = data.timestamp.toDate().toISOString().split('T')[0];  
-
-                if (loginDate === selectedDate) {  
+    
+                if (loginDate === selectedDate && !addedUsernames.has(data.username)) {  
                     const listItem = document.createElement('li');
                     listItem.textContent = `ユーザーネーム: ${data.username}, ログイン時刻: ${data.timestamp.toDate().toLocaleString()}`;
                     loginsList.appendChild(listItem);
+                    addedUsernames.add(data.username);  
                 }
             });
         };
-
+    
         const loadDefaultLogins = async () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date-picker').value = today;
             await loadLogins(today);
         };
-
+    
         document.addEventListener('DOMContentLoaded', loadDefaultLogins);
-
+    
         document.getElementById('date-picker').addEventListener('change', async (event) => {
             const selectedDate = event.target.value;
             await loadLogins(selectedDate);
         });
     </script>
+    
 </head>
 <body>
     <div class="container">
