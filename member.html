@@ -526,17 +526,6 @@ const logUserLogin = async () => {
         });
     }
 };
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        currentUser = user;
-        console.log("ログイン中のユーザー:", user.displayName);
-        await logUserLogin();  
-    } else {
-        console.log("ユーザーがログインしていません");
-    }
-});
-
-    </script>
+</script>
 </body>
 </html>
