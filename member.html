@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="position.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなの活字化広場</title>
     <style>
@@ -486,11 +487,6 @@ window.submitComment = async (event, timelineId) => {
 
         loadTimeline();
 
-
-
-      
-
-        
         document.addEventListener('DOMContentLoaded', () => {
             const logoutButton = document.getElementById('logout');
             if (logoutButton) {
@@ -516,8 +512,7 @@ window.submitComment = async (event, timelineId) => {
             });
         });
 
-        
-const logUserLogin = async () => {
+        const logUserLogin = async () => {
     if (currentUser) {
         const loginsRef = collection(db, 'logins');
         await addDoc(loginsRef, {
@@ -526,6 +521,18 @@ const logUserLogin = async () => {
         });
     }
 };
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+        console.log("ログイン中のユーザー:", user.displayName);
+        await logUserLogin();  
+    } else {
+        console.log("ユーザーがログインしていません");
+    }
+});
+
+
 </script>
 </body>
 </html>
