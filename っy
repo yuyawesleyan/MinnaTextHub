@@ -1,0 +1,4 @@
+ <div class="input-group">
+                    <label for="text-input">入力内容:</label>
+                    <textarea id="text-input" placeholder="[差出人住所]"></textarea>
+                </div>

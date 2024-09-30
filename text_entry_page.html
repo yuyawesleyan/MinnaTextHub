@@ -21,14 +21,16 @@
         }
 
         .text-entry {
-            font-size: 15px;
-            flex: 1;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 600px;
-        }
+    font-size: 15px;
+    flex: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    max-width: 600px;
+    box-sizing: border-box; 
+}
+
 
         .image-container {
             flex: 2;
@@ -194,10 +196,20 @@
                 <div class="tab" data-tab="legend">凡例</div>
             </div>
             <div id="text-entry" class="tab-content active">
-                <div class="input-group">
+                <div class="input-group" style="display: flex; flex-direction: column; max-width: 600px;">
                     <label for="text-input">入力内容:</label>
-                    <textarea id="text-input" placeholder="ここにテキストを入力してください"></textarea>
+                    <textarea id="text-input" rows="4" style="resize: none; border: 1px solid #ccc; border-radius: 8px; padding: 10px; width: 100%; box-sizing: border-box;">
+                差出人住所: 
+                差出人氏名:
+                形状: 
+                枚数: 
+                    </textarea>
                 </div>
+                
+                
+                
+                
+                
                 <div class="input-group-checkbox">
                     <input id="request-correction" type="checkbox">
                     <label for="request-correction">添削希望</label>
