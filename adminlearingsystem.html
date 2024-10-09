@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者画面</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+
+    <h1>管理者画面</h1>
+    <button onclick="grantAccess()">ステージ5へのアクセスを許可</button>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, setDoc, doc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        function grantAccess() {
+            // Logic to grant access to stage5.html, possibly storing in Firestore
+            const userId = prompt("ユーザーIDを入力してください");
+            setDoc(doc(db, 'access', userId), { accessGranted: true })
+                .then(() => {
+                    alert("アクセスが許可されました。");
+                })
+                .catch((error) => {
+                    console.error("エラー:", error);
+                });
+        }
+        onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+
+        // Check if access is granted
+        const accessRef = doc(db, 'access', currentUser.uid);
+        getDoc(accessRef).then((docSnap) => {
+            if (!docSnap.exists() || !docSnap.data().accessGranted) {
+                alert("このステージへのアクセスは許可されていません。");
+                window.location.href = 'stage_selection.html'; // Redirect if access is not granted
+            }
+        });
+    } else {
+        window.location.href = 'login.html'; // Redirect to login if not authenticated
+    }
+});
+
+    </script>
+
+</body>
+</html>

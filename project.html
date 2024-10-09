@@ -35,7 +35,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             width: calc(33.33% - 30px);
-            max-width: 300px;
+            max-width: 250px; 
             position: relative;
         }
 
@@ -44,13 +44,7 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .folder-image, .image-card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        .folder-name {
+        .folder-info {
             padding: 15px;
             font-size: 16px;
             text-align: center;
@@ -66,6 +60,12 @@
             background-color: #f9f9f9;
             text-align: center;
             margin-bottom: 15px;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: auto; 
+            object-fit: contain; 
         }
 
         .button-container {
@@ -89,7 +89,6 @@
             background-color: #0056b3;
         }
 
-        
         .hidden {
             display: none;
         }
@@ -106,7 +105,6 @@
         <button class="button hidden" id="back-button">プロジェクト一覧に戻る</button>
     </div>
 
-    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getStorage, ref, listAll, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js';
@@ -137,30 +135,23 @@
                 const images = await listAll(imagesRef);
 
                 if (images.items.length > 0) {
-                    const firstImageRef = images.items[0];
-                    const imageURL = await getDownloadURL(firstImageRef);
                     const folderName = folder.name;
+                    const imageCount = images.items.length;
 
-                    createFolderCard(imageURL, folderName, images.items);
+                    createFolderCard(folderName, imageCount, images.items);
                 }
             }
         }
 
-        function createFolderCard(imageURL, folderName, images) {
+        function createFolderCard(folderName, imageCount, images) {
             const card = document.createElement('div');
             card.className = 'folder-card';
 
-            const img = document.createElement('img');
-            img.src = imageURL;
-            img.alt = folderName;
-            img.className = 'folder-image';
+            const info = document.createElement('div');
+            info.className = 'folder-info';
+            info.textContent = `${folderName} (${imageCount}枚)`;
 
-            const name = document.createElement('div');
-            name.className = 'folder-name';
-            name.textContent = folderName;
-
-            card.appendChild(img);
-            card.appendChild(name);
+            card.appendChild(info);
             gallery.appendChild(card);
 
             card.addEventListener('click', () => {
@@ -174,7 +165,7 @@
             imageList.style.display = 'flex';
 
             folderHeader.textContent = folderName;
-            imageList.innerHTML = ''; 
+            imageList.innerHTML = '';  // リストをリセット
 
             const imageURLs = await Promise.all(images.map(image => getDownloadURL(image)));
             imageURLs.forEach((url, index) => {
@@ -202,7 +193,6 @@
 
         loadProjects();
     </script>
-     <button onclick="location.href='member.html'">メンバーページに戻る</button>
+    <button onclick="location.href='member.html'">メンバーページに戻る</button>
 </body>
 </html>
-

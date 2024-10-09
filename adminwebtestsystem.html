@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者画面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>テスト結果管理</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>名前</th>
+                <th>テストレベル</th>
+                <th>日時</th>
+                <th>得点</th>
+            </tr>
+        </thead>
+        <tbody id="results"></tbody>
+    </table>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script>
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        // Firebaseを初期化
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // データを取得して表示する関数
+        function fetchResults() {
+            const resultsRef = database.ref('scores/');
+            resultsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const resultsTable = document.getElementById('results');
+                resultsTable.innerHTML = ''; // テーブルをクリア
+
+                for (const key in data) {
+                    const result = data[key];
+                    const row = `
+                        <tr>
+                            <td>${result.name}</td>
+                            <td>${result.level}</td>
+                            <td>${result.date}</td>
+                            <td>${result.total}</td>
+                        </tr>
+                    `;
+                    resultsTable.innerHTML += row; // 新しい行を追加
+                }
+            });
+        }
+
+        // ページが読み込まれたときにデータを取得
+        window.onload = fetchResults;
+    </script>
+</body>
+</html>
