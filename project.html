@@ -68,6 +68,13 @@
             object-fit: contain; 
         }
 
+        .image-name {
+            padding: 10px;
+            text-align: center;
+            font-size: 14px; 
+            color: #666; 
+        }
+
         .button-container {
             display: flex;
             justify-content: center;
@@ -165,7 +172,7 @@
             imageList.style.display = 'flex';
 
             folderHeader.textContent = folderName;
-            imageList.innerHTML = '';  // リストをリセット
+            imageList.innerHTML = '';
 
             const imageURLs = await Promise.all(images.map(image => getDownloadURL(image)));
             imageURLs.forEach((url, index) => {
@@ -176,7 +183,12 @@
                 img.src = url;
                 img.alt = `Image ${index + 1}`;
 
+                
+                const imageName = document.createElement('div');
+                imageName.className = 'image-name'; 
+                imageName.textContent = images[index].name; 
                 imageCard.appendChild(img);
+                imageCard.appendChild(imageName); 
                 imageList.appendChild(imageCard);
 
                 imageCard.addEventListener('click', () => {
