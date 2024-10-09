@@ -7,7 +7,7 @@
     <title>データエクスポート</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body {
+         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -127,6 +127,7 @@
         #back-button:hover {
             background-color: #5a6268;
         }
+        /* 省略されたスタイルはそのまま */
     </style>
 </head>
 <body>
@@ -137,7 +138,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>選択</th>
+                    <th><input type="checkbox" id="select-all"></th> <!-- 全選択用チェックボックス -->
                     <th>資料名</th>
                     <th>活字化入力</th>
                     <th>所蔵</th>
@@ -179,17 +180,14 @@
         const previewImage = previewContainer.querySelector('img');
         let selectedData = [];
 
-       
         const loadData = async () => {
             const querySnapshot = await getDocs(collection(db, 'images'));
-            
             const latestData = {}; 
 
             querySnapshot.docs.forEach(doc => {
                 const data = doc.data();
                 const materialName = data.materialName || '不明';
 
-               
                 if (!latestData[materialName] || new Date(data.date) > new Date(latestData[materialName].date)) {
                     latestData[materialName] = {
                         id: doc.id,
@@ -198,7 +196,6 @@
                 }
             });
 
-            
             dataRows.innerHTML = Object.values(latestData).map(data => {
                 return `
                     <tr>
@@ -207,7 +204,6 @@
                         <td>${data.textInput || '未入力'}</td>
                         <td>${data.collection || '不明'}</td>
                         <td>${data.date || '不明'}</td>
-                        <td><img class="thumbnail" src="${data.image || ''}" alt="Image Preview"></td>
                     </tr>
                 `;
             }).join('');
@@ -221,7 +217,6 @@
                 });
             });
 
-            
             const closeButton = previewContainer.querySelector('button');
             closeButton.addEventListener('click', () => {
                 previewContainer.style.opacity = '0';
@@ -229,9 +224,17 @@
                     previewContainer.style.display = 'none';
                 }, 300); 
             });
+
+            
+            const selectAllCheckbox = document.getElementById('select-all');
+            selectAllCheckbox.addEventListener('change', () => {
+                const checkboxes = document.querySelectorAll('.export-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
         };
 
-        
         const exportToExcel = () => {
             const checkboxes = document.querySelectorAll('.export-checkbox:checked');
             selectedData = [];
@@ -243,7 +246,7 @@
                     '活字化入力': entryElement.children[2].textContent.trim(),
                     '所蔵': entryElement.children[3].textContent.trim(),
                     '日付': entryElement.children[4].textContent.trim(),
-                    '画像URL': entryElement.children[5].querySelector('img.thumbnail').src
+                    
                 };
                 selectedData.push(data);
             });
@@ -259,11 +262,7 @@
             XLSX.writeFile(wb, "みんなの活字化広場・エクスポート.xlsx");
         };
 
-        
-
         exportButton.addEventListener('click', exportToExcel);
-
-        
         loadData();
     </script>
     <script>
@@ -273,3 +272,4 @@
        </script>
 </body>
 </html>
+
