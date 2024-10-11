@@ -6,99 +6,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロジェクト一覧</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
+    body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 32px;
-            color: #444;
-            text-align: center;
-        }
+h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #444;
+    text-align: center;
+}
 
-        .gallery, #image-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+.gallery, #image-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-        .folder-card, .image-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            width: calc(33.33% - 30px);
-            max-width: 250px; 
-            position: relative;
-        }
+.folder-card, .image-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    width: calc(33.33% - 30px);
+    max-width: 280px;
+    position: relative;
+}
 
-        .folder-card:hover, .image-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
+.folder-card:hover, .image-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: #00cc99; 
+}
 
-        .folder-info {
-            padding: 15px;
-            font-size: 16px;
-            text-align: center;
-            font-weight: bold;
-            background-color: #f9f9f9;
-        }
+.folder-info {
+    padding: 15px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+    color: #00cc99;
+    background-color: #f9f9f9;
+    border-top: 2px solid #00cc99;
+}
 
-        .image-list-header {
-            width: 100%;
-            padding: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            background-color: #f9f9f9;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+.image-list-header {
+    width: 100%;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #fff;
+    color: #00cc99;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #00cc99;
+}
 
-        .image-card img {
-            width: 100%;
-            height: auto; 
-            object-fit: contain; 
-        }
+.image-card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-bottom: 2px solid #00cc99;
+}
 
-        .image-name {
-            padding: 10px;
-            text-align: center;
-            font-size: 14px; 
-            color: #666; 
-        }
+.image-name {
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
 
-        .button {
-            padding: 15px 25px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-            background-color: #007bff;
-            transition: background-color 0.3s ease;
-        }
+.button {
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    background-color: #00cc99;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
-        .button:hover {
-            background-color: #0056b3;
-        }
+.button:hover {
+    background-color: #00997a;
+    transform: scale(1.03);
+}
 
-        .hidden {
-            display: none;
-        }
+.hidden {
+    display: none;
+}
+
     </style>
 </head>
 <body>
@@ -134,21 +142,25 @@
         const backButton = document.getElementById('back-button');
 
         async function loadProjects() {
-            const rootRef = ref(storage, '');
-            const folders = await listAll(rootRef);
+    const rootRef = ref(storage, '');
+    const folders = await listAll(rootRef);
 
-            for (const folder of folders.prefixes) {
-                const imagesRef = ref(storage, folder.fullPath);
-                const images = await listAll(imagesRef);
+    const folderPromises = folders.prefixes.map(async folder => {
+        const imagesRef = ref(storage, folder.fullPath);
+        const images = await listAll(imagesRef);
+        return { folderName: folder.name, imageCount: images.items.length, images: images.items };
+    });
 
-                if (images.items.length > 0) {
-                    const folderName = folder.name;
-                    const imageCount = images.items.length;
+    
+    const folderData = await Promise.all(folderPromises);
 
-                    createFolderCard(folderName, imageCount, images.items);
-                }
-            }
+    folderData.forEach(folder => {
+        if (folder.imageCount > 0) {
+            createFolderCard(folder.folderName, folder.imageCount, folder.images);
         }
+    });
+}
+
 
         function createFolderCard(folderName, imageCount, images) {
             const card = document.createElement('div');
@@ -208,3 +220,5 @@
     <button onclick="location.href='member.html'">メンバーページに戻る</button>
 </body>
 </html>
+
+
