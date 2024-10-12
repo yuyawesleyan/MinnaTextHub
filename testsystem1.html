@@ -3,94 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選択してください</title>
+    <title>WEB小テスト</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
     <style>
-        body {
-            background: linear-gradient(135deg, #1c1c1c 25%, #2e2e2e 100%);
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 50px;
-            overflow: hidden;
-        }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            background: linear-gradient(90deg, #FF5733, #FFBD33, #6760c8, #75FF33, #cfd55a, #33FFBD, #33DBFF, #3375FF);
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p {
-            font-size: 1.5em;
-            margin: 20px 0;
-            background: linear-gradient(90deg, #FF5733, #FFBD33, #DBFF33, #75FF33, #33FF57, #33FFBD, #33DBFF, #3375FF, #3358FF);
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .link-container {
-            position: relative;
-            width: 100%;
-            height: 600px;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-        }
-        .link {
-            position: relative;
-            background-color: #0078d7;
-            color: white;
-            text-decoration: none;
-            padding: 15px 30px;
-            margin: 20px 0;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
-            font-size: 1.5em;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            width: 200px;
-            text-align: center;
-            overflow: hidden;
-        }
-        .link:hover {
-            background-color: #0056a1;
-            transform: translateY(-3px);
-        }
-        .stage {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid #0078d7;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
-        }
-        
-        .stage1 { top: 50px; left: 40%; }
-        .stage2 { top: 150px; right: 45%; }
-        .stage3 { top: 250px; left: 50%; }
-        .stage4 { top: 350px; left: 55%; }
-        .stage5 { top: 450px; left: 60%; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        header, footer { background-color: #007BFF; color: white; padding: 10px 0; text-align: center; }
+        main { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .question-container { display: none; margin-bottom: 20px; }
+        .question-image { text-align: center; }
+        .vertical-text { writing-mode: vertical-rl; height: 100px; }
+        .btn { background-color: #007BFF; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background-color: #0056b3; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h1>学習システム</h1>
-    <p>入門から始めよう！</p>
-    <div class="link-container">
-        <div class="stage stage1">
-            <a class="link" href="testsystem2.html">入門</a>
-        </div>
-        <div class="stage stage2">
-            <a class="link" href="testsystem3.html">初級</a>
-        </div>
-        <div class="stage stage3">
-            <a class="link" href="testsystem4.html">中級</a>
-        </div>
-        <div class="stage stage4">
-            <a class="link" href="testsystem5.html">上級</a>
-        </div>
-        <div class="stage stage5">
-            <a class="link" href="testsystem6.html">プロ</a>
-        </div>
-    </div>
+    <header>
+        <h1>WEB小テスト</h1>
+    </header>
+    <main>
+        <form id="test-form">
+            <label for="user-name">ユーザー名:</label>
+            <input type="text" id="user-name" name="userName" required><br><br>
+
+            <div id="questions"></div>
+
+            <div class="nav-buttons">
+                <button type="button" id="prev-btn" class="btn" style="display:none;">前の問題</button>
+                <button type="button" id="next-btn" class="btn">次の問題</button>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn" style="display:none;">送信</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2024 WEB小テスト</p>
+    </footer>
+
+    <script>
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        // Firebaseを初期化
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const questions = [
+            {
+                id: 1,
+                image: "問題1の画像URL",
+                prompt: "問題 1",
+                options: ["A. 選択肢1", "B. 選択肢2", "C. 選択肢3", "D. 選択肢4"],
+                answer: "A"
+            },
+            {
+                id: 2,
+                image: "問題2の画像URL",
+                prompt: "問題 2",
+                options: ["A. 選択肢1", "B. 選択肢2", "C. 選択肢3", "D. 選択肢4"],
+                answer: "B"
+            },
+            // 追加の問題をここに...
+            {
+                id: 10,
+                image: "問題10の画像URL",
+                prompt: "問題 10",
+                options: ["A. 選択肢1", "B. 選択肢2", "C. 選択肢3", "D. 選択肢4"],
+                answer: "B"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function displayQuestion(index) {
+            const questionContainer = document.createElement("div");
+            questionContainer.className = "question-container";
+            questionContainer.style.display = "block";
+
+            const questionHTML = `
+                <div class="question-image">
+                    <img src="${questions[index].image}" alt="問題${questions[index].id}の画像" style="width: 100%; max-width: 150px;">
+                </div>
+                <div class="question-answer">
+                    <h3>${questions[index].prompt}</h3>
+                    ${questions[index].options.map((option) => `
+                        <label><input type="radio" name="question${questions[index].id}" value="${option.charAt(0)}"> ${option}</label><br>
+                    `).join('')}
+                </div>
+            `;
+            questionContainer.innerHTML = questionHTML;
+            document.getElementById('questions').innerHTML = '';
+            document.getElementById('questions').appendChild(questionContainer);
+
+            // ボタンの表示制御
+            document.getElementById('prev-btn').style.display = index > 0 ? 'block' : 'none';
+            document.getElementById('next-btn').style.display = index < questions.length - 1 ? 'block' : 'inline-block';
+            document.getElementById('submit-btn').style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+        }
+
+        document.getElementById('next-btn').addEventListener('click', function() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', function() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+
+        document.getElementById('test-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // フォームのデフォルト送信を防止
+
+            // ユーザー名を取得
+            const userName = document.getElementById('user-name').value;
+
+            // 各質問の回答を取得
+            const answers = {};
+            questions.forEach((question) => {
+                answers[`question${question.id}`] = document.querySelector(`input[name="question${question.id}"]:checked`)?.value;
+            });
+
+            // 得点計算（簡易例）
+            let score = 0;
+            const correctAnswers = questions.reduce((acc, q) => {
+                acc[`question${q.id}`] = q.answer;
+                return acc;
+            }, {});
+
+            // 選択式問題の得点計算
+            for (let i = 1; i <= questions.length; i++) {
+                if (answers[`question${i}`] === correctAnswers[`question${i}`]) {
+                    score += 3; // 選択式は各3点
+                }
+            }
+
+            // Firestoreにデータを保存
+            db.collection('responses').add({
+                userName: userName,
+                score: score,
+                ...answers,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert('回答が送信されました！');
+                document.getElementById('test-form').reset(); // フォームをリセット
+                currentQuestionIndex = 0; // インデックスリセット
+                displayQuestion(currentQuestionIndex); // 最初の問題を表示
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
+        });
+
+        // 最初の問題を表示
+        displayQuestion(currentQuestionIndex);
+    </script>
 </body>
 </html>
