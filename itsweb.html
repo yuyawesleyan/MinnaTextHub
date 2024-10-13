@@ -94,6 +94,23 @@
         margin: 10px; 
     }
 }
+.image-box {
+    width: 500px;  
+    height: 300px; 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+}
+
+.image-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; 
+}
+
 
 @media (max-width: 480px) {
     header {
@@ -133,8 +150,8 @@
     <div id="greeting" class="content active">
         <h2>ごあいさつ</h2>
         <p>
-            はじめまして。池田悠耶と申します。この度、本プロジェクトにご参加いただき、心より感謝申し上げます。
-            私たちは、歴史的資料の貴重な情報を後世に伝えるために、この簡易型学習システムである活字化プロジェクト
+            はじめまして。「みんなの活字化広場」運営者の池田悠耶と申します。この度、本プロジェクトにご参加いただき、心より感謝申し上げます。
+            私たちは、歴史的資料の貴重な情報を後世に伝えるために、この簡易型活字化プロジェクト
             を立ち上げました。新たな発見や学びを通して、歴史の理解が深まることを願っています。どうぞよろしくお願いします。
         </p>
     </div>
@@ -144,7 +161,9 @@
         <p>古い原稿には、たくさんの特殊な文字などが使われています。これらを活字化するには、一定のルールを決めておく必要があります。</p>
 
         <h3>活字化のサンプル</h3>
-        <p>準備中</p>
+        <div class="image-box">
+            <img src="simple1.png" alt="画像">
+        </div>
         <h3>基本方針</h3>
         <p>「みんなの活字化広場」では、次の方針を原則とします。</p>
         <h4>「見たままの歴史を未来へ」</h4>

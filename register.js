@@ -21,7 +21,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const adminKey = document.getElementById('adminKey').value; // adminKeyを取得
+    const adminKey = document.getElementById('adminKey').value; 
 
     const correctAdminKey = "63162211"; 
 
