@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料検索システム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .search-group {
+            margin-bottom: 20px;
+        }
+
+        .search-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .search-group input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        #search-button {
+            padding: 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        #search-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>資料検索システム</h1>
+
+        <div class="search-container">
+            <div class="search-group">
+                <label for="title-search">資料名で検索（数字とハイフン）</label>
+                <input type="text" id="title-search" placeholder="資料名を入力（半角入力のみ）">
+            </div>
+            <div class="search-group">
+                <label for="keyword-search">キーワードで検索</label>
+                <input type="text" id="keyword-search" placeholder="キーワードを入力">
+            </div>
+            
+            <button id="search-button">検索</button>
+        </div>
+    </div>
+
+    <script>
+        const titleInput = document.getElementById('title-search');
+        titleInput.addEventListener('input', () => {
+            titleInput.value = titleInput.value.replace(/[^\dー-]/g, '');  
+        });
+
+        document.getElementById('search-button').addEventListener('click', () => {
+            const title = titleInput.value.trim();
+            const keyword = document.getElementById('keyword-search').value.trim();
+
+           
+            if (title === '' && keyword === '') {
+                alert('資料名またはキーワードを入力してください。');
+                return;
+            }
+
+            const queryParams = new URLSearchParams({ title, keyword }).toString();
+            window.location.href = `allsarchanswer.html?${queryParams}`;
+        });
+    </script>
+</body>
+</html>

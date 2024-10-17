@@ -287,6 +287,41 @@
   top: 1px;
 }
 
+.button-container {
+    display: flex;
+    gap: 30px; 
+}
+
+.rainbow-button {
+    display: inline-block;
+    width: 200px; 
+    height: 100px; 
+    text-align: center;
+    line-height: 100px; 
+    color: rgb(18, 18, 18); 
+    text-decoration: none; 
+    border-radius: 15px; 
+    font-size: 20px; 
+    transition: transform 0.3s, background 0.3s; 
+}
+
+.rainbow-button:nth-child(1) {
+    background: linear-gradient(135deg, #ff0000, #ff7300);
+}
+
+.rainbow-button:nth-child(2) {
+    background: linear-gradient(135deg, #ffea00, #33cc00);
+}
+
+.rainbow-button:nth-child(3) {
+    background: linear-gradient(135deg, #00aaff, #a000ff);
+}
+
+.rainbow-button:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2); 
+}
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -351,18 +386,25 @@
         <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
-               
+                <li><a href="announcements.html">お知らせ一覧を見る</a></li>
             </ul>
         </div>
 
-    
+        <div class="button-container">
+            <a href="allsarch.html" class="rainbow-button">資料検索システム</a>
+            <a href="#" class="rainbow-button">準備中</a>
+            <a href="#" class="rainbow-button">準備中</a>
+        </div>
+
 
 
        
-        <h2>最近の編集者</h2>
+        <h2>最近の編集者（最新の１０件）</h2>
         <div id="timeline">
            
         </div>
+
+       
 
     </main>
 
@@ -537,10 +579,11 @@ onAuthStateChanged(auth, async (user) => {
             }
         });
 
+
     </script>
 </head>
 <body>
-    <h1>枠募集エリア</h1>
-    <p>これより下は現在、開発中エリアとなっており非表示です。</p>
+
+
 </body>
 </html>
