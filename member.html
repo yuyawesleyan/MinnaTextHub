@@ -404,7 +404,7 @@
 
 
        
-        <h2>最近の編集者（最新の１０件）</h2>
+        <h2>最近の編集者</h2>
         <div id="timeline">
            
         </div>
@@ -466,7 +466,7 @@
             const timelineQuery = query(
                 collection(db, "timeline"), 
                 orderBy("timestamp", "desc"), 
-                limit(10) 
+                limit(9) 
             );
 
             onSnapshot(timelineQuery, (snapshot) => {
