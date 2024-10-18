@@ -101,6 +101,7 @@
                 <strong>検索条件:</strong> 
                 資料名: <span id="filter-title"></span> | 
                 キーワード: <span id="filter-keyword"></span> | 
+                担当者名: <span id="filter-responsible"></span> | 
                 日付: <span id="filter-date"></span>
             </div>
 
@@ -114,6 +115,7 @@
                         <th>資料名</th>
                         <th>活字化入力</th>
                         <th>所蔵</th>
+                        <th>担当者名</th>
                         <th>日付</th>
                     </tr>
                 </thead>
@@ -146,10 +148,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title') || '';
         const keyword = urlParams.get('keyword') || '';
+        const responsible = urlParams.get('responsible') || ''; // 担当者名の取得
         const date = urlParams.get('date') || '';
 
         document.getElementById('filter-title').textContent = title || 'なし';
         document.getElementById('filter-keyword').textContent = keyword || 'なし';
+        document.getElementById('filter-responsible').textContent = responsible || 'なし'; // 担当者名の表示
         document.getElementById('filter-date').textContent = date || 'なし';
 
         const loadData = async () => {
@@ -168,7 +172,7 @@
                 }
             });
 
-            displayData(latestData, title, keyword, date);
+            displayData(latestData, title, keyword, responsible, date);
         };
 
         const highlightText = (text, searchTerm) => {
@@ -177,12 +181,13 @@
             return text.replace(regex, '<span class="highlight">$1</span>');
         };
 
-        const displayData = (latestData, title, keyword, date) => {
+        const displayData = (latestData, title, keyword, responsible, date) => {
             dataRows.innerHTML = Object.values(latestData).filter(data => {
                 const matchesTitle = title ? data.materialName.includes(title) : true;
-                const matchesKeyword = keyword ? (data.textInput || '').includes(keyword) : true;
+                const matchesKeyword = keyword ? (data.textInput || '').includes(keyword) || (data.responsiblePerson || '').includes(keyword) : true; // 担当者名もキーワードにマッチするように変更
+                const matchesResponsible = responsible ? (data.responsiblePerson || '').includes(responsible) : true; // 担当者名でのフィルタリング
                 const matchesDate = date ? (data.date === date) : true;
-                return matchesTitle && matchesKeyword && matchesDate;
+                return matchesTitle && matchesKeyword && matchesResponsible && matchesDate;
             }).map(data => {
                 return `
                     <tr>
@@ -190,6 +195,7 @@
                         <td class="truncate">${highlightText(data.materialName || '不明', title)}</td>
                         <td class="truncate">${highlightText(data.textInput || '未入力', keyword)}</td>
                         <td>${data.collection || '不明'}</td>
+                        <td>${highlightText(data.responsiblePerson || '不明', keyword)}</td> <!-- 担当者名もキーワードでハイライト -->
                         <td>${highlightText(data.date || '不明', date)}</td>
                     </tr>
                 `;
@@ -213,7 +219,8 @@
                     '資料名': entryElement.children[1].textContent.trim(),
                     '活字化入力': entryElement.children[2].textContent.trim(),
                     '所蔵': entryElement.children[3].textContent.trim(),
-                    '日付': entryElement.children[4].textContent.trim(),
+                    '担当者名': entryElement.children[4].textContent.trim(),
+                    '日付': entryElement.children[5].textContent.trim(),
                 };
                 selectedData.push(data);
             });
@@ -234,3 +241,4 @@
     </script>
 </body>
 </html>
+

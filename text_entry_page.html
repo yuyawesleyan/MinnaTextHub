@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>画像テキスト入力</title>
     <style>
-        body {
+          body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
@@ -180,7 +180,6 @@
         overflow-y: auto;
     }
        
-
     </style>
 </head>
 <body>
@@ -199,17 +198,12 @@
                 <div class="input-group" style="display: flex; flex-direction: column; max-width: 600px;">
                     <label for="text-input">入力内容:</label>
                     <textarea id="text-input" rows="4" style="resize: none; border: 1px solid #ccc; border-radius: 8px; padding: 10px; width: 100%; box-sizing: border-box;">
-                差出人住所: 
-                差出人氏名:
-                形状: 
-                枚数: 
+差出人住所: 
+差出人氏名:
+形状: 
+枚数: 
                     </textarea>
                 </div>
-                
-                
-                
-                
-                
                 <div class="input-group-checkbox">
                     <input id="request-correction" type="checkbox">
                     <label for="request-correction">添削希望</label>
@@ -221,6 +215,10 @@
                 <div class="input-group">
                     <label for="material-name">資料名（必須）※半角数字のみ！:</label>
                     <input id="material-name" type="text" placeholder="半角数字で入力してください">
+                </div>
+                <div class="input-group">
+                    <label for="responsible-person">担当者名:</label>
+                    <input id="responsible-person" type="text" placeholder="担当者名を入力してください">
                 </div>
                 <div class="input-group">
                     <label for="collection">所蔵:</label>
@@ -237,7 +235,7 @@
                 <button class="button" id="save-bibliography">保存</button>
             </div>
             <div id="history" class="tab-content">
-                
+                <!-- 履歴表示のためのコンテンツ -->
             </div>
             <div id="legend" class="tab-content">
                 <div class="input-group">
@@ -252,9 +250,6 @@
         </div>
     </div>
 
-    
-
-    
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
@@ -290,6 +285,7 @@
                 const data = docSnap.data();
                 document.getElementById('text-input').value = data.textInput || '';
                 document.getElementById('material-name').value = data.materialName || '';
+                document.getElementById('responsible-person').value = data.responsiblePerson || ''; // 担当者名を追加
                 document.getElementById('collection').value = data.collection || '';
                 document.getElementById('title').value = data.title || '';
                 document.getElementById('date').value = data.date || '';
@@ -319,6 +315,7 @@
             const data = {
                 textInput: document.getElementById('text-input').value,
                 materialName: document.getElementById('material-name').value,
+                responsiblePerson: document.getElementById('responsible-person').value, // 担当者名を追加
                 collection: document.getElementById('collection').value,
                 title: document.getElementById('title').value,
                 date: document.getElementById('date').value,
@@ -406,13 +403,11 @@
             loadData();
         }
 
-        
         const imageElement = document.getElementById('image');
         let scale = 1;
         let startX, startY, initialX, initialY;
         let isDragging = false;
 
-        
         imageElement.style.transform = `scale(${scale})`;
         imageElement.style.left = '0px';
         imageElement.style.top = '0px';
@@ -446,7 +441,6 @@
             imageElement.style.top = `${initialY + dy}px`;
         }
 
-       
         const adjustImagePosition = () => {
             imageElement.style.left = `calc(50% - ${imageElement.offsetWidth / 2}px)`;
             imageElement.style.top = `calc(50% - ${imageElement.offsetHeight / 2}px)`;
@@ -456,8 +450,7 @@
         window.addEventListener('resize', adjustImagePosition);
 
         loadTimeline();
-
     </script>
-
 </body>
 </html>
+

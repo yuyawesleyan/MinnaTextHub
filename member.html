@@ -383,12 +383,17 @@
             <a href="webusing.html" class="button">ご利用案内（各種操作方法）</a>
           </div>
 
-        <div class="section announcement-box">
+          <div class="section announcement-box">
             <h2>お知らせ</h2>
             <ul id="announcement-list">
-                <li><a href="announcements.html">お知らせ一覧を見る</a></li>
+                
             </ul>
+            <div style="text-align: right;">
+                <a href="announcements.html">お知らせ一覧へ</a> 
+            </div>
         </div>
+        
+       
 
         <div class="button-container">
             <a href="allsarch.html" class="rainbow-button">資料検索システム</a>
@@ -436,24 +441,25 @@
 
         
         async function loadAnnouncements() {
-            try {
-                const announcementList = document.getElementById('announcement-list');
-                if (announcementList) {
-                    announcementList.innerHTML = ''; 
-                    const querySnapshot = await getDocs(
-                        query(collection(db, 'announcements'), orderBy('timestamp', 'desc'))
-                    );
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const listItem = document.createElement('li');
-                        listItem.textContent = data.content;
-                        announcementList.appendChild(listItem);
-                    });
-                }
-            } catch (error) {
-                console.error("データ取得エラー: ", error);
-            }
+    try {
+        const announcementList = document.getElementById('announcement-list');
+        if (announcementList) {
+            announcementList.innerHTML = ''; 
+            const querySnapshot = await getDocs(
+                query(collection(db, 'announcements'), orderBy('timestamp', 'desc'), limit(5)) 
+            );
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const listItem = document.createElement('li');
+                listItem.textContent = data.content;
+                announcementList.appendChild(listItem);
+            });
         }
+    } catch (error) {
+        console.error("データ取得エラー: ", error);
+    }
+}
+
 
      
         const loadTimeline = () => {

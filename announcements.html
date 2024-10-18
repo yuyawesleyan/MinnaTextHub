@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お知らせ一覧</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://example.com/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333;
+        }
+
+        header {
+            background-color: rgba(233, 224, 197, 0.9);
+            color: #333;
+            width: 100%;
+            text-align: left;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #6c4f3d;
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        main {
+            margin-top: 120px; /* ヘッダー分の余白 */
+            padding: 20px;
+        }
+
+        .announcement-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .announcement-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .announcement-section h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: #6c4f3d;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .announcement-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .announcement-list ul li {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-left: 4px solid #6c4f3d;
+            font-size: 1.1em;
+            line-height: 1.6em;
+            transition: background-color 0.3s ease;
+        }
+
+        .announcement-list ul li:hover {
+            background-color: rgba(255, 240, 220, 0.8);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            text-align: right;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #6c4f3d;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #333;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .announcement-section {
+                width: 90%;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>お知らせ一覧</h1>
+    </header>
+
+    <main>
+        <div class="announcement-section">
+            <h2>最新のお知らせ</h2>
+            <div class="announcement-list">
+                <ul id="announcement-list">
+                    
+                </ul>
+            </div>
+            <div class="back-link">
+                <a href="#" onclick="history.back(); return false;">前のページに戻る</a> 
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+       
+        async function loadAnnouncements() {
+            try {
+                const announcementList = document.getElementById('announcement-list');
+                if (announcementList) {
+                    announcementList.innerHTML = ''; 
+                    const querySnapshot = await getDocs(
+                        query(collection(db, 'announcements'), orderBy('timestamp', 'desc'))
+                    );
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        announcementList.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error("データ取得エラー: ", error);
+            }
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', loadAnnouncements);
+    </script>
+</body>
+</html>
+
