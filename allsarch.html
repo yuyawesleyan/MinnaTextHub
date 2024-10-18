@@ -50,7 +50,7 @@
             font-size: 16px;
         }
 
-        #search-button {
+        #search-button, #back-button {
             padding: 12px;
             background-color: #007BFF;
             color: white;
@@ -60,9 +60,10 @@
             font-size: 18px;
             transition: background-color 0.3s;
             width: 100%;
+            margin-top: 10px;
         }
 
-        #search-button:hover {
+        #search-button:hover, #back-button:hover {
             background-color: #0056b3;
         }
     </style>
@@ -82,6 +83,7 @@
             </div>
             
             <button id="search-button">検索</button>
+            <button id="back-button">戻る</button>
         </div>
     </div>
 
@@ -95,7 +97,6 @@
             const title = titleInput.value.trim();
             const keyword = document.getElementById('keyword-search').value.trim();
 
-           
             if (title === '' && keyword === '') {
                 alert('資料名またはキーワードを入力してください。');
                 return;
@@ -103,6 +104,10 @@
 
             const queryParams = new URLSearchParams({ title, keyword }).toString();
             window.location.href = `allsarchanswer.html?${queryParams}`;
+        });
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            window.history.back();
         });
     </script>
 </body>
