@@ -213,23 +213,23 @@
             </div>
             <div id="bibliography" class="tab-content">
                 <div class="input-group">
-                    <label for="material-name">資料名（必須）※半角数字のみ！:</label>
+                    <label for="material-name">資料名（必須）※半角数字のみ！</label>
                     <input id="material-name" type="text" placeholder="半角数字で入力してください">
                 </div>
                 <div class="input-group">
-                    <label for="responsible-person">担当者名:</label>
+                    <label for="responsible-person">担当者名</label>
                     <input id="responsible-person" type="text" placeholder="担当者名を入力してください">
                 </div>
                 <div class="input-group">
-                    <label for="collection">所蔵:</label>
+                    <label for="collection">所蔵</label>
                     <input id="collection" type="text" placeholder="所蔵を入力してください">
                 </div>
                 <div class="input-group">
-                    <label for="title">Title:</label>
+                    <label for="title">Title</label>
                     <input id="title" type="text" placeholder="Titleを入力してください">
                 </div>
                 <div class="input-group">
-                    <label for="date">Date:</label>
+                    <label for="date">Date</label>
                     <input id="date" type="text" placeholder="Dateを入力してください">
                 </div>
                 <button class="button" id="save-bibliography">保存</button>
@@ -285,7 +285,7 @@
                 const data = docSnap.data();
                 document.getElementById('text-input').value = data.textInput || '';
                 document.getElementById('material-name').value = data.materialName || '';
-                document.getElementById('responsible-person').value = data.responsiblePerson || ''; // 担当者名を追加
+                document.getElementById('responsible-person').value = data.responsiblePerson || ''; 
                 document.getElementById('collection').value = data.collection || '';
                 document.getElementById('title').value = data.title || '';
                 document.getElementById('date').value = data.date || '';
@@ -315,7 +315,7 @@
             const data = {
                 textInput: document.getElementById('text-input').value,
                 materialName: document.getElementById('material-name').value,
-                responsiblePerson: document.getElementById('responsible-person').value, // 担当者名を追加
+                responsiblePerson: document.getElementById('responsible-person').value, 
                 collection: document.getElementById('collection').value,
                 title: document.getElementById('title').value,
                 date: document.getElementById('date').value,
