@@ -331,7 +331,6 @@
                 image: imageURL,
                 timestamp: Date.now()
             });
-            alert('内容が保存され、タイムラインに投稿されました。');
         };
 
         const saveTimelineEntry = async (data) => {
@@ -380,8 +379,9 @@
         document.getElementById('save-legend').addEventListener('click', saveData);
 
         document.getElementById('back-to-project').addEventListener('click', () => {
-            window.location.href = 'project.html';
-        });
+    window.history.go(-1);
+});
+
 
         onAuthStateChanged(auth, user => {
             if (user) {
