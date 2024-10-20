@@ -167,19 +167,24 @@
             font-size: 0.9em;
         }
 
-
-#text-input {
+        #text-input {
     font-size: 20px;
-        writing-mode: vertical-rl; 
-        height: 400px; 
-        width: 100%; 
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        resize: none; 
-        overflow-y: auto;
-    }
-       
+    writing-mode: vertical-rl; 
+    height: 400px; 
+    width: 100%; 
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none; 
+    overflow-y: auto;
+    vertical-align: top;  
+    padding-top: 0;  
+    box-sizing: border-box;  
+}
+
+
+
+
     </style>
 </head>
 <body>
@@ -235,7 +240,7 @@
                 <button class="button" id="save-bibliography">保存</button>
             </div>
             <div id="history" class="tab-content">
-                <!-- 履歴表示のためのコンテンツ -->
+                
             </div>
             <div id="legend" class="tab-content">
                 <div class="input-group">
@@ -413,12 +418,13 @@
         imageElement.style.top = '0px';
 
         imageElement.addEventListener('wheel', (event) => {
-            event.preventDefault();
-            const zoomFactor = 0.1;
-            scale += event.deltaY * -zoomFactor;
-            scale = Math.min(Math.max(0.5, scale), 4); 
-            imageElement.style.transform = `scale(${scale})`;
-        });
+    event.preventDefault();
+    const zoomFactor = 0.05;  
+    scale += event.deltaY * -zoomFactor;
+    scale = Math.min(Math.max(0.5, scale), 4); 
+    imageElement.style.transform = `scale(${scale})`;
+});
+
 
         imageElement.addEventListener('mousedown', (event) => {
             isDragging = true;
@@ -453,4 +459,5 @@
     </script>
 </body>
 </html>
+
 
