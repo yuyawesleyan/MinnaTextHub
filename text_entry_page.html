@@ -336,7 +336,12 @@
                 image: imageURL,
                 timestamp: Date.now()
             });
+            alert('内容が保存され、タイムラインに投稿されました。');
         };
+
+        
+        
+
 
         const saveTimelineEntry = async (data) => {
             const docRef = doc(collection(db, "timeline"));
