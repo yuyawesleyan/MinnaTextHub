@@ -148,12 +148,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const title = urlParams.get('title') || '';
         const keyword = urlParams.get('keyword') || '';
-        const responsible = urlParams.get('responsible') || ''; // 担当者名の取得
+        const responsible = urlParams.get('responsible') || ''; 
         const date = urlParams.get('date') || '';
 
         document.getElementById('filter-title').textContent = title || 'なし';
         document.getElementById('filter-keyword').textContent = keyword || 'なし';
-        document.getElementById('filter-responsible').textContent = responsible || 'なし'; // 担当者名の表示
+        document.getElementById('filter-responsible').textContent = responsible || 'なし'; 
         document.getElementById('filter-date').textContent = date || 'なし';
 
         const loadData = async () => {
@@ -184,19 +184,19 @@
         const displayData = (latestData, title, keyword, responsible, date) => {
             dataRows.innerHTML = Object.values(latestData).filter(data => {
                 const matchesTitle = title ? data.materialName.includes(title) : true;
-                const matchesKeyword = keyword ? (data.textInput || '').includes(keyword) || (data.responsiblePerson || '').includes(keyword) : true; // 担当者名もキーワードにマッチするように変更
-                const matchesResponsible = responsible ? (data.responsiblePerson || '').includes(responsible) : true; // 担当者名でのフィルタリング
+                const matchesKeyword = keyword ? (data.textInput || '').includes(keyword) || (data.responsiblePerson || '').includes(keyword) : true; 
+                const matchesResponsible = responsible ? (data.responsiblePerson || '').includes(responsible) : true; 
                 const matchesDate = date ? (data.date === date) : true;
                 return matchesTitle && matchesKeyword && matchesResponsible && matchesDate;
             }).map(data => {
                 return `
                     <tr>
                         <td><input type="checkbox" class="export-checkbox" value="${data.id}"></td>
-                        <td class="truncate">${highlightText(data.materialName || '不明', title)}</td>
+                        <td class="truncate">${highlightText(data.materialName || '未入力', title)}</td>
                         <td class="truncate">${highlightText(data.textInput || '未入力', keyword)}</td>
-                        <td>${data.collection || '不明'}</td>
-                        <td>${highlightText(data.responsiblePerson || '不明', keyword)}</td> <!-- 担当者名もキーワードでハイライト -->
-                        <td>${highlightText(data.date || '不明', date)}</td>
+                        <td>${data.collection || '未入力'}</td>
+                        <td>${highlightText(data.responsiblePerson || '未入力', keyword)}</td> <!-- 担当者名もキーワードでハイライト -->
+                        <td>${highlightText(data.date || '未入力', date)}</td>
                     </tr>
                 `;
             }).join('');
