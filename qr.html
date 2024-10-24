@@ -76,6 +76,24 @@
             color: white;
         }
 
+        .back-button {
+            font-size: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
     </style>
 <head>
     <meta charset="UTF-8">
@@ -92,8 +110,9 @@
         <div class="url">
             <a href="https://yuyawesleyan.github.io/MinnaTextHub.M/" target="_blank">QRコードを使用しない場合はクリック！</a>
         </div>
+        <button class="back-button" onclick="window.history.back();">戻る</button>
     </div>
-  
 </body>
 </html>
+
 
