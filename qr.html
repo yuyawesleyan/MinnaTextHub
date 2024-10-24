@@ -2,69 +2,98 @@
 <html lang="ja">
     <style>
         * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f5;
-}
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+        }
 
-.container {
-    text-align: center;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-}
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
 
-.qr-code img {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-}
+        h1 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #333;
+            font-weight: bold;
+            background: linear-gradient(to right, #6A82FB, #FC5C7D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 2s infinite;
+        }
 
-.url a {
-    font-size: 18px;
-    color: #007BFF;
-    text-decoration: none;
-    font-weight: bold;
-}
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
 
-.url a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
+        .qr-code img {
+            width: 220px;
+            height: 220px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            border: 2px solid #007BFF;
+            transition: transform 0.3s ease;
+        }
+
+        .qr-code img:hover {
+            transform: scale(1.1);
+        }
+
+        .url a {
+            font-size: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-radius: 50px;
+            border: 2px solid #007BFF;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .url a:hover {
+            background-color: #007BFF;
+            color: white;
+        }
 
     </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなの活字化広場　モバイル版</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>みんなの活字化広場　モバイル版</h1>
+        <p>QRコードをスキャンしてね！！</p>
         <div class="qr-code">
             <img src="Qr１１１.png" alt="QR Code">
         </div>
         <div class="url">
-            <a href="https://yuyawesleyan.github.io/MinnaTextHub.M/" target="_blank">https://yuyawesleyan.github.io/MinnaTextHub.M/</a>
+            <a href="https://yuyawesleyan.github.io/MinnaTextHub.M/" target="_blank">QRコードを使用しない場合はクリック！</a>
         </div>
     </div>
+  
 </body>
 </html>
+
