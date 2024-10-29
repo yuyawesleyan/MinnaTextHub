@@ -219,7 +219,8 @@
             <div id="bibliography" class="tab-content">
                 <div class="input-group">
                     <label for="material-name">資料名（必須）※半角数字のみ！</label>
-                    <input id="material-name" type="text" placeholder="半角数字で入力してください">
+                    <input id="material-name" type="text" placeholder="半角数字とハイフンで入力してください" pattern="[0-9\-]*" title="半角数字とハイフンのみ入力可能です">
+
                 </div>
                 <div class="input-group">
                     <label for="responsible-person">担当者名</label>
@@ -461,6 +462,13 @@
         window.addEventListener('resize', adjustImagePosition);
 
         loadTimeline();
+
+        document.getElementById('material-name').addEventListener('input', function (e) {
+    // 半角数字とハイフン以外の文字が入力された場合は削除
+    this.value = this.value.replace(/[^0-9\-]/g, '');
+});
+
+ 
     </script>
 </body>
 </html>
