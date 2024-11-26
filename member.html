@@ -6,29 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなの活字化広場</title>
     <style>
-       body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #f1f1e2;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-        body {
-             background-color: #f1f1e2; 
-            }
             
-            .header, .footer {
-                background-color: #cfad80; 
-            }
+        .header, .footer {
+            background-color: #cfad80; 
+        }
             
-            .timeline-entry {
-                 background-color: #FFFFF0; 
-                  border: 1px solid #8B4513; 
-                }
-
-
+        .timeline-entry {
+            background-color: #FFFFF0; 
+            border: 1px solid #8B4513; 
+        }
         
         header {
             background-color: #e9e0c5;
@@ -82,19 +77,12 @@
             transform: scale(1.05);
         }
 
-        .header-right button:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-        }
-
-        
         main {
-            margin-top: 80px; 
+            margin-top: 80px;
             padding: 20px;
             width: 96%;
         }
 
-        
         .section {
             background-color: #ffffff;
             color: #333;
@@ -108,23 +96,6 @@
             box-sizing: border-box;
         }
 
-        .section h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            color: #363535;
-        }
-
-        .section ul {
-            list-style-type: disc;
-            padding-left: 20px;
-            line-height: 1.6;
-        }
-
-        .section ul li {
-            margin-bottom: 10px;
-        }
-
         .join-project-box {
             background: #7e5837;
             padding: 1rem;
@@ -132,8 +103,6 @@
             margin-bottom: 1rem;
             width: 100%;
             text-align: center;
-            
-            
         }
 
         .join-project-link {
@@ -148,219 +117,100 @@
         }
 
         #timeline {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-    gap: 20px; 
-    padding: 20px;
-    margin-left: 0; 
-    max-width: 1200px;
-    justify-content: start;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-left: 0;
+            max-width: 1200px;
+            justify-content: start;
         }
 
+        .timeline-entry {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e4e6eb;
+            border-radius: 12px;
+            padding: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
 
+        .vertical-links {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            position: absolute;
+            left: 50%;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+            padding: 20px 0;
+        }
 
-.timeline-entry {
-    display: flex;
-    flex-direction: column; 
-    border: 1px solid #e4e6eb; 
-    border-radius: 12px;
-    padding: 16px; 
-    background-color: #ffffff; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-    transition: transform 0.2s, box-shadow 0.2s; 
-    overflow: hidden; 
-}
+        .button {
+            display: block;
+            padding: 10px 10px;
+            margin: 5px 0;
+            background-color: #e8800a;
+            color: rgb(14, 13, 13);
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            width: 230%;
+            font-family: 'Georgia', serif;
+        }
 
-.timeline-entry:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); 
-}
+        .rainbow-button {
+            display: inline-block;
+            width: 200px;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            color: rgb(18, 18, 18);
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 20px;
+            transition: transform 0.3s, background 0.3s;
+        }
 
-.timeline-entry .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
+        .rainbow-button:nth-child(1) { background: linear-gradient(135deg, #ff0000, #ff7300); }
+        .rainbow-button:nth-child(2) { background: linear-gradient(135deg, #ffea00, #33cc00); }
+        .rainbow-button:nth-child(3) { background: linear-gradient(135deg, #00aaff, #a000ff); }
 
-.timeline-entry .header .username {
-    font-weight: bold;
-    font-size: 1.2rem; 
-    color: #333; 
-}
+        .rainbow-button:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
 
-.timeline-entry .header .date {
-    font-size: 0.9rem;
-    color: #888; 
-}
+        footer {
+            background-color: #cfad80;
+            color: #333;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto;
+        }
 
-.timeline-entry .content {
-    display: flex;
-    align-items: flex-start; 
-    gap: 12px; 
-    margin-top: 8px; 
-}
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
 
-.timeline-entry img {
-    max-width: 120px; 
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
-}
-
-.timeline-entry .text-content {
-    font-size: 1rem; 
-    line-height: 1.6; 
-    color: #444; 
-    flex: 1; 
-    word-wrap: break-word;
-}
-
-.timeline-entry .comment-section {
-    margin-top: 12px;
-    border-top: 1px solid #e4e6eb; 
-    padding-top: 10px; 
-}
-     
-.comment-input {
-    display: flex;
-    align-items: flex-start;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 10px;
-    background-color: #f0f2f5;
-    margin-bottom: 12px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.comment-input textarea {
-    border: none;
-    background: transparent;
-    width: 100%;
-    height: 60px;
-    resize: none;
-    outline: none;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    padding: 6px;
-    box-sizing: border-box;
-}
-      
-.vertical-links {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; 
-  position: absolute; 
-  left: 50%; 
-  width: 100%; 
-  max-width: 300px; 
-  box-sizing: border-box;
-  padding: 20px 0; 
-}
-
-.button {
-  display: block;
-  padding: 10px 10px;
-  margin: 5px 0;
-  background-color: #e8800a;
-  color: rgb(14, 13, 13);
-  text-decoration: none;
-  border-radius: 5px;
-  text-align: center;
-  width: 230%; 
-  font-family: 'Georgia', serif; 
-}
-
-.button3{
-    display: block;
-  padding: 10px 10px;
-  margin: 5px 0;
-  background-color: #e8800a;
-  color: rgb(14, 13, 13);
-  text-decoration: none;
-  border-radius: 5px;
-  text-align: center;
-  width: 230%; 
-  font-family: 'Georgia', serif; 
-  top: 1px;
-}
-
-.buttcontainer {
-    display: flex;
-    gap: 30px; 
-}
-
-.rainbow-button {
-    display: inline-block;
-    width: 200px; 
-    height: 100px; 
-    text-align: center;
-    line-height: 100px; 
-    color: rgb(18, 18, 18); 
-    text-decoration: none; 
-    border-radius: 15px; 
-    font-size: 20px; 
-    transition: transform 0.3s, background 0.3s; 
-}
-
-.rainbow-button:nth-child(1) {
-    background: linear-gradient(135deg, #ff0000, #ff7300);
-}
-
-.rainbow-button:nth-child(2) {
-    background: linear-gradient(135deg, #ffea00, #33cc00);
-}
-
-.rainbow-button:nth-child(3) {
-    background: linear-gradient(135deg, #00aaff, #a000ff);
-}
-
-.rainbow-button:hover {
-    transform: scale(1.1);
-    filter: brightness(1.2); 
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
-    }
-
-    header h1 {
-        font-size: 1.5em;
-    }
-
-    .header-right {
-        margin-top: 10px;
-    }
-
-    .section {
-        width: 100%;
-    }
-
-    #timeline {
-        grid-template-columns: 1fr; 
-        padding: 8px;
-        margin: 10px;
-    }
-
-    .join-project-box {
-        margin-bottom: 1rem;
-        padding: 0.5rem;
-    }
-
-    .button {
-        width: 100%;
-    }
-
-    .button3 {
-        width: 100%; 
-}
-}
-</style>
+            header h1 { font-size: 1.5em; }
+            .header-right { margin-top: 10px; }
+            .section { width: 100%; }
+            #timeline {
+                grid-template-columns: 1fr;
+                padding: 8px;
+                margin: 10px;
+            }
+            .button, .button3 { width: 100%; }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -370,30 +220,26 @@
             <button id="logout">ログアウト</button>
         </div>
     </header>
+
     <main>
-     
         <div class="section join-project-box">
             <a href="project.html" class="join-project-link">プロジェクトに参加する（活字化にチャレンジ！！）</a>
         </div>
 
         <div class="vertical-links">
             <a href="upload.html" class="button">画像データをアップロードする</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ea21002@wesleyan.ac.jp,yoshino@wesleyan.ac.jp&su=フィードバック&body=【お名前】%0A【メールアドレス】%0A【ご意見】%0A%0A以下にフィードバックを記入してください。"class="button">フィードバックを送る</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ea21002@wesleyan.ac.jp,yoshino@wesleyan.ac.jp&su=フィードバック&body=【お名前】%0A【メールアドレス】%0A【ご意見】%0A%0A以下にフィードバックを記入してください。" class="button">フィードバックを送る</a>
             <a href="version.html" class="button">WEBサイトについて for Question（サポートセンター）</a>
             <a href="webusing.html" class="button">ご利用案内（各種操作方法）</a>
-          </div>
+        </div>
 
-          <div class="section announcement-box">
+        <div class="section announcement-box">
             <h2>お知らせ</h2>
-            <ul id="announcement-list">
-                
-            </ul>
+            <ul id="announcement-list"></ul>
             <div style="text-align: right;">
-                <a href="announcements.html">お知らせ一覧へ</a> 
+                <a href="announcements.html">お知らせ一覧へ</a>
             </div>
         </div>
-        
-       
 
         <div class="button-container">
             <a href="allsarch.html" class="rainbow-button">資料検索システム</a>
@@ -401,17 +247,16 @@
             <a href="#" class="rainbow-button">準備中</a>
         </div>
 
-
-
-
-
        
-
     </main>
+
+    <footer>
+        <p>© 2024 みんなの活字化広場 All Rights Reserved.</p>
+    </footer>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, query, orderBy, onSnapshot, addDoc, serverTimestamp, limit, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
 
         const firebaseConfig = {
@@ -426,56 +271,174 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-
         let currentUser = null;
+        let currentSessionRef = null;
 
-        // お知らせデータの読み込み
+        // セッション管理関数
+        const logUserSession = async () => {
+            if (currentUser) {
+                const sessionsRef = collection(db, 'sessions');
+                const session = {
+                    username: currentUser.displayName,
+                    startTime: serverTimestamp(),
+                    isActive: true,
+                    lastActivity: serverTimestamp()
+                };
+                
+                try {
+                    const docRef = await addDoc(sessionsRef, session);
+                    console.log("セッション開始:", currentUser.displayName);
+                    return docRef;
+                } catch (error) {
+                    console.error("セッション記録エラー:", error);
+                    return null;
+                }
+            }
+            return null;
+        };
+
+        const updateSessionActivity = async () => {
+            if (currentSessionRef) {
+                try {
+                    await updateDoc(currentSessionRef.ref, {
+                        lastActivity: serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error("アクティビティ更新エラー:", error);
+                }
+            }
+        };
+
+        const updateLogoutTime = async (sessionDocRef) => {
+            if (sessionDocRef) {
+                try {
+                    const endTime = serverTimestamp();
+                    await updateDoc(sessionDocRef.ref, {
+                        endTime: endTime,
+                        isActive: false
+                    });
+                    console.log("セッション終了:", currentUser?.displayName);
+                } catch (error) {
+                    console.error("ログアウト時間の記録エラー:", error);
+                }
+            }
+        };
+
+        // 定期的なアクティビティ更新
+        setInterval(updateSessionActivity, 60000); // 1分ごとに更新
+
+        // お知らせ読み込み
         async function loadAnnouncements() {
             try {
                 const announcementList = document.getElementById('announcement-list');
-                announcementList.innerHTML = '';
-                const snapshot = await getDocs(
-                    query(collection(db, 'announcements'), orderBy('timestamp', 'desc'), limit(5))
-                );
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${data.content}`;
-                    announcementList.appendChild(listItem);
-                });
+                if (announcementList) {
+                    announcementList.innerHTML = '';
+                    const querySnapshot = await getDocs(
+                        query(collection(db, 'announcements'), orderBy('timestamp', 'desc'), limit(5))
+                    );
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const listItem = document.createElement('li');
+                        listItem.textContent = data.content;
+                        announcementList.appendChild(listItem);
+                    });
+                }
             } catch (error) {
-                console.error("お知らせ読み込みエラー:", error);
+                console.error("データ取得エラー: ", error);
             }
         }
 
+
         // 認証状態の監視
-        onAuthStateChanged(auth, user => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('welcomeMessage').textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+                console.log("ログイン中のユーザー:", user.displayName);
+                
+                // 新規セッションの開始
+                if (!currentSessionRef) {
+                    currentSessionRef = await logUserSession();
+                }
+                
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+                }
+
                 loadAnnouncements();
+                loadTimeline();
+
+                // セッションストレージにログイン状態を保存
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', user.displayName);
             } else {
+                if (sessionStorage.getItem('isLoggedIn')) {
+                    // 強制ログアウトの場合
+                    console.log("セッションが終了しました");
+                    alert("セッションが終了しました。再度ログインしてください。");
+                }
+                
+                // セッションストレージをクリア
+                sessionStorage.clear();
                 window.location.href = 'login.html';
             }
         });
 
+        // ページ遷移時のセッション維持処理
+        const checkAuthState = () => {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (!isLoggedIn) {
+                return false;
+            }
+            return true;
+        };
+
         // ログアウト処理
-        document.getElementById('logout').addEventListener('click', async () => {
+        const handleLogout = async () => {
             try {
+                if (currentSessionRef) {
+                    await updateLogoutTime(currentSessionRef);
+                }
                 await signOut(auth);
+                sessionStorage.clear();
                 window.location.href = 'login.html';
             } catch (error) {
                 console.error("ログアウトエラー:", error);
             }
+        };
+
+        // ページを閉じる/リロードする際の処理
+        window.addEventListener('beforeunload', async (e) => {
+            if (currentSessionRef) {
+                await updateSessionActivity();
+            }
         });
+
+        // イベントリスナーの設定
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logout');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', handleLogout);
+            }
+
+            // 定期的なセッション確認
+            setInterval(() => {
+                if (!checkAuthState()) {
+                    alert("セッションが終了しました。再度ログインしてください。");
+                    window.location.href = 'login.html';
+                }
+            }, 300000); // 5分ごとにチェック
+        });
+
+        // ページ内アクティビティの監視
+        document.addEventListener('click', updateSessionActivity);
+        document.addEventListener('keypress', updateSessionActivity);
+        document.addEventListener('scroll', updateSessionActivity);
+
+        // 他のページで使用するための関数をグローバルに公開
+        window.checkAuthState = checkAuthState;
+        window.handleLogout = handleLogout;
+        window.updateSessionActivity = updateSessionActivity;
     </script>
-   
-    <footer class="footer">
-        <p>© 2024 みんなの活字化広場 All Rights Reserved.</p>
-    </footer>
-</head>
-<body>
-
-
 </body>
 </html>

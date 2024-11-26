@@ -3,122 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン履歴管理システム</title>
+    <title>ログイン活動ダッシュボード</title>
     <style>
-        /* スタイル設定 */
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-            color: #212529;
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
         }
 
-        h1 {
-            color: #343a40;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-100);
+            margin: 0;
+            padding: 0;
+            color: var(--gray-800);
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            padding: 40px;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            background-color: white;
+            padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            font-size: 16px;
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--gray-800);
         }
 
-        input[type="date"] {
-            padding: 12px;
-            width: 100%;
-            margin-bottom: 20px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="date"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: block;
-            margin: 0 auto;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #logins-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        #logins-list li {
-            background-color: #f1f3f5;
-            border: 1px solid #ced4da;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            font-size: 16px;
+        .date-controls {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: box-shadow 0.3s ease;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
         }
 
-        #logins-list li:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .date-picker {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 1rem;
         }
 
-        .meta-info {
-            font-size: 14px;
-            color: #868e96;
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .total-time {
-            background-color: #e9ecef;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 1rem 0;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .user-header {
+            padding: 1rem 1.5rem;
+            background-color: var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
             font-weight: 500;
-            text-align: center;
         }
 
-        .session-time {
-            color: #495057;
-            font-size: 14px;
+        .status-active {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .user-details {
+            padding: 1.5rem;
+        }
+
+        .time-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .time-block {
+            background-color: var(--gray-100);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .time-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .time-value {
+            font-weight: bold;
+            color: var(--gray-800);
+        }
+
+        .session-timeline {
+            margin-top: 1.5rem;
+            border-left: 2px solid var(--gray-200);
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 0.25rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        .timeline-time {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .activity-chart {
+            height: 100px;
+            background-color: var(--gray-100);
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-bar {
+            height: 100%;
+            position: absolute;
+            transition: width 0.3s ease;
+        }
+
+        .summary-section {
+            margin-top: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                margin: 1rem auto;
             }
 
-            button {
-                width: 100%;
+            .dashboard-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -138,82 +230,229 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const loadLogins = async (date) => {
-    const loginsList = document.getElementById('logins-list');
-    loginsList.innerHTML = '';
-
-    const selectedDateStart = new Date(date);
-    selectedDateStart.setHours(0, 0, 0, 0);
-    const selectedDateEnd = new Date(date);
-    selectedDateEnd.setHours(23, 59, 59, 999);
-
-    const loginsQuery = query(
-        collection(db, 'logins'),
-        where('loginTime', '>=', Timestamp.fromDate(selectedDateStart)),
-        where('loginTime', '<=', Timestamp.fromDate(selectedDateEnd)),
-        orderBy('loginTime', 'asc')
-    );
-
-    const querySnapshot = await getDocs(loginsQuery);
-
-    let userLogins = {};
-
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const loginTime = data.loginTime.toDate();
-        const logoutTime = data.logoutTime ? data.logoutTime.toDate() : null;
-        const sessionDuration = logoutTime ? logoutTime - loginTime : 0;
-
-        const username = data.username || '不明';
-        
-        // ユーザーごとのログイン時間をまとめる
-        if (!userLogins[username]) {
-            userLogins[username] = {
-                firstLoginTime: loginTime,
-                totalDuration: 0
+        const formatDuration = (milliseconds) => {
+            const seconds = Math.floor(milliseconds / 1000);
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            return {
+                formatted: `${hours}時間${minutes}分${remainingSeconds}秒`,
+                hours,
+                minutes,
+                seconds: remainingSeconds
             };
-        }
-        
-        // ユーザーごとの合計ログイン時間を加算
-        userLogins[username].totalDuration += sessionDuration;
-    });
+        };
 
-    // ユーザーごとにログイン情報を表示
-    for (const username in userLogins) {
-        const { firstLoginTime, totalDuration } = userLogins[username];
+        const calculateActivityMetrics = (sessions) => {
+            let activeTime = 0;
+            let inactiveTime = 0;
+            let totalSessions = sessions.length;
+            let currentlyActive = sessions.some(s => s.isActive);
+            
+            for (let i = 0; i < sessions.length; i++) {
+                const currentSession = sessions[i];
+                const nextSession = sessions[i + 1];
+                
+                if (currentSession.endTime) {
+                    activeTime += currentSession.duration;
+                }
+                
+                if (nextSession && currentSession.endTime) {
+                    const inactiveDuration = nextSession.startTime - currentSession.endTime;
+                    if (inactiveDuration > 0) {
+                        inactiveTime += inactiveDuration;
+                    }
+                }
+            }
 
-        // 初回ログイン時間の表示
-        const userLoginElement = document.createElement('li');
-        userLoginElement.innerHTML = `
-            <div>ユーザーネーム: ${username}</div>
-            <div>初回ログイン時間: ${firstLoginTime.toLocaleString()}</div>
-            <div>合計ログイン時間: ${Math.floor(totalDuration / 60000)}分</div>
-        `;
-        loginsList.appendChild(userLoginElement);
-    }
-};
+            const totalTime = activeTime + inactiveTime;
+            const activePercentage = totalTime > 0 ? (activeTime / totalTime) * 100 : 0;
+            
+            return {
+                activeTime,
+                inactiveTime,
+                totalTime,
+                totalSessions,
+                currentlyActive,
+                activePercentage
+            };
+        };
 
-// デフォルトで当日を表示
-document.addEventListener('DOMContentLoaded', async () => {
-    const today = new Date();
-    const todayISO = today.toISOString().split('T')[0];
-    const datePicker = document.getElementById('date-picker');
-    datePicker.value = todayISO;
-    await loadLogins(todayISO);
+        const updateDashboard = async (date) => {
+            const selectedDateStart = new Date(date);
+            selectedDateStart.setHours(0, 0, 0, 0);
+            const selectedDateEnd = new Date(date);
+            selectedDateEnd.setHours(23, 59, 59, 999);
 
-    datePicker.addEventListener('change', async (e) => {
-        await loadLogins(e.target.value);
-    });
-});
+            const sessionsQuery = query(
+                collection(db, 'sessions'),
+                where('startTime', '>=', Timestamp.fromDate(selectedDateStart)),
+                where('startTime', '<=', Timestamp.fromDate(selectedDateEnd)),
+                orderBy('startTime', 'asc')
+            );
 
-</Script>
+            const querySnapshot = await getDocs(sessionsQuery);
+            const userSessions = {};
+            let totalActiveUsers = 0;
+            let overallActiveTime = 0;
 
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (!userSessions[data.username]) {
+                    userSessions[data.username] = {
+                        sessions: [],
+                        firstLogin: null
+                    };
+                    totalActiveUsers++;
+                }
+                
+                const session = {
+                    startTime: data.startTime.toDate(),
+                    endTime: data.endTime ? data.endTime.toDate() : null,
+                    duration: data.endTime ? 
+                        (data.endTime.toDate() - data.startTime.toDate()) : 
+                        (data.isActive ? (new Date() - data.startTime.toDate()) : 0),
+                    isActive: data.isActive
+                };
+
+                if (!userSessions[data.username].firstLogin || 
+                    session.startTime < userSessions[data.username].firstLogin) {
+                    userSessions[data.username].firstLogin = session.startTime;
+                }
+
+                userSessions[data.username].sessions.push(session);
+            });
+
+            const userListContainer = document.getElementById('user-list');
+            userListContainer.innerHTML = '';
+
+            Object.entries(userSessions).forEach(([username, data]) => {
+                const metrics = calculateActivityMetrics(data.sessions);
+                overallActiveTime += metrics.activeTime;
+
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+
+                const timeInfo = formatDuration(metrics.activeTime);
+                const activityPercent = Math.round(metrics.activePercentage);
+
+                userCard.innerHTML = `
+                    <div class="user-header">
+                        <div class="user-name">${username}</div>
+                        <span class="status-badge ${metrics.currentlyActive ? 'status-active' : 'status-inactive'}">
+                            ${metrics.currentlyActive ? 'オンライン' : 'オフライン'}
+                        </span>
+                    </div>
+                    <div class="user-details">
+                        <div class="time-info">
+                            <div class="time-block">
+                                <div class="time-label">初回ログイン</div>
+                                <div class="time-value">${data.firstLogin.toLocaleTimeString()}</div>
+                            </div>
+                            <div class="time-block">
+                                <div class="time-label">アクティブ時間</div>
+                                <div class="time-value">${timeInfo.formatted}</div>
+                            </div>
+                            <div class="time-block">
+                                <div class="time-label">セッション数</div>
+                                <div class="time-value">${metrics.totalSessions}回</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-chart">
+                            <div class="activity-bar" 
+                                 style="width: ${activityPercent}%; 
+                                        background-color: var(--primary-color);">
+                            </div>
+                        </div>
+                        
+                        <div class="session-timeline">
+                            ${data.sessions.map(session => `
+                                <div class="timeline-item">
+                                    <span class="timeline-time">
+                                        ${session.startTime.toLocaleTimeString()} - 
+                                        ${session.endTime ? session.endTime.toLocaleTimeString() : '現在'}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                userListContainer.appendChild(userCard);
+            });
+
+            // Update summary statistics
+            document.getElementById('total-users').textContent = totalActiveUsers;
+            document.getElementById('total-active-time').textContent = 
+                formatDuration(overallActiveTime).formatted;
+            
+            const averageActiveTime = totalActiveUsers > 0 ? 
+                overallActiveTime / totalActiveUsers : 0;
+            document.getElementById('average-active-time').textContent = 
+                formatDuration(averageActiveTime).formatted;
+        };
+
+        const loadDefaultDate = async () => {
+            const today = new Date();
+            const todayISO = today.toLocaleDateString('sv-SE');
+            const datePicker = document.getElementById('date-picker');
+            
+            if (datePicker) {
+                datePicker.value = todayISO;
+                await updateDashboard(todayISO);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', loadDefaultDate);
+
+        document.getElementById('date-picker').addEventListener('change', async (event) => {
+            await updateDashboard(event.target.value);
+        });
+    </script>
+</head>
 <body>
     <div class="container">
-        <h1>ログイン履歴管理システム</h1>
-        <label for="date-picker">日付を選択</label>
-        <input type="date" id="date-picker">
-        <ul id="logins-list"></ul>
+        <div class="header">
+            <h1>ログイン活動ダッシュボード</h1>
+            <div class="date-controls">
+                <input type="date" id="date-picker" class="date-picker">
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>総アクティブユーザー</h3>
+                <div class="stat-value" id="total-users">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>総アクティブ時間</h3>
+                <div class="stat-value" id="total-active-time">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>平均アクティブ時間</h3>
+                <div class="stat-value" id="average-active-time">-</div>
+            </div>
+        </div>
+
+        <div id="user-list">
+            <!-- ユーザーカードがここに動的に追加されます -->
+        </div>
+        
+        <div class="summary-section">
+            <button onclick="window.history.back()" style="
+                background-color: var(--gray-600);
+                color: white;
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.3s ease;
+            ">
+                戻る
+            </button>
+        </div>
     </div>
 </body>
 </html>
