@@ -414,179 +414,187 @@
     </main>
 
     <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase App</title>
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, orderBy, onSnapshot, addDoc, serverTimestamp, limit } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
-            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
-            projectId: "honkoku-hiroba-21400",
-            storageBucket: "honkoku-hiroba-21400.appspot.com",
-            messagingSenderId: "909469448032",
-            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
-        };
-
-        
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        let currentUser = null;
-
-        
-        async function loadAnnouncements() {
-    try {
-        const announcementList = document.getElementById('announcement-list');
-        if (announcementList) {
-            announcementList.innerHTML = ''; 
-            const querySnapshot = await getDocs(
-                query(collection(db, 'announcements'), orderBy('timestamp', 'desc'), limit(5)) 
-            );
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const listItem = document.createElement('li');
-                listItem.textContent = data.content;
-                announcementList.appendChild(listItem);
-            });
-        }
-    } catch (error) {
-        console.error("データ取得エラー: ", error);
-    }
-}
-
-
-     
-        const loadTimeline = () => {
-            const timelineQuery = query(
-                collection(db, "timeline"), 
-                orderBy("timestamp", "desc"), 
-                limit(9) 
-            );
-
-            onSnapshot(timelineQuery, (snapshot) => {
-                const timeline = document.getElementById('timeline');
-                timeline.innerHTML = "";
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const entry = document.createElement('div');
-                    entry.className = 'timeline-entry';
-                    entry.innerHTML = `
-                        <div class="username">${data.username}</div>
-                        <img src="${data.image}" alt="Image">
-                        <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
-                        <div class="text">${data.text}</div>
-                        <div class="comment-section">
-                            <h3>コメント</h3>
-                            <div class="comments" id="comments-${doc.id}"></div>
-                            <form class="comment-form" onsubmit="return submitComment(event, '${doc.id}')">
-                                <input type="text" id="comment-input-${doc.id}" placeholder="コメントを入力">
-                                <button type="submit">送信</button>
-                            </form>
-                        </div>
-                    `;
-                    timeline.appendChild(entry);
-                    loadComments(doc.id);
-                });
-            });
-        };
-
-        
-        const loadComments = (timelineId) => {
-            const commentsRef = collection(db, `timeline/${timelineId}/comments`);
-            const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
-
-            onSnapshot(commentsQuery, (snapshot) => {
-                const commentsElement = document.getElementById(`comments-${timelineId}`);
-                commentsElement.innerHTML = "";
-
-                snapshot.forEach((commentDoc) => {
-                    const commentData = commentDoc.data();
-                    const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
-
-                    const commentEntry = document.createElement('div');
-                    commentEntry.className = 'comment';
-                    commentEntry.innerHTML = `
-                        <div class="comment-username">${commentData.username}</div>
-                        <div class="comment-timestamp">${timestamp ? timestamp.toLocaleString() : "タイムスタンプなし"}</div>
-                        <div class="comment-text">${commentData.text}</div>
-                    `;
-                    commentsElement.appendChild(commentEntry);
-                });
-            });
-        };
-
-       
-        window.submitComment = async (event, timelineId) => {
-            event.preventDefault();
-            const commentInput = document.getElementById(`comment-input-${timelineId}`);
-            const commentText = commentInput.value;
-
-            if (commentText.trim() !== "") {
-                const commentsRef = collection(db, `timeline/${timelineId}/comments`);
-                await addDoc(commentsRef, {
-                    username: currentUser ? currentUser.displayName : "ゲスト", 
-                    text: commentText,
-                    timestamp: serverTimestamp() 
-                });
-                commentInput.value = "";
-            }
-        };
-
-      
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        currentUser = user;
-        console.log("ログイン中のユーザー:", user.displayName);
-        await logUserLogin();
-        
-       
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        if (welcomeMessage) {
-            welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
-        }
-
-        loadAnnouncements();
-        loadTimeline();
-    } else {
-        console.log("ユーザーがログインしていません");
-        window.location.href = 'login.html'; 
-    }
-});
-
-
-
-        const logUserLogin = async () => {
-            if (currentUser) {
-                const loginsRef = collection(db, 'logins');
-                await addDoc(loginsRef, {
-                    username: currentUser.displayName,
-                    timestamp: serverTimestamp()
-                });
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutButton = document.getElementById('logout');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', async () => {
-                    try {
-                        await signOut(auth);
-                        window.location.href = 'login.html'; 
-                    } catch (error) {
-                        console.error("ログアウトエラー: ", error);
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Firebase App</title>
+        <script type="module">
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+            import { getFirestore, collection, getDocs, query, orderBy, onSnapshot, addDoc, serverTimestamp, limit, where, updateDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+            import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+    
+            const firebaseConfig = {
+                apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+                authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+                projectId: "honkoku-hiroba-21400",
+                storageBucket: "honkoku-hiroba-21400.appspot.com",
+                messagingSenderId: "909469448032",
+                appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+            };
+    
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+            let currentUser = null;
+            let currentLoginId = null;  // ログインドキュメントIDを保持する変数
+    
+            async function loadAnnouncements() {
+                try {
+                    const announcementList = document.getElementById('announcement-list');
+                    if (announcementList) {
+                        announcementList.innerHTML = '';
+                        const querySnapshot = await getDocs(
+                            query(collection(db, 'announcements'), orderBy('timestamp', 'desc'), limit(5))
+                        );
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const listItem = document.createElement('li');
+                            listItem.textContent = data.content;
+                            announcementList.appendChild(listItem);
+                        });
                     }
-                });
+                } catch (error) {
+                    console.error("データ取得エラー: ", error);
+                }
             }
-        });
-
-
-    </script>
+    
+            const loadTimeline = () => {
+                const timelineQuery = query(
+                    collection(db, "timeline"),
+                    orderBy("timestamp", "desc"),
+                    limit(9)
+                );
+    
+                onSnapshot(timelineQuery, (snapshot) => {
+                    const timeline = document.getElementById('timeline');
+                    timeline.innerHTML = "";
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const entry = document.createElement('div');
+                        entry.className = 'timeline-entry';
+                        entry.innerHTML = `
+                            <div class="username">${data.username}</div>
+                            <img src="${data.image}" alt="Image">
+                            <div class="timestamp">${new Date(data.timestamp).toLocaleString()}</div>
+                            <div class="text">${data.text}</div>
+                            <div class="comment-section">
+                                <h3>コメント</h3>
+                                <div class="comments" id="comments-${doc.id}"></div>
+                                <form class="comment-form" onsubmit="return submitComment(event, '${doc.id}')">
+                                    <input type="text" id="comment-input-${doc.id}" placeholder="コメントを入力">
+                                    <button type="submit">送信</button>
+                                </form>
+                            </div>
+                        `;
+                        timeline.appendChild(entry);
+                        loadComments(doc.id);
+                    });
+                });
+            };
+    
+            const loadComments = (timelineId) => {
+                const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+                const commentsQuery = query(commentsRef, orderBy("timestamp", "asc"));
+    
+                onSnapshot(commentsQuery, (snapshot) => {
+                    const commentsElement = document.getElementById(`comments-${timelineId}`);
+                    commentsElement.innerHTML = "";
+    
+                    snapshot.forEach((commentDoc) => {
+                        const commentData = commentDoc.data();
+                        const timestamp = commentData.timestamp ? commentData.timestamp.toDate() : null;
+    
+                        const commentEntry = document.createElement('div');
+                        commentEntry.className = 'comment';
+                        commentEntry.innerHTML = `
+                            <div class="comment-username">${commentData.username}</div>
+                            <div class="comment-timestamp">${timestamp ? timestamp.toLocaleString() : "タイムスタンプなし"}</div>
+                            <div class="comment-text">${commentData.text}</div>
+                        `;
+                        commentsElement.appendChild(commentEntry);
+                    });
+                });
+            };
+    
+            window.submitComment = async (event, timelineId) => {
+                event.preventDefault();
+                const commentInput = document.getElementById(`comment-input-${timelineId}`);
+                const commentText = commentInput.value;
+    
+                if (commentText.trim() !== "") {
+                    const commentsRef = collection(db, `timeline/${timelineId}/comments`);
+                    await addDoc(commentsRef, {
+                        username: currentUser ? currentUser.displayName : "ゲスト",
+                        text: commentText,
+                        timestamp: serverTimestamp()
+                    });
+                    commentInput.value = "";
+                }
+            };
+    
+            const logUserLogin = async () => {
+                if (currentUser) {
+                    const loginsRef = collection(db, 'logins');
+                    const loginDoc = await addDoc(loginsRef, {
+                        username: currentUser.displayName,
+                        timestamp: serverTimestamp(),
+                        status: 'active'  // ログイン状態を追加
+                    });
+                    currentLoginId = loginDoc.id;  // ログインドキュメントIDを保存
+                }
+            };
+    
+            const logUserLogout = async () => {
+                if (currentLoginId) {
+                    try {
+                        const loginRef = doc(db, 'logins', currentLoginId);
+                        await updateDoc(loginRef, {
+                            logoutTime: serverTimestamp(),
+                            status: 'completed'  // ログアウト状態を更新
+                        });
+                    } catch (error) {
+                        console.error("ログアウト時間の記録に失敗:", error);
+                    }
+                }
+            };
+    
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("ログイン中のユーザー:", user.displayName);
+                    await logUserLogin();
+    
+                    const welcomeMessage = document.getElementById('welcomeMessage');
+                    if (welcomeMessage) {
+                        welcomeMessage.textContent = `ようこそ、${user.displayName || '会員様'}さん！`;
+                    }
+    
+                    loadAnnouncements();
+                    loadTimeline();
+                } else {
+                    console.log("ユーザーがログインしていません");
+                    window.location.href = 'login.html';
+                }
+            });
+    
+            document.addEventListener('DOMContentLoaded', () => {
+                const logoutButton = document.getElementById('logout');
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', async () => {
+                        try {
+                            await logUserLogout();  // ログアウト時間を記録
+                            await signOut(auth);
+                            window.location.href = 'login.html';
+                        } catch (error) {
+                            console.error("ログアウトエラー: ", error);
+                        }
+                    });
+                }
+            });
+        </script>
+    </head>
+   
     <footer class="footer">
         <p>© 2024 みんなの活字化広場 All Rights Reserved.</p>
     </footer>
