@@ -3,220 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン活動ダッシュボード</title>
+    <title>管理画面 - みんなの活字化広場</title>
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --success-color: #22c55e;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-600: #4b5563;
-            --gray-800: #1f2937;
-        }
-
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--gray-100);
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: var(--gray-800);
-            line-height: 1.6;
+            background-color: #f1f1e2;
         }
-
+        header {
+            background-color: #e9e0c5;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            color: #6c4f3d;
+        }
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 20px auto;
+            padding: 0 20px;
         }
-
-        .header {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--gray-800);
-        }
-
-        .date-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .date-picker {
-            padding: 0.5rem;
-            border: 1px solid var(--gray-300);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .dashboard-grid {
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
-
         .stat-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .stat-card h3 {
-            margin: 0 0 1rem 0;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-card {
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
-
-        .user-header {
-            padding: 1rem 1.5rem;
-            background-color: var(--gray-100);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-name {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .status-inactive {
-            background-color: var(--gray-300);
-            color: var(--gray-600);
-        }
-
-        .user-details {
-            padding: 1.5rem;
-        }
-
-        .time-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .time-block {
-            background-color: var(--gray-100);
-            padding: 1rem;
             border-radius: 8px;
-        }
-
-        .time-label {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            margin-bottom: 0.5rem;
-        }
-
-        .time-value {
-            font-weight: bold;
-            color: var(--gray-800);
-        }
-
-        .session-timeline {
-            margin-top: 1.5rem;
-            border-left: 2px solid var(--gray-200);
-            padding-left: 1.5rem;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1.65rem;
-            top: 0.25rem;
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-        }
-
-        .timeline-time {
-            font-weight: 500;
-            color: var(--primary-color);
-        }
-
-        .activity-chart {
-            height: 100px;
-            background-color: var(--gray-100);
-            border-radius: 8px;
-            margin: 1rem 0;
-            position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .activity-bar {
+        .user-table th, .user-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .user-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .user-row {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .user-row:hover {
+            background-color: #f8f8f8;
+        }
+        .date-picker {
+            padding: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .close-button {
             position: absolute;
-            transition: width 0.3s ease;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #666;
         }
-
-        .summary-section {
-            margin-top: 2rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 1rem auto;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        .session-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
         }
     </style>
+</head>
+<body>
+    <header>
+        <h1>管理画面 - ログイン統計</h1>
+        <div style="margin-top: 10px;">
+            <span id="currentTime"></span>
+        </div>
+    </header>
+
+    <div class="container">
+        <input type="date" id="datePicker" class="date-picker">
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>本日の総ユーザー数</h3>
+                <p id="totalUsers">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>現在のアクティブユーザー</h3>
+                <p id="activeUsers">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>平均利用時間</h3>
+                <p id="avgSessionTime">-</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>ユーザー一覧</h3>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ユーザー名</th>
+                        <th>初回ログイン時刻</th>
+                        <th>合計利用時間</th>
+                        <th>状態</th>
+                    </tr>
+                </thead>
+                <tbody id="userList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ユーザー詳細モーダル -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeUserModal()">&times;</span>
+            <h2 id="modalUsername"></h2>
+            <div class="session-list">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>ログイン時刻</th>
+                            <th>ログアウト時刻</th>
+                            <th>セッション時間</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, where, orderBy, Timestamp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { getFirestore, collection, query, getDocs, where, orderBy } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
@@ -230,229 +180,153 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const formatDuration = (milliseconds) => {
-            const seconds = Math.floor(milliseconds / 1000);
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = seconds % 60;
-            return {
-                formatted: `${hours}時間${minutes}分${remainingSeconds}秒`,
-                hours,
-                minutes,
-                seconds: remainingSeconds
-            };
-        };
+        let currentSessions = [];
 
-        const calculateActivityMetrics = (sessions) => {
-            let activeTime = 0;
-            let inactiveTime = 0;
-            let totalSessions = sessions.length;
-            let currentlyActive = sessions.some(s => s.isActive);
-            
-            for (let i = 0; i < sessions.length; i++) {
-                const currentSession = sessions[i];
-                const nextSession = sessions[i + 1];
-                
-                if (currentSession.endTime) {
-                    activeTime += currentSession.duration;
-                }
-                
-                if (nextSession && currentSession.endTime) {
-                    const inactiveDuration = nextSession.startTime - currentSession.endTime;
-                    if (inactiveDuration > 0) {
-                        inactiveTime += inactiveDuration;
-                    }
-                }
-            }
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleString('ja-JP', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+        }
 
-            const totalTime = activeTime + inactiveTime;
-            const activePercentage = totalTime > 0 ? (activeTime / totalTime) * 100 : 0;
-            
-            return {
-                activeTime,
-                inactiveTime,
-                totalTime,
-                totalSessions,
-                currentlyActive,
-                activePercentage
-            };
-        };
+        async function fetchSessionData(date) {
+            const startOfDay = new Date(date);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(date);
+            endOfDay.setHours(23, 59, 59, 999);
 
-        const updateDashboard = async (date) => {
-            const selectedDateStart = new Date(date);
-            selectedDateStart.setHours(0, 0, 0, 0);
-            const selectedDateEnd = new Date(date);
-            selectedDateEnd.setHours(23, 59, 59, 999);
+            try {
+                const sessionsRef = collection(db, 'sessions');
+                const q = query(
+                    sessionsRef,
+                    where('startTime', '>=', startOfDay),
+                    where('startTime', '<=', endOfDay),
+                    orderBy('startTime')
+                );
 
-            const sessionsQuery = query(
-                collection(db, 'sessions'),
-                where('startTime', '>=', Timestamp.fromDate(selectedDateStart)),
-                where('startTime', '<=', Timestamp.fromDate(selectedDateEnd)),
-                orderBy('startTime', 'asc')
-            );
+                const querySnapshot = await getDocs(q);
+                currentSessions = [];
+                const userStats = {};
 
-            const querySnapshot = await getDocs(sessionsQuery);
-            const userSessions = {};
-            let totalActiveUsers = 0;
-            let overallActiveTime = 0;
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                if (!userSessions[data.username]) {
-                    userSessions[data.username] = {
-                        sessions: [],
-                        firstLogin: null
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const session = {
+                        id: doc.id,
+                        username: data.username,
+                        startTime: data.startTime?.toDate(),
+                        endTime: data.endTime?.toDate(),
+                        lastActivity: data.lastActivity?.toDate() || new Date()
                     };
-                    totalActiveUsers++;
-                }
-                
-                const session = {
-                    startTime: data.startTime.toDate(),
-                    endTime: data.endTime ? data.endTime.toDate() : null,
-                    duration: data.endTime ? 
-                        (data.endTime.toDate() - data.startTime.toDate()) : 
-                        (data.isActive ? (new Date() - data.startTime.toDate()) : 0),
-                    isActive: data.isActive
-                };
 
-                if (!userSessions[data.username].firstLogin || 
-                    session.startTime < userSessions[data.username].firstLogin) {
-                    userSessions[data.username].firstLogin = session.startTime;
-                }
+                    if (!userStats[session.username]) {
+                        userStats[session.username] = {
+                            firstLogin: session.startTime,
+                            totalTime: 0,
+                            sessions: [],
+                            isActive: false
+                        };
+                    }
 
-                userSessions[data.username].sessions.push(session);
-            });
+                    const sessionDuration = 
+                        (session.endTime || session.lastActivity - session.startTime) / (1000 * 60);
+                    userStats[session.username].totalTime += sessionDuration;
+                    userStats[session.username].sessions.push(session);
 
-            const userListContainer = document.getElementById('user-list');
-            userListContainer.innerHTML = '';
+                    // アクティブ状態の確認（5分以内のアクティビティ）
+                    const fiveMinutesAgo = new Date(Date.now() - 5 * 60000);
+                    if (session.lastActivity > fiveMinutesAgo) {
+                        userStats[session.username].isActive = true;
+                    }
 
-            Object.entries(userSessions).forEach(([username, data]) => {
-                const metrics = calculateActivityMetrics(data.sessions);
-                overallActiveTime += metrics.activeTime;
+                    currentSessions.push(session);
+                });
 
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
+                updateUserList(userStats);
+                updateStats(userStats);
 
-                const timeInfo = formatDuration(metrics.activeTime);
-                const activityPercent = Math.round(metrics.activePercentage);
+            } catch (error) {
+                console.error("Error fetching session data:", error);
+                alert('データの取得に失敗しました。');
+            }
+        }
 
-                userCard.innerHTML = `
-                    <div class="user-header">
-                        <div class="user-name">${username}</div>
-                        <span class="status-badge ${metrics.currentlyActive ? 'status-active' : 'status-inactive'}">
-                            ${metrics.currentlyActive ? 'オンライン' : 'オフライン'}
-                        </span>
-                    </div>
-                    <div class="user-details">
-                        <div class="time-info">
-                            <div class="time-block">
-                                <div class="time-label">初回ログイン</div>
-                                <div class="time-value">${data.firstLogin.toLocaleTimeString()}</div>
-                            </div>
-                            <div class="time-block">
-                                <div class="time-label">アクティブ時間</div>
-                                <div class="time-value">${timeInfo.formatted}</div>
-                            </div>
-                            <div class="time-block">
-                                <div class="time-label">セッション数</div>
-                                <div class="time-value">${metrics.totalSessions}回</div>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-chart">
-                            <div class="activity-bar" 
-                                 style="width: ${activityPercent}%; 
-                                        background-color: var(--primary-color);">
-                            </div>
-                        </div>
-                        
-                        <div class="session-timeline">
-                            ${data.sessions.map(session => `
-                                <div class="timeline-item">
-                                    <span class="timeline-time">
-                                        ${session.startTime.toLocaleTimeString()} - 
-                                        ${session.endTime ? session.endTime.toLocaleTimeString() : '現在'}
-                                    </span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+        function updateUserList(userStats) {
+            const tbody = document.getElementById('userList');
+            tbody.innerHTML = Object.entries(userStats).map(([username, stats]) => `
+                <tr class="user-row" onclick="showUserDetails('${username}')">
+                    <td>${username}</td>
+                    <td>${stats.firstLogin.toLocaleString('ja-JP')}</td>
+                    <td>${Math.round(stats.totalTime)} 分</td>
+                    <td>${stats.isActive ? 'オンライン' : 'オフライン'}</td>
+                </tr>
+            `).join('');
+        }
 
-                userListContainer.appendChild(userCard);
-            });
+        function updateStats(userStats) {
+            const totalUsers = Object.keys(userStats).length;
+            const activeUsers = Object.values(userStats)
+                .filter(stats => stats.isActive).length;
+            const totalTime = Object.values(userStats)
+                .reduce((sum, stats) => sum + stats.totalTime, 0);
 
-            // Update summary statistics
-            document.getElementById('total-users').textContent = totalActiveUsers;
-            document.getElementById('total-active-time').textContent = 
-                formatDuration(overallActiveTime).formatted;
-            
-            const averageActiveTime = totalActiveUsers > 0 ? 
-                overallActiveTime / totalActiveUsers : 0;
-            document.getElementById('average-active-time').textContent = 
-                formatDuration(averageActiveTime).formatted;
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('avgSessionTime').textContent = 
+                totalUsers ? `${Math.round(totalTime / totalUsers)} 分` : '0 分';
+        }
+
+        // グローバルに関数を公開
+        window.showUserDetails = function(username) {
+            const userSessions = currentSessions.filter(s => s.username === username);
+            const modal = document.getElementById('userModal');
+            const modalUsername = document.getElementById('modalUsername');
+            const sessionList = document.getElementById('sessionList');
+
+            modalUsername.textContent = `${username} の利用履歴`;
+            sessionList.innerHTML = userSessions.map(session => `
+                <tr>
+                    <td>${session.startTime.toLocaleString('ja-JP')}</td>
+                    <td>${(session.endTime || session.lastActivity).toLocaleString('ja-JP')}</td>
+                    <td>${Math.round((
+                        (session.endTime || session.lastActivity) - session.startTime
+                    ) / (1000 * 60))} 分</td>
+                </tr>
+            `).join('');
+
+            modal.style.display = 'block';
         };
 
-        const loadDefaultDate = async () => {
-            const today = new Date();
-            const todayISO = today.toLocaleDateString('sv-SE');
-            const datePicker = document.getElementById('date-picker');
-            
-            if (datePicker) {
-                datePicker.value = todayISO;
-                await updateDashboard(todayISO);
+        window.closeUserModal = function() {
+            document.getElementById('userModal').style.display = 'none';
+        };
+
+        // イベントリスナー設定
+        document.getElementById('datePicker').addEventListener('change', (e) => {
+            fetchSessionData(e.target.value);
+        });
+
+        // モーダルの外側をクリックして閉じる
+        window.onclick = function(event) {
+            const modal = document.getElementById('userModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
         };
 
-        document.addEventListener('DOMContentLoaded', loadDefaultDate);
-
-        document.getElementById('date-picker').addEventListener('change', async (event) => {
-            await updateDashboard(event.target.value);
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('datePicker').valueAsDate = now;
+            setInterval(updateClock, 1000);
+            updateClock();
+            fetchSessionData(now);
         });
     </script>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>ログイン活動ダッシュボード</h1>
-            <div class="date-controls">
-                <input type="date" id="date-picker" class="date-picker">
-            </div>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="stat-card">
-                <h3>総アクティブユーザー</h3>
-                <div class="stat-value" id="total-users">-</div>
-            </div>
-            <div class="stat-card">
-                <h3>総アクティブ時間</h3>
-                <div class="stat-value" id="total-active-time">-</div>
-            </div>
-            <div class="stat-card">
-                <h3>平均アクティブ時間</h3>
-                <div class="stat-value" id="average-active-time">-</div>
-            </div>
-        </div>
-
-        <div id="user-list">
-            <!-- ユーザーカードがここに動的に追加されます -->
-        </div>
-        
-        <div class="summary-section">
-            <button onclick="window.history.back()" style="
-                background-color: var(--gray-600);
-                color: white;
-                padding: 0.5rem 1rem;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 1rem;
-                transition: background-color 0.3s ease;
-            ">
-                戻る
-            </button>
-        </div>
-    </div>
 </body>
 </html>
