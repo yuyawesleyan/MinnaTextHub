@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン履歴管理システム</title>
     <style>
+        /* スタイル設定 */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
@@ -121,135 +122,98 @@
             }
         }
     </style>
-<script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-    import { getFirestore, collection, getDocs, query, where, orderBy, Timestamp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, where, orderBy, Timestamp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
-        authDomain: "honkoku-hiroba-21400.firebaseapp.com",
-        projectId: "honkoku-hiroba-21400",
-        storageBucket: "honkoku-hiroba-21400.appspot.com",
-        messagingSenderId: "909469448032",
-        appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    function formatDuration(milliseconds) {
-        const hours = Math.floor(milliseconds / (1000 * 60 * 60));
-        const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
-        return `${hours}時間${minutes}分`;
-    }
+        const loadLogins = async (date) => {
+    const loginsList = document.getElementById('logins-list');
+    loginsList.innerHTML = '';
 
-    const loadLogins = async (date) => {
-        const loginsList = document.getElementById('logins-list');
-        loginsList.innerHTML = '';
+    const selectedDateStart = new Date(date);
+    selectedDateStart.setHours(0, 0, 0, 0);
+    const selectedDateEnd = new Date(date);
+    selectedDateEnd.setHours(23, 59, 59, 999);
 
-        const selectedDateStart = new Date(date);
-        selectedDateStart.setHours(0, 0, 0, 0);
-        const selectedDateEnd = new Date(date);
-        selectedDateEnd.setHours(23, 59, 59, 999);
+    const loginsQuery = query(
+        collection(db, 'logins'),
+        where('loginTime', '>=', Timestamp.fromDate(selectedDateStart)),
+        where('loginTime', '<=', Timestamp.fromDate(selectedDateEnd)),
+        orderBy('loginTime', 'asc')
+    );
 
-        const loginsQuery = query(
-            collection(db, 'logins'),
-            where('timestamp', '>=', Timestamp.fromDate(selectedDateStart)),
-            where('timestamp', '<=', Timestamp.fromDate(selectedDateEnd)),
-            orderBy('timestamp', 'asc')
-        );
+    const querySnapshot = await getDocs(loginsQuery);
 
-        const querySnapshot = await getDocs(loginsQuery);
-        const userSessions = {};
-        let totalTimeForAllUsers = 0;
+    let userLogins = {};
 
-        // セッション情報を集計
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const loginDate = data.timestamp.toDate().toLocaleDateString('sv-SE');
-            
-            if (loginDate === date) {
-                if (!userSessions[data.username]) {
-                    userSessions[data.username] = {
-                        loginTime: data.timestamp.toDate(),
-                        logoutTime: data.logoutTime ? data.logoutTime.toDate() : null,
-                        totalTime: 0
-                    };
-                }
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const loginTime = data.loginTime.toDate();
+        const logoutTime = data.logoutTime ? data.logoutTime.toDate() : null;
+        const sessionDuration = logoutTime ? logoutTime - loginTime : 0;
 
-                if (data.logoutTime) {
-                    const sessionDuration = data.logoutTime.toDate() - data.timestamp.toDate();
-                    userSessions[data.username].totalTime += sessionDuration;
-                    totalTimeForAllUsers += sessionDuration;
-                }
-            }
-        });
-
-        // 合計時間を表示
-        const totalTimeElement = document.createElement('div');
-        totalTimeElement.className = 'total-time';
-        totalTimeElement.textContent = `本日の合計ログイン時間: ${formatDuration(totalTimeForAllUsers)}`;
-        loginsList.appendChild(totalTimeElement);
-
-        // ユーザーごとのセッション情報を表示
-        Object.entries(userSessions).forEach(([username, session]) => {
-            const listItem = document.createElement('li');
-            const mainInfo = document.createElement('div');
-            mainInfo.textContent = `ユーザーネーム: ${username}`;
-            
-            const sessionInfo = document.createElement('div');
-            sessionInfo.className = 'session-time';
-            sessionInfo.textContent = `ログイン時間: ${formatDuration(session.totalTime)}`;
-            
-            const timeInfo = document.createElement('div');
-            timeInfo.className = 'meta-info';
-            timeInfo.textContent = `最初のログイン: ${session.loginTime.toLocaleString()}`;
-            
-            listItem.appendChild(mainInfo);
-            listItem.appendChild(sessionInfo);
-            listItem.appendChild(timeInfo);
-            loginsList.appendChild(listItem);
-        });
-
-        if (Object.keys(userSessions).length === 0) {
-            const listItem = document.createElement('li');
-            listItem.textContent = 'ログイン情報がありません';
-            loginsList.appendChild(listItem);
-        }
-    };
-
-    const loadDefaultLogins = async () => {
-        const today = new Date();
-        const todayISO = today.toLocaleDateString('sv-SE');
-        const datePicker = document.getElementById('date-picker');
+        const username = data.username || '不明';
         
-        if (datePicker) {
-            datePicker.value = todayISO;
-            await loadLogins(todayISO);
+        // ユーザーごとのログイン時間をまとめる
+        if (!userLogins[username]) {
+            userLogins[username] = {
+                firstLoginTime: loginTime,
+                totalDuration: 0
+            };
         }
-    };
-
-    document.addEventListener('DOMContentLoaded', loadDefaultLogins);
-
-    document.getElementById('date-picker').addEventListener('change', async (event) => {
-        const selectedDate = event.target.value;
-        await loadLogins(selectedDate);
+        
+        // ユーザーごとの合計ログイン時間を加算
+        userLogins[username].totalDuration += sessionDuration;
     });
-</script>
-</head>
+
+    // ユーザーごとにログイン情報を表示
+    for (const username in userLogins) {
+        const { firstLoginTime, totalDuration } = userLogins[username];
+
+        // 初回ログイン時間の表示
+        const userLoginElement = document.createElement('li');
+        userLoginElement.innerHTML = `
+            <div>ユーザーネーム: ${username}</div>
+            <div>初回ログイン時間: ${firstLoginTime.toLocaleString()}</div>
+            <div>合計ログイン時間: ${Math.floor(totalDuration / 60000)}分</div>
+        `;
+        loginsList.appendChild(userLoginElement);
+    }
+};
+
+// デフォルトで当日を表示
+document.addEventListener('DOMContentLoaded', async () => {
+    const today = new Date();
+    const todayISO = today.toISOString().split('T')[0];
+    const datePicker = document.getElementById('date-picker');
+    datePicker.value = todayISO;
+    await loadLogins(todayISO);
+
+    datePicker.addEventListener('change', async (e) => {
+        await loadLogins(e.target.value);
+    });
+});
+
+</Script>
+
 <body>
     <div class="container">
         <h1>ログイン履歴管理システム</h1>
         <label for="date-picker">日付を選択</label>
-        <input type="date" id="date-picker" max="">
+        <input type="date" id="date-picker">
         <ul id="logins-list"></ul>
-        <button class="back-button" onclick="goBack()">戻る</button>
     </div>
 </body>
 </html>
-
-<script>
-    function goBack() {
-        window.history.back();
-    }
-</script>
