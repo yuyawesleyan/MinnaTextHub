@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者専用報告書画面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #e9ecef;
+        }
+        .button-group {
+            text-align: right;
+        }
+        .button-group button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>管理者専用報告書画面</h1>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>ユーザー名</th>
+                    <th>メールアドレス</th>
+                    <th>作業内容コメント</th>
+                    <th>ログイン時間</th>
+                    <th>ログアウト時間</th>
+                    <th>合計滞在時間 (秒)</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                <!-- 動的に行を挿入 -->
+            </tbody>
+        </table>
+        <div class="button-group">
+            <button onclick="fetchReports()">更新</button>
+        </div>
+    </main>
+    <script type="module">
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDN9KQ50hwjlzFNc26aMOCS0H06JwggY68",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:8c62f7f2a978c711cd9005",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchReports() {
+            const tableBody = document.getElementById("reportTableBody");
+            tableBody.innerHTML = ""; // テーブルをクリア
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "reports"));
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${data.username}</td>
+                        <td>${data.email}</td>
+                        <td>${data.workComment}</td>
+                        <td>${new Date(data.loginTime.seconds * 1000).toLocaleString()}</td>
+                        <td>${new Date(data.logoutTime.seconds * 1000).toLocaleString()}</td>
+                        <td>${data.stayDuration}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("データの取得中にエラーが発生しました:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchReports(); // ページ読み込み時にデータを取得
+        });
+    </script>
+</body>
+</html>
