@@ -6,137 +6,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロジェクト一覧</title>
     <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #000428; /* 固定背景色 */
-    color: #fff;
-    margin: 0;
-    padding: 20px;
-    overflow-x: hidden;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000428;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 42px;
-    color: #e0e0e0;
-    text-align: center;
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    animation: textFadeIn 3s ease-in-out;
-}
+        h1 {
+            margin-bottom: 20px;
+            font-size: 42px;
+            color: #e0e0e0;
+            text-align: center;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            animation: textFadeIn 3s ease-in-out;
+        }
 
-@keyframes textFadeIn {
-    0% { opacity: 0; transform: translateY(-20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
+        @keyframes textFadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
-.gallery, #image-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start; /* 左揃えに変更 */
-    opacity: 0;
-    animation: fadeIn 2s ease-in-out 1.5s forwards;
-}
+        .gallery, #image-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out 1.5s forwards;
+        }
 
-@keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
 
-.folder-card, .image-card {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 1px solid transparent;
-    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-    cursor: pointer;
-    width: calc(25% - 40px);
-    max-width: 300px;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
+        .folder-card, .image-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid transparent;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            cursor: pointer;
+            width: calc(25% - 40px);
+            max-width: 300px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
 
-.folder-card:hover, .image-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
-    border-color: #00d4ff;
-}
+        .folder-card:hover, .image-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+            border-color: #00d4ff;
+        }
 
-.folder-info {
-    padding: 20px;
-    font-size: 20px;
-    text-align: center;
-    font-weight: 500;
-    color: #00d4ff;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-top: 2px solid #00d4ff;
-}
+        .folder-info {
+            padding: 20px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 500;
+            color: #00d4ff;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-top: 2px solid #00d4ff;
+        }
 
-.image-list-header {
-    width: 100%;
-    padding: 20px;
-    font-size: 24px;
-    font-weight: 600;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #00d4ff;
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #00d4ff;
-    animation: textFadeIn 3s ease-in-out 1s forwards;
-}
+        .image-list-header {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00d4ff;
+            animation: textFadeIn 3s ease-in-out 1s forwards;
+        }
 
-.image-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-bottom: 2px solid #00d4ff;
-    opacity: 0.9;
-    transition: opacity 0.3s ease;
-}
+        .image-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-bottom: 2px solid #00d4ff;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
 
-.image-card img:hover {
-    opacity: 1;
-}
+        .image-card img:hover {
+            opacity: 1;
+        }
 
-.image-name {
-    padding: 15px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 500;
-    color: #00d4ff;
-}
+        .image-name {
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #00d4ff;
+        }
 
-.button-container {
-    display: flex;
-    justify-content: center;
-    margin: 40px 0;
-}
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
 
-.button {
-    padding: 15px 35px;
-    font-size: 18px;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    background-color: #00d4ff;
-    transition: background-color 0.4s ease, transform 0.4s ease;
-}
+        .button {
+            padding: 15px 35px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            background-color: #00d4ff;
+            transition: background-color 0.4s ease, transform 0.4s ease;
+        }
 
-.button:hover {
-    background-color: #00a6cc;
-    transform: scale(1.05);
-}
+        .button:hover {
+            background-color: #00a6cc;
+            transform: scale(1.05);
+        }
 
-.hidden {
-    display: none;
-}
-
-
-
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -172,25 +169,29 @@ h1 {
         const backButton = document.getElementById('back-button');
 
         async function loadProjects() {
-    const rootRef = ref(storage, '');
-    const folders = await listAll(rootRef);
+            const rootRef = ref(storage, '');
+            const folders = await listAll(rootRef);
 
-    const folderPromises = folders.prefixes.map(async folder => {
-        const imagesRef = ref(storage, folder.fullPath);
-        const images = await listAll(imagesRef);
-        return { folderName: folder.name, imageCount: images.items.length, images: images.items };
-    });
+            // ローカルストレージから非表示設定を取得
+            const folderSettings = JSON.parse(localStorage.getItem('folderSettings')) || {};
 
-    
-    const folderData = await Promise.all(folderPromises);
+            const folderPromises = folders.prefixes.map(async folder => {
+                const imagesRef = ref(storage, folder.fullPath);
+                const images = await listAll(imagesRef);
+                return { folderName: folder.name, imageCount: images.items.length, images: images.items };
+            });
 
-    folderData.forEach(folder => {
-        if (folder.imageCount > 0) {
-            createFolderCard(folder.folderName, folder.imageCount, folder.images);
+            const folderData = await Promise.all(folderPromises);
+
+            folderData.forEach(folder => {
+                // 非表示設定が有効なフォルダをスキップ
+                if (folderSettings[folder.folderName] === false) return;
+
+                if (folder.imageCount > 0) {
+                    createFolderCard(folder.folderName, folder.imageCount, folder.images);
+                }
+            });
         }
-    });
-}
-
 
         function createFolderCard(folderName, imageCount, images) {
             const card = document.createElement('div');
@@ -224,29 +225,24 @@ h1 {
                 const img = document.createElement('img');
                 img.src = url;
                 img.alt = `Image ${index + 1}`;
-
-                
-                const imageName = document.createElement('div');
-                imageName.className = 'image-name'; 
-                imageName.textContent = images[index].name; 
                 imageCard.appendChild(img);
-                imageCard.appendChild(imageName); 
-                imageList.appendChild(imageCard);
 
-                imageCard.addEventListener('click', () => {
-                    window.location.href = `text_entry_page.html?image=${encodeURIComponent(url)}`;
-                });
+                const imageName = document.createElement('div');
+                imageName.className = 'image-name';
+                imageName.textContent = `Image ${index + 1}`;
+                imageCard.appendChild(imageName);
+
+                imageList.appendChild(imageCard);
             });
         }
 
         backButton.addEventListener('click', () => {
-            gallery.style.display = 'flex';
-            backButton.classList.add('hidden');
             imageList.style.display = 'none';
+            backButton.classList.add('hidden');
+            gallery.style.display = 'flex';
         });
 
         loadProjects();
     </script>
-    <button onclick="location.href='member.html'">メンバーページに戻る</button>
 </body>
 </html>
