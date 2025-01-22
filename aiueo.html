@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五十音表</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .centered-image {
+    max-width: 100%;
+    max-height: 100vh;
+    object-fit: cover;
+  }
+</style>
+<body>
+  <div class="container">
+    <img src="aiueo.jpeg" alt="中心画像" class="centered-image">
+  </div>
+
+  <footer>
+    <button onclick="goBack()">ホームに戻る</button>
+    <footer class="footer">
+        <p>© 2024 みんなの活字化広場 All Rights Reserved.</p>
+    </footer>
+</footer>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>
