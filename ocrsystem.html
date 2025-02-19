@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>くずし字学習システム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <style>
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+        .selection-box {
+            position: absolute;
+            border: 2px solid #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+            pointer-events: none;
+            transform-origin: top left;
+        }
+        #image-container {
+            cursor: crosshair;
+            position: relative;
+            overflow: auto;
+        }
+        .recognized-text {
+            font-family: "MS Mincho", "游明朝", YuMincho, "Hiragino Mincho ProN W3", serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">くずし字学習システム</h1>
+            <p class="text-gray-600">文字データベースの構築と自動認識学習</p>
+        </header>
+
+        <main class="space-y-6">
+            <!-- アップロードエリア -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div id="upload-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center relative">
+                    <input 
+                        type="file" 
+                        id="file-input" 
+                        accept="image/*" 
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    >
+                    <div class="pointer-events-none">
+                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <span class="text-gray-600">古典籍の画像をアップロード</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作業エリア -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 画像エリア -->
+                <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">文字選択</h2>
+                    <div class="relative">
+                        <div id="image-container" class="h-[600px]">
+                            <img id="preview-image" class="max-w-full hidden absolute top-0 left-0" alt="Preview">
+                            <div id="selection-overlay" class="absolute top-0 left-0 w-full h-full"></div>
+                        </div>
+                        <div id="selection-tools" class="mt-4 space-x-2">
+                            <button id="clear-selection" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                                選択クリア
+                            </button>
+                            <span class="text-sm text-gray-600">クリック＆ドラッグで文字を選択</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文字登録エリア -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">文字登録</h2>
+                    <div class="space-y-4">
+                        <!-- 選択文字プレビュー -->
+                        <div class="border rounded p-4">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">選択中の文字</h3>
+                            <canvas id="char-preview" class="border" width="100" height="100"></canvas>
+                        </div>
+
+                        <!-- 類似文字候補 -->
+                        <div class="border rounded p-4">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">類似文字候補</h3>
+                            <div id="similar-chars" class="grid grid-cols-2 gap-2">
+                                <!-- 類似文字候補がここに表示されます -->
+                            </div>
+                        </div>
+
+                        <!-- 文字入力フォーム -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">正しい読み</label>
+                            <input 
+                                type="text" 
+                                id="char-reading" 
+                                class="w-full p-2 border rounded" 
+                                maxlength="1"
+                                placeholder="1文字入力"
+                            >
+                        </div>
+
+                        <!-- 文字種類選択 -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">文字種類</label>
+                            <select id="char-type" class="w-full p-2 border rounded">
+                                <option value="hiragana">ひらがな</option>
+                                <option value="kanji">漢字</option>
+                                <option value="variant">変体仮名</option>
+                            </select>
+                        </div>
+
+                        <!-- 登録ボタン -->
+                        <button 
+                            id="register-char" 
+                            class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                            disabled
+                        >
+                            文字を登録
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 認識テキストプレビュー -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">認識テキストプレビュー</h2>
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">原文画像</h3>
+                        <div id="original-text-preview" class="border rounded p-4 min-h-[200px]"></div>
+                    </div>
+                    <div class="w-1/2">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">認識テキスト</h3>
+                        <div id="recognized-text-preview" class="border rounded p-4 min-h-[200px] vertical-text recognized-text"></div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-sm text-gray-600">認識精度: <span id="recognition-accuracy">0</span>%</div>
+                </div>
+            </div>
+
+            <!-- 登録データ表示 -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">登録済み文字データ</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="registered-chars"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Firebase設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyDY09fPlXcn-443Q3hCNl3_yFqbRPgY0_Q",
+            authDomain: "honkoku-hiroba-21400.firebaseapp.com",
+            databaseURL: "https://honkoku-hiroba-21400-default-rtdb.firebaseio.com",
+            projectId: "honkoku-hiroba-21400",
+            storageBucket: "honkoku-hiroba-21400.appspot.com",
+            messagingSenderId: "909469448032",
+            appId: "1:909469448032:web:3f9f456ed916dd33cd9005",
+            measurementId: "G-8QW29675PY"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // 状態管理
+        let currentSelection = null;
+        let isDrawing = false;
+        let startPos = { x: 0, y: 0 };
+        let imageScale = { x: 1, y: 1 };
+
+        // DOM要素
+        const elements = {
+            fileInput: document.getElementById('file-input'),
+            uploadArea: document.getElementById('upload-area'),
+            previewImage: document.getElementById('preview-image'),
+            selectionOverlay: document.getElementById('selection-overlay'),
+            charPreview: document.getElementById('char-preview'),
+            charReading: document.getElementById('char-reading'),
+            charType: document.getElementById('char-type'),
+            registerChar: document.getElementById('register-char'),
+            registeredChars: document.getElementById('registered-chars'),
+            clearSelection: document.getElementById('clear-selection'),
+            similarChars: document.getElementById('similar-chars'),
+            imageContainer: document.getElementById('image-container'),
+            originalTextPreview: document.getElementById('original-text-preview'),
+            recognizedTextPreview: document.getElementById('recognized-text-preview'),
+            recognitionAccuracy: document.getElementById('recognition-accuracy')
+        };
+
+        // イベントリスナーの設定
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadRegisteredChars();
+        });
+
+        function setupEventListeners() {
+            elements.fileInput.addEventListener('change', handleImageUpload);
+            elements.imageContainer.addEventListener('mousedown', startDrawing);
+            elements.imageContainer.addEventListener('mousemove', draw);
+            elements.imageContainer.addEventListener('mouseup', endDrawing);
+            elements.clearSelection.addEventListener('click', clearSelection);
+            elements.charReading.addEventListener('input', validateInput);
+            elements.registerChar.addEventListener('click', registerCharacter);
+            
+            // プレビュー画像のロード完了時
+            elements.previewImage.addEventListener('load', () => {
+                // スケール計算
+                imageScale = {
+                    x: elements.previewImage.naturalWidth / elements.previewImage.width,
+                    y: elements.previewImage.naturalHeight / elements.previewImage.height
+                };
+            });
+        }
+
+        // 座標の取得（スケールとスクロールを考慮）
+        function getCoordinates(e) {
+            const rect = elements.imageContainer.getBoundingClientRect();
+            const scrollOffset = {
+                x: elements.imageContainer.scrollLeft,
+                y: elements.imageContainer.scrollTop
+            };
+
+            return {
+                x: (e.clientX - rect.left + scrollOffset.x),
+                y: (e.clientY - rect.top + scrollOffset.y)
+            };
+        }
+
+        // 画像アップロード処理
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                elements.previewImage.src = e.target.result;
+                elements.previewImage.classList.remove('hidden');
+                
+                // 原文プレビューにも表示
+                elements.originalTextPreview.innerHTML = `<img src="${e.target.result}" class="max-w-full">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 文字選択の描画開始
+        function startDrawing(e) {
+            isDrawing = true;
+            startPos = getCoordinates(e);
+            clearSelection();
+        }
+
+        // 文字選択の描画
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const currentPos = getCoordinates(e);
+            
+            currentSelection = {
+                x: Math.min(startPos.x, currentPos.x),
+                y: Math.min(startPos.y, currentPos.y),
+                width: Math.abs(currentPos.x - startPos.x),
+                height: Math.abs(currentPos.y - startPos.y)
+            };
+
+            updateSelectionBox();
+            updateCharPreview();
+        }
+
+        // 選択ボックスの更新
+        function updateSelectionBox() {
+            elements.selectionOverlay.innerHTML = '';
+            const selectionBox = document.createElement('div');
+            selectionBox.className = 'selection-box';
+            
+            // スケールを考慮した位置とサイズ
+            selectionBox.style.left = `${currentSelection.x}px`;
+            selectionBox.style.top = `${currentSelection.y}px`;
+            selectionBox.style.width = `${currentSelection.width}px`;
+            selectionBox.style.height = `${currentSelection.height}px`;
+            
+            elements.selectionOverlay.appendChild(selectionBox);
+        }
+
+        // 選択文字のプレビュー更新
+        function updateCharPreview() {
+            if (!currentSelection) return;
+
+            const ctx = elements.charPreview.getContext('2d');
+            ctx.clearRect(0, 0, elements.charPreview.width, elements.charPreview.height);
+            
+            // スケールを考慮して切り出し
+            ctx.drawImage(
+                elements.previewImage,
+                currentSelection.x * imageScale.x,
+                currentSelection.y * imageScale.y,
+                currentSelection.width * imageScale.x,
+                currentSelection.height * imageScale.y,
+                0,
+                0,
+                elements.charPreview.width,
+                elements.charPreview.height
+            );
+
+            // 文字認識の開始
+            findSimilarCharacters();
+        }
+
+        // 文字選択の完了
+        function endDrawing() {
+            isDrawing = false;
+            if (currentSelection) {
+                elements.registerChar.disabled = false;
+                updateRecognizedText();
+            }
+        }
+
+        // 類似文字の検索と表示
+        async function findSimilarCharacters() {
+            if (!currentSelection) return;
+
+            try {
+                const snapshot = await db.collection('characters')
+                    .orderBy('timestamp', 'desc')
+                    .limit(4)
+                    .get();
+
+                elements.similarChars.innerHTML = '';
+                
+                let foundSimilarChars = [];
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    // 実際のプロジェクトでは画像類似度計算を実装
+                    const similarity = calculateImageSimilarity(elements.charPreview, data.imageData);
+                    
+                    foundSimilarChars.push({
+                        reading: data.reading,
+                        similarity: similarity,
+                        imageData: data.imageData
+                    });
+
+                    const charElement = document.createElement('div');
+                    charElement.className = 'border rounded p-2 text-center cursor-pointer hover:bg-gray-100';
+                    charElement.innerHTML = `
+                        <img src="${data.imageData}" class="w-12 h-12 mx-auto object-contain">
+                        <div class="mt-1">
+                            <div class="text-lg">${data.reading}</div>
+                            <div class="text-xs text-gray-500">${similarity.toFixed(1)}% 一致</div>
+                        </div>
+                    `;
+                    charElement.onclick = () => {
+                        elements.charReading.value = data.reading;
+                        validateInput();
+                    };
+                    elements.similarChars.appendChild(charElement);
+                });
+
+                // 最も類似度の高い文字を認識テキストに追加
+                if (foundSimilarChars.length > 0) {
+                    const bestMatch = foundSimilarChars.reduce((prev, current) => 
+                        prev.similarity > current.similarity ? prev : current
+                    );
+                    
+                    updateRecognizedText(bestMatch);
+                }
+
+            } catch (error) {
+                console.error('Error finding similar characters:', error);
+            }
+        }
+
+        // 画像類似度の計算（仮実装）
+        function calculateImageSimilarity(previewCanvas, comparisonImageData) {
+            // ここに実際の画像類似度計算アルゴリズムを実装
+            // 現在はランダムな値を返していますが、実際のプロジェクトでは
+            // ヒストグラム比較やSIFT特徴量などを使用します
+            return Math.random() * 100;
+        }
+
+        // 認識テキストの更新
+        function updateRecognizedText(bestMatch) {
+            if (!bestMatch) {
+                elements.recognizedTextPreview.textContent = '〓';
+                elements.recognitionAccuracy.textContent = '0';
+                return;
+            }
+
+            const content = document.createElement('div');
+            content.className = `text-3xl ${bestMatch.similarity > 90 ? 'text-green-600' : bestMatch.similarity > 70 ? 'text-yellow-600' : 'text-red-600'}`;
+            content.textContent = bestMatch.reading;
+            
+            elements.recognizedTextPreview.appendChild(content);
+            elements.recognitionAccuracy.textContent = bestMatch.similarity.toFixed(1);
+        }
+
+        // 文字の登録
+        async function registerCharacter() {
+            if (!currentSelection || !elements.charReading.value) return;
+
+            try {
+                const imageData = elements.charPreview.toDataURL('image/png');
+                const charData = {
+                    reading: elements.charReading.value,
+                    type: elements.charType.value,
+                    imageData: imageData,
+                    timestamp: new Date()
+                };
+
+                await db.collection('characters').add(charData);
+                
+                // 登録済み文字の更新
+                await loadRegisteredChars();
+
+                // フォームをリセット
+                clearSelection();
+                elements.charReading.value = '';
+                
+                alert('文字を登録しました');
+
+            } catch (error) {
+                console.error('Error registering character:', error);
+                alert('文字の登録に失敗しました');
+            }
+        }
+
+        // 登録済み文字の読み込み
+        async function loadRegisteredChars() {
+            try {
+                const snapshot = await db.collection('characters')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+
+                elements.registeredChars.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const charElement = document.createElement('div');
+                    charElement.className = 'border rounded p-2 text-center';
+                    charElement.innerHTML = `
+                        <img src="${data.imageData}" class="w-16 h-16 mx-auto object-contain">
+                        <div class="mt-2">
+                            <div class="text-lg">${data.reading}</div>
+                            <div class="text-xs text-gray-500">${data.type}</div>
+                        </div>
+                    `;
+                    elements.registeredChars.appendChild(charElement);
+                });
+
+            } catch (error) {
+                console.error('Error loading characters:', error);
+            }
+        }
+
+        // 入力の検証
+        function validateInput() {
+            elements.registerChar.disabled = !elements.charReading.value;
+        }
+
+        // 選択のクリア
+        function clearSelection() {
+            currentSelection = null;
+            elements.selectionOverlay.innerHTML = '';
+            const ctx = elements.charPreview.getContext('2d');
+            ctx.clearRect(0, 0, elements.charPreview.width, elements.charPreview.height);
+            elements.charReading.value = '';
+            elements.registerChar.disabled = true;
+            elements.similarChars.innerHTML = '';
+            elements.recognizedTextPreview.innerHTML = '';
+            elements.recognitionAccuracy.textContent = '0';
+        }
+    </script>
+</body>
+</html>
